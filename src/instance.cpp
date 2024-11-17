@@ -1,13 +1,11 @@
-#include "instance.h"
 #include <iostream>
 #include <string>
+#include "instance.h"
+#include "app.h"
 
 #define VK_USE_PLATFORM_MACOS_MVK
 #include "vulkan/vulkan.h"
 #include <vulkan/vulkan_core.h>
-
-#define PRETTY_PRINT(str) std::cout << "🎆 ~~~ " << str << " ~~~ 🎆" << std::endl;
-#define DBG_ERR(msg) std::cout << "❌❌" msg << std::endl;
 
 VkResult Instance::getInstanceLayerProperties() {
     VkResult result;
@@ -51,7 +49,7 @@ VkResult Instance::print_info() {
     PRETTY_PRINT("Vulkan API Version");
     std::cout << "v" << getInstanceVersion() << std::endl;
 
-    PRETTY_PRINT("Instance Layers and extensions" )
+    PRETTY_PRINT("Instance Layers and extensions");
     for (auto layer: m_layers) {
         std::cout << "+ " << layer.properties.layerName << std::endl;
         for (auto extension: layer.extensions) {
@@ -89,11 +87,11 @@ VkResult Instance::createInstance(char_v& layers, char_v& extensions) {
     VkResult result = vkCreateInstance(&instance_info, nullptr, &m_instance);
 
     if (result == VK_ERROR_INCOMPATIBLE_DRIVER) {
-        DBG_ERR("Incompatible Driver!!!")
+        DBG_ERR("Incompatible Driver!!!");
             return result;
     }
     else if (result != VK_SUCCESS) {
-        DBG_ERR("Unknown Error")
+        DBG_ERR("Unknown Error");
             return result;
     }
 

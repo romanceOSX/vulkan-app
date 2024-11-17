@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include "vulkan/vulkan.h"
 #include "vector"
@@ -24,11 +26,5 @@ class Instance {
         VkInstance m_instance;
     private:
         uint32_t m_api_version;
-};
-
-class Device {
-    public:
-        VkDevice getDefaultDevice();
-        void getDeviceExtensions(VkPhysicalDevice* dev, Instance* instance);
 };
 
