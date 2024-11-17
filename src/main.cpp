@@ -3,8 +3,8 @@
 #include <vulkan/vulkan_core.h>
 #include <vector>
 #include <iostream>
+#include "device.h"
 #include "instance.h"
-
 
 class VulkanLayerAndExtension {
     public:
@@ -69,6 +69,9 @@ int main (int argc, char *argv[]) {
     i.print_info();
 
     VkInstance instance = i.getInstance();
+
+    Device dev(instance);
+    dev.getDefaultDevice();
 
     return 0;
 }
