@@ -6,7 +6,7 @@
 #include <vulkan/vulkan_core.h>
 
 #include "instance.h"
-#include "app.h"
+#include "host.h"
 
 Instance::Instance() { }
 

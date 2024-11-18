@@ -1,28 +1,28 @@
 #include <iostream>
 
-#include "app.h"
+#include "host.h"
 #include "instance.h"
 #include "device.h"
 
-App::App() {
+Host::Host() {
     /* Populate available host layers and extensions */
     _getHostInstanceProperties();
 }
 
-App::~App() {
+Host::~Host() {
     /* Populate available host layers and extensions */
     PRETTY_PRINT("Destroying APP");
     delete _m_vk_instance;
 }
 
-App* App::getInstance() {
+Host* Host::getInstance() {
     if (_m_instance == nullptr) {
-        _m_instance = new App();
+        _m_instance = new Host();
     }   
     return _m_instance;
 }
 
-Instance* App::getVkInstance() {
+Instance* Host::getVkInstance() {
     if (_m_vk_instance == nullptr) {
         _m_vk_instance = new Instance();
     }   
@@ -30,7 +30,7 @@ Instance* App::getVkInstance() {
 
 }
 
-void App::printHostInfo() {
+void Host::printHostInfo() {
     PRETTY_PRINT("Vulkan API Version");
     std::cout << "v" << getVkInstanceVersion() << std::endl;
 
@@ -87,7 +87,7 @@ void App::printHostInfo() {
     }
 }
 
-VkResult App::_getHostPhysicalDevices() {
+VkResult Host::_getHostPhysicalDevices() {
     VkResult res;
     uint32_t devCount;
 
@@ -103,7 +103,7 @@ VkResult App::_getHostPhysicalDevices() {
     }
 }
 
-VkResult App::_getHostInstanceProperties() {
+VkResult Host::_getHostInstanceProperties() {
     VkResult result;
     uint32_t instanceLayerCount; 
     std::vector<VkLayerProperties> _layers;
@@ -141,7 +141,7 @@ VkResult App::_getHostInstanceProperties() {
     return result;
 }
 
-uint32_t App::getVkInstanceVersion(void) {
+uint32_t Host::getVkInstanceVersion(void) {
     return _m_vk_api_version;
 }
 

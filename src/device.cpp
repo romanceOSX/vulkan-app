@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vulkan/vulkan_core.h>
 
-#include "app.h"
+#include "host.h"
 #include "device.h"
 
 void Device::getDeviceQueueProperties(VkPhysicalDevice& dev) {

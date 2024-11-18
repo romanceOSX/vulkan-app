@@ -7,11 +7,11 @@
 
 #include "device.h"
 #include "instance.h"
-#include "app.h"
+#include "host.h"
 
 int main (int argc, char *argv[]) {
-    App* app = App::getInstance();
-    Instance* vi = app->getVkInstance();
+    Host* host = Host::getInstance();
+    Instance* vi = host->getVkInstance();
 
     /* Extensions needed for MacOS */
     vi->addExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
@@ -24,7 +24,7 @@ int main (int argc, char *argv[]) {
         throw std::runtime_error("Instance creation Failed");
     }
 
-    app->printHostInfo();
+    host->printHostInfo();
     
     ///* Print host information */
     //app->getHostInfo();
@@ -32,7 +32,7 @@ int main (int argc, char *argv[]) {
     //auto dev = app->getDefaultPhysicalDevice();
 
     //Device dev(instance);
-    delete app;
+    delete host;
     return 0;
 }
 

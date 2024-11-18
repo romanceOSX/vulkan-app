@@ -20,25 +20,25 @@ class PhysicalDevice;
 /*
  * Representation of the host
  */
-class App {
+class Host {
     public:
-        App(App& other) = delete;
-        void operator=(const App&) = delete;
-        static App* getInstance();
+        Host(Host& other) = delete;
+        void operator=(const Host&) = delete;
+        static Host* getInstance();
         Instance* getVkInstance();
         VkPhysicalDevice getDefaultPhysicalDevice(void);
         void printHostInfo();
         uint32_t getVkInstanceVersion(void);
-        ~App();
+        ~Host();
 
         std::vector<VkPhysicalDevice> m_phy_devs;
 
     private:
-        App();
+        Host();
         VkResult _getHostInstanceProperties();
         VkResult _getHostPhysicalDevices();
 
-        inline static App*                      _m_instance = nullptr;
+        inline static Host*                      _m_instance = nullptr;
         Instance*                               _m_vk_instance = nullptr;
         std::vector<LayerProperties>            _m_layers;
         std::vector<VkExtensionProperties>      _m_instance_extensions;
