@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # Update app name from cmake to be consumed from this var
-APP_NAME=learning_vulkan
+export APP_NAME=vulkan_app
 SRC_DIR=$(dirname "$(realpath "$0")")
 BUILD_DIR=$SRC_DIR/build
 TARGET=$BUILD_DIR/$APP_NAME

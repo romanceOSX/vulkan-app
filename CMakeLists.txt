@@ -7,7 +7,11 @@ set(CMAKE_FIND_DEBUG_MODE TRUE)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-set(APP_OUT_NAME learning_vulkan)
+if (DEFINED ENV{APP_NAME})
+    set(APP_OUT_NAME $ENV{APP_NAME})
+else()
+    set(APP_OUT_NAME vulkan_app)
+endif()
 set(GLFW_PATH $ENV{HOME}/git/glfw)
 set(APP_SRC_DIR src)
 
