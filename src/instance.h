@@ -22,16 +22,18 @@ class Instance {
         Instance();
         VkResult init(void);
         VkInstance getInstance(void);
-        VkResult createInstance(char_v& layers, char_v& extensions);
         Instance(Instance& other) = delete;
         AppResult addExtension(const char* ext);
         AppResult addLayer(const char* layer);
-
-        std::vector<LayerProperties> m_layers;
-        std::vector<VkExtensionProperties> m_instance_extensions;
-        VkInstance m_instance;
+        bool isInit(void);
 
     private:
-        uint32_t m_api_version;
+        uint32_t                                _m_api_version;
+        std::vector<LayerProperties>            _m_available_layers;
+        std::vector<VkExtensionProperties>      _m_available_instance_extensions;
+        VkInstance                              _m_instance;
+        std::vector<const char*>                _m_extensions;
+        std::vector<const char*>                _m_layers;
+        bool                                    _m_is_init = false;
 };
 

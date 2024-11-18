@@ -1,16 +1,32 @@
 #include <iostream>
 #include <string>
-#include "instance.h"
-#include "app.h"
 
 #define VK_USE_PLATFORM_MACOS_MVK
 #include "vulkan/vulkan.h"
 #include <vulkan/vulkan_core.h>
 
-Instance::Instance() {
+#include "instance.h"
+#include "app.h"
+
+Instance::Instance() { }
+
+AppResult Instance::addExtension(const char* ext) {
+    AppResult res = AppResult::APP_SUCCESS;
+
+    _m_extensions.push_back(ext);
+
+    return res;
 }
 
-VkResult Instance::createInstance(char_v& layers, char_v& extensions) {
+AppResult Instance::addLayer(const char* ext) {
+    AppResult res = AppResult::APP_SUCCESS;
+
+    _m_layers.push_back(ext);
+
+    return res;
+}
+
+VkResult Instance::init() {
     VkInstanceCreateInfo instance_info = {
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .pNext = nullptr,
@@ -20,13 +36,17 @@ VkResult Instance::createInstance(char_v& layers, char_v& extensions) {
         .ppEnabledLayerNames = nullptr,
     };
 
-    instance_info.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-    instance_info.ppEnabledExtensionNames = extensions.data();
+    instance_info.enabledExtensionCount = static_cast<uint32_t>(_m_extensions.size());
+    instance_info.ppEnabledExtensionNames = _m_extensions.data();
 
-    instance_info.enabledLayerCount = static_cast<uint32_t>(layers.size());
-    instance_info.ppEnabledLayerNames = layers.data();
+    instance_info.enabledLayerCount = static_cast<uint32_t>(_m_layers.size());
+    instance_info.ppEnabledLayerNames = _m_layers.data();
 
-    VkResult result = vkCreateInstance(&instance_info, nullptr, &m_instance);
+    VkResult result = vkCreateInstance(&instance_info, nullptr, &_m_instance);
+
+    if (result == VK_SUCCESS) {
+        _m_is_init = true;
+    }
 
     if (result == VK_ERROR_INCOMPATIBLE_DRIVER) {
         DBG_ERR("Incompatible Driver!!!");
@@ -41,23 +61,11 @@ VkResult Instance::createInstance(char_v& layers, char_v& extensions) {
 }
 
 VkInstance Instance::getInstance() {
-    return m_instance;
+    return _m_instance;
 }
 
-VkResult Instance::init() {
-    VkResult res;
-    std::vector<const char*> extensions {
-        VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
-        VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME,
-        VK_KHR_SURFACE_EXTENSION_NAME,
-    };
 
-    std::vector<const char*> layers {
-        "VK_LAYER_LUNARG_api_dump",
-    };
-
-    res = createInstance(layers, extensions);
-
-    return res;
+bool Instance::isInit(void) {
+    return _m_is_init;
 }
 
