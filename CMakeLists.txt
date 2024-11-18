@@ -18,6 +18,7 @@ set(APP_SOURCES
     ${APP_SRC_DIR}/host.cpp
     ${APP_SRC_DIR}/instance.cpp
     ${APP_SRC_DIR}/device.cpp
+    ${APP_SRC_DIR}/physical_device.cpp
 )
 
 add_subdirectory(${GLFW_PATH} glfw)

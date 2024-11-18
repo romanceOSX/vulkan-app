@@ -3,6 +3,7 @@
 #include "host.h"
 #include "instance.h"
 #include "device.h"
+#include "physical_device.h"
 
 Host::Host() {
     /* Populate available host layers and extensions */
