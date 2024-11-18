@@ -15,6 +15,7 @@ project(${APP_OUT_NAME})
 
 set(APP_SOURCES
     ${APP_SRC_DIR}/main.cpp
+    ${APP_SRC_DIR}/app.cpp
     ${APP_SRC_DIR}/instance.cpp
     ${APP_SRC_DIR}/device.cpp
 )
