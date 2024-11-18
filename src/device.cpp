@@ -1,56 +1,8 @@
 #include <iostream>
 #include <vulkan/vulkan_core.h>
+
 #include "app.h"
 #include "device.h"
-
-void Device::getDeviceExtensions(VkPhysicalDevice *dev, Instance *instance) {
-
-    /* Query global extensions first */
-    uint32_t prop_count;
-    std::vector<VkExtensionProperties> extensions;
-    vkEnumerateDeviceExtensionProperties(*dev, nullptr, &prop_count, nullptr);
-    extensions.resize(prop_count);
-    vkEnumerateDeviceExtensionProperties(*dev, nullptr, &prop_count, extensions.data());
-
-    for(auto extension: extensions) {
-        std::cout << "+ " << extension.extensionName << " (v" << 
-            extension.specVersion << ")" << std::endl;
-    }
-
-    /* Layer-specific device extensions */
-    if (nullptr != instance) {
-        for (auto layer: instance->m_layers) {
-            uint32_t extension_count;
-            std::vector<VkExtensionProperties> extensions;
-            vkEnumerateDeviceExtensionProperties(*dev, layer.properties.layerName, &prop_count, nullptr);
-            extensions.resize(prop_count);
-            vkEnumerateDeviceExtensionProperties(*dev, nullptr, &prop_count, extensions.data());
-            for (auto extension: extensions) {
-                std::cout << "+ " << extension.extensionName << " (v" << 
-                    extension.specVersion << ")" << std::endl;
-            }
-        }
-    }
-}
-
-VkDevice Device::getDefaultDevice() {
-    VkResult res;
-    uint32_t devCount;
-    std::vector<VkPhysicalDevice> devs;
-
-    vkEnumeratePhysicalDevices(m_instance, &devCount, nullptr);
-    devs.resize(devCount);
-    vkEnumeratePhysicalDevices(m_instance, &devCount, devs.data());
-    PRETTY_PRINT("Host's devices");
-    std::cout << "Number of vulkan-capable devices: " << devCount << std::endl;
-    for (auto& dev: devs) {
-        VkPhysicalDeviceProperties devProps;
-        vkGetPhysicalDeviceProperties(dev, &devProps);
-        std::cout << "Device name: " << devProps.deviceName << std::endl
-            << "Device Type: " << devProps.deviceType << std::endl;
-        getDeviceQueueProperties(dev);
-    }
-}
 
 void Device::getDeviceQueueProperties(VkPhysicalDevice& dev) {
     uint32_t propCount;
@@ -113,3 +65,44 @@ uint32_t Device::_get_default_index(void) {
 VkPhysicalDevice Device::_get_default_device(void) {
     return 0;
 }
+
+PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): _m_physical_dev(dev) {
+    /* Get device properties */
+    _queryDeviceProperties();
+    _queryQueueProperties();
+    _queryDeviceExtensions();
+}
+
+void PhysicalDevice::_queryDeviceProperties() {
+    vkGetPhysicalDeviceProperties(_m_physical_dev, &_m_physical_dev_props);
+}
+
+void PhysicalDevice::_queryQueueProperties() {
+    vkGetPhysicalDeviceQueueFamilyProperties(_m_physical_dev, &_m_queueCount, nullptr);
+    _m_available_queues.resize(_m_queueCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(_m_physical_dev, &_m_queueCount, _m_available_queues.data());
+}
+
+void PhysicalDevice::_queryDeviceExtensions() {
+    uint32_t prop_count;
+    vkEnumerateDeviceExtensionProperties(_m_physical_dev, nullptr, &prop_count, nullptr);
+    _m_available_extensions.resize(prop_count);
+    vkEnumerateDeviceExtensionProperties(_m_physical_dev, nullptr, &prop_count, _m_available_extensions.data());
+}
+
+std::vector<VkQueueFamilyProperties>& PhysicalDevice::getDeviceQueueProperties() {
+    return _m_available_queues;
+}
+
+std::vector<VkExtensionProperties>& PhysicalDevice::getDeviceExtensions() {
+    return _m_available_extensions;
+}
+
+uint32_t PhysicalDevice::getQueueCount(void) {
+    return _m_queueCount;
+}
+
+VkPhysicalDeviceProperties& PhysicalDevice::getDeviceProperties(void) {
+    return _m_physical_dev_props;  
+}
+
