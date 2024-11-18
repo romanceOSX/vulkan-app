@@ -2,10 +2,17 @@
 
 #include "app.h"
 #include "instance.h"
+#include "device.h"
 
 App::App() {
     /* Populate available host layers and extensions */
-    _getHostProperties();
+    _getHostInstanceProperties();
+}
+
+App::~App() {
+    /* Populate available host layers and extensions */
+    PRETTY_PRINT("Destroying APP");
+    delete _m_vk_instance;
 }
 
 App* App::getInstance() {
@@ -35,14 +42,68 @@ void App::printHostInfo() {
                 << " (v" << extension.specVersion<< ")" << std::endl;
         }
     }
+
     PRETTY_PRINT("Instance Extensions");
     for (auto extension: _m_instance_extensions) {
         std::cout << "+ " << extension.extensionName << " (v" <<
             extension.specVersion << ")" << std::endl;
     }
+
+    PRETTY_PRINT("Available Physical Devices");
+    /* Physical Device information is only available after Instance init */
+    if (getVkInstance()->isInit()) {
+        if (!_m_isVkInstanceInit) {
+            _getHostPhysicalDevices();
+            _m_isVkInstanceInit = true;
+        }
+
+        std::cout << "Number of Vulkan-Capable Devices: " <<
+            _m_physical_devs.size() << std::endl;
+
+        for (auto& dev: _m_physical_devs) {
+            PRETTY_PRINT_CUSTOM("Physical Device", "🥫");
+            auto devProps = dev.getDeviceProperties();
+            std::cout << "Device Name: " << devProps.deviceName << std::endl
+                << "Device Type: " << devProps.deviceType << std::endl;
+
+            PRETTY_PRINT_CUSTOM("Device Available Extensions", "🐝");
+            auto extensions = dev.getDeviceExtensions();
+            for (auto& ext: extensions) {
+                std::cout << "--> " << ext.extensionName 
+                    << " (v" << ext.specVersion << ")" << std::endl;
+            }
+
+            PRETTY_PRINT_CUSTOM("Queue Information", "💧");
+            std::cout << "Available Queues: " << dev.getQueueCount();
+
+            for (auto& queue: dev.getDeviceQueueProperties()) {
+                std::cout << "|---- Queue Flags: " << queue.queueFlags << std::endl
+                    << "      Queue Count: " << queue.queueCount << std::endl;
+            }
+        }
+    }
+    else {
+        std::cout << "Physical Device Information not available, Initialize VkInstance first";
+    }
 }
 
-VkResult App::_getHostProperties() {
+VkResult App::_getHostPhysicalDevices() {
+    VkResult res;
+    uint32_t devCount;
+
+    VkInstance instance = getVkInstance()->getInstance();
+    vkEnumeratePhysicalDevices(instance, &devCount, nullptr);
+    _m_vk_physical_devs.resize(devCount);
+    vkEnumeratePhysicalDevices(instance, &devCount, _m_vk_physical_devs.data());
+
+    //PRETTY_PRINT("Host's devices");
+    std::cout << "Number of vulkan-capable devices: " << devCount << std::endl;
+    for (auto& dev: _m_vk_physical_devs) {
+        _m_physical_devs.emplace_back(dev);
+    }
+}
+
+VkResult App::_getHostInstanceProperties() {
     VkResult result;
     uint32_t instanceLayerCount; 
     std::vector<VkLayerProperties> _layers;
