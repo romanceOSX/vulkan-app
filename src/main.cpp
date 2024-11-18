@@ -1,78 +1,26 @@
-#include <cstdint>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
-#include <vector>
-#include <iostream>
+
 #include "device.h"
 #include "instance.h"
-
-class VulkanLayerAndExtension {
-    public:
-        VkResult getInstanceLayerProperties();
-        VkResult getExtensionProperties(
-                LayerProperties& layerProps,
-                VkPhysicalDevice *gpu = NULL
-                );
-
-        VkResult getDeviceExtensionProperties(VkPhysicalDevice *gpu);
-};
-
-VkResult getExtensionProperties(
-        LayerProperties& layerProps,
-        VkPhysicalDevice *gpu = NULL
-        ) {
-    uint32_t extensionCount;
-    VkResult result;
-
-    char* layerName = layerProps.properties.layerName;
-    vkEnumerateDeviceExtensionProperties(*gpu, layerName, &extensionCount, NULL);
-}
-
-
-VkResult VulkanLayerAndExtension::getInstanceLayerProperties() {
-    uint32_t instanceLayerCount; 
-    std::vector<VkLayerProperties> layerProperties;
-    VkResult result;
-
-    vkEnumerateInstanceLayerProperties(&instanceLayerCount, NULL);
-    layerProperties.resize(instanceLayerCount);
-    vkEnumerateInstanceLayerProperties(&instanceLayerCount, layerProperties.data());
-
-    for (auto globalLayerProp: layerProperties) {
-        std::cout << std::endl <<
-            globalLayerProp.layerName << std::endl << 
-            "\t" << globalLayerProp.description << std::endl;
-
-        LayerProperties layerProps;
-        layerProps.properties = globalLayerProp;
-
-        uint32_t propCount;
-        std::vector<VkExtensionProperties> extensionProperties;
-
-        vkEnumerateInstanceExtensionProperties(globalLayerProp.layerName, &propCount, nullptr);
-        extensionProperties.resize(propCount);
-        vkEnumerateInstanceExtensionProperties(globalLayerProp.layerName, &propCount, extensionProperties.data());
-        for (auto extension: extensionProperties) {
-            std::cout << "\t\t" << extension.extensionName << "(v" << extension.specVersion << ")"<< std::endl;
-        }
-    }
-    return result;
-}
+#include "app.h"
 
 int main (int argc, char *argv[]) {
-    //VulkanLayerAndExtension a;
-    //a.getInstanceLayerProperties();
-    Instance i;
+    App* app = App::getInstance();
+    app->printHostInfo();
+    //Instance* vi = app->getVkInstance();
+    //vi->addExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+    //vi->addExtension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    //vi->addExtension(VK_KHR_SURFACE_EXTENSION_NAME);
+    //vi->addLayer("VK_LAYER_LUNARG_api_dump");
+    //vi->init();
 
-    i.getInstanceLayerProperties();
-    i.init();
-    i.print_info();
+    ///* Print host information */
+    //app->getHostInfo();
+    
+    //auto dev = app->getDefaultPhysicalDevice();
 
-    VkInstance instance = i.getInstance();
-
-    Device dev(instance);
-    dev.getDefaultDevice();
-
+    //Device dev(instance);
     return 0;
 }
 
