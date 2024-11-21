@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <memory> 
 #include <stdexcept>
@@ -20,11 +21,17 @@ int main (int argc, char *argv[]) {
     vi->addExtension(VK_KHR_SURFACE_EXTENSION_NAME);
     //vi->addLayer("VK_LAYER_LUNARG_api_dump");
 
-    if (VK_SUCCESS != vi->init()) {
-        throw std::runtime_error("Instance creation Failed");
-    }
+    assert((VK_SUCCESS == vi->init()));
 
     host->printHostInfo();
+
+    //VkPhysicalDevice *dev = Host::getDefaultDevice();
+
+    Device dev{Host::getDefaultDevice()};
+    dev.addExtension("ext1");
+    dev.addExtension("ext2");
+    dev.addExtension("ext3");
+    dev.init();
     
     ///* Print host information */
     //app->getHostInfo();

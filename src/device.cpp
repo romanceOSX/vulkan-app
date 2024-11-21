@@ -50,3 +50,30 @@ VkPhysicalDevice Device::_get_default_device(void) {
     return 0;
 }
 
+AppResult Device::addExtension(const char *ext) {
+    _m_extensions.push_back(ext); 
+}
+
+AppResult Device::init(void) {
+    /* queue Creation */
+    VkDeviceQueueCreateInfo queue_create_info {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .queueFamilyIndex = 0,
+    };
+
+    VkDeviceCreateInfo devCreateInfo {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+    };
+
+    VkDevice device;
+
+    if (VK_SUCCESS != vkCreateDevice(_m_phy_dev, &devCreateInfo, nullptr, &_m_device)) {
+        DBG_ERR("NOT SUCCESS!!");
+    }
+    PRETTY_PRINT("ALL GOOD");
+}
+

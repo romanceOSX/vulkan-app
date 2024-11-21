@@ -5,6 +5,9 @@
 #include "device.h"
 #include "physical_device.h"
 
+/* static data members */
+std::vector<VkPhysicalDevice> Host::_m_vk_physical_devs{};
+
 Host::Host() {
     /* Populate available host layers and extensions */
     _getHostInstanceProperties();
@@ -81,6 +84,11 @@ void Host::printHostInfo() {
                 std::cout << "|---- Queue Flags: " << queue.queueFlags << std::endl
                     << "      Queue Count: " << queue.queueCount << std::endl;
             }
+
+            PRETTY_PRINT("Device Groups");
+            for (auto& devGroup: _m_physical_dev_groups) {
+                std::cout << "Device Count: " << devGroup.physicalDeviceCount << std::endl;
+            }
         }
     }
     else {
@@ -89,10 +97,12 @@ void Host::printHostInfo() {
 }
 
 VkResult Host::_getHostPhysicalDevices() {
+    /* get physical devices */
     VkResult res;
     uint32_t devCount;
 
     VkInstance instance = getVkInstance()->getInstance();
+
     vkEnumeratePhysicalDevices(instance, &devCount, nullptr);
     _m_vk_physical_devs.resize(devCount);
     vkEnumeratePhysicalDevices(instance, &devCount, _m_vk_physical_devs.data());
@@ -102,6 +112,14 @@ VkResult Host::_getHostPhysicalDevices() {
     for (auto& dev: _m_vk_physical_devs) {
         _m_physical_devs.emplace_back(dev);
     }
+
+    /* get physical device groups */
+    uint32_t devGroupsCount;
+
+    vkEnumeratePhysicalDeviceGroups(instance, &devGroupsCount, _m_physical_dev_groups.data());
+    _m_physical_dev_groups.resize(devGroupsCount);
+    vkEnumeratePhysicalDeviceGroups(instance, &devGroupsCount, _m_physical_dev_groups.data());
+    
 }
 
 VkResult Host::_getHostInstanceProperties() {
@@ -144,5 +162,9 @@ VkResult Host::_getHostInstanceProperties() {
 
 uint32_t Host::getVkInstanceVersion(void) {
     return _m_vk_api_version;
+}
+
+VkPhysicalDevice Host::getDefaultDevice(void) {
+    return  _m_vk_physical_devs.front();
 }
 
