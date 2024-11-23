@@ -44,3 +44,7 @@ VkPhysicalDeviceProperties& PhysicalDevice::getDeviceProperties(void) {
     return _m_physical_dev_props;  
 }
 
+VkPhysicalDevice PhysicalDevice::getVkPhysicalDevice(void) {
+    return _m_physical_dev;
+}
+

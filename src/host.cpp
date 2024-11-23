@@ -7,6 +7,7 @@
 
 /* static data members */
 std::vector<VkPhysicalDevice> Host::_m_vk_physical_devs{};
+std::vector<PhysicalDevice> Host::_m_physical_devs{};
 
 Host::Host() {
     /* Populate available host layers and extensions */
@@ -108,7 +109,6 @@ VkResult Host::_getHostPhysicalDevices() {
     vkEnumeratePhysicalDevices(instance, &devCount, _m_vk_physical_devs.data());
 
     //PRETTY_PRINT("Host's devices");
-    std::cout << "Number of vulkan-capable devices: " << devCount << std::endl;
     for (auto& dev: _m_vk_physical_devs) {
         _m_physical_devs.emplace_back(dev);
     }
@@ -116,10 +116,9 @@ VkResult Host::_getHostPhysicalDevices() {
     /* get physical device groups */
     uint32_t devGroupsCount;
 
-    vkEnumeratePhysicalDeviceGroups(instance, &devGroupsCount, _m_physical_dev_groups.data());
+    vkEnumeratePhysicalDeviceGroups(instance, &devGroupsCount, nullptr);
     _m_physical_dev_groups.resize(devGroupsCount);
     vkEnumeratePhysicalDeviceGroups(instance, &devGroupsCount, _m_physical_dev_groups.data());
-    
 }
 
 VkResult Host::_getHostInstanceProperties() {
@@ -164,7 +163,7 @@ uint32_t Host::getVkInstanceVersion(void) {
     return _m_vk_api_version;
 }
 
-VkPhysicalDevice Host::getDefaultDevice(void) {
-    return  _m_vk_physical_devs.front();
+PhysicalDevice& Host::getDefaultDevice(void) {
+    return  _m_physical_devs.front();
 }
 

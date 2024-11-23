@@ -30,7 +30,7 @@ class Host {
         Instance* getVkInstance();
         void printHostInfo();
         uint32_t getVkInstanceVersion(void);
-        static VkPhysicalDevice getDefaultDevice(void);
+        static PhysicalDevice& getDefaultDevice(void);
         ~Host();
 
         std::vector<VkPhysicalDevice> m_phy_devs;
@@ -45,7 +45,7 @@ class Host {
         std::vector<LayerProperties>                        _m_layers;
         std::vector<VkExtensionProperties>                  _m_instance_extensions;
         static std::vector<VkPhysicalDevice>                _m_vk_physical_devs;
-        std::vector<PhysicalDevice>                         _m_physical_devs;
+        static std::vector<PhysicalDevice>                  _m_physical_devs;
         std::vector<VkPhysicalDeviceGroupProperties>        _m_physical_dev_groups;
         uint32_t                                            _m_vk_api_version;
         bool                                                _m_isVkInstanceInit = false;

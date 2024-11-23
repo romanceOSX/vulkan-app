@@ -22,6 +22,7 @@ class PhysicalDevice {
         PhysicalDevice(VkPhysicalDevice dev);
         PhysicalDevice() = delete;
         VkPhysicalDeviceProperties& getDeviceProperties(void);
+        VkPhysicalDevice getVkPhysicalDevice(void);
         uint32_t getQueueCount(void);
         std::vector<VkQueueFamilyProperties>& getDeviceQueueProperties(void);
         std::vector<VkExtensionProperties>& getDeviceExtensions(void);

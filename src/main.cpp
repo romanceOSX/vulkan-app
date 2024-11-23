@@ -7,6 +7,7 @@
 #include <vulkan/vulkan_core.h>
 
 #include "device.h"
+#include "physical_device.h"
 #include "instance.h"
 #include "host.h"
 
@@ -24,6 +25,7 @@ int main (int argc, char *argv[]) {
     assert((VK_SUCCESS == vi->init()));
 
     host->printHostInfo();
+    //host->printPhysicalDevInfo();
 
     //VkPhysicalDevice *dev = Host::getDefaultDevice();
 

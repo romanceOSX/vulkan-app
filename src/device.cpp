@@ -4,6 +4,7 @@
 
 #include "host.h"
 #include "device.h"
+#include "physical_device.h"
 
 void Device::getDeviceQueueProperties(VkPhysicalDevice& dev) {
     uint32_t propCount;
@@ -71,7 +72,7 @@ AppResult Device::init(void) {
 
     VkDevice device;
 
-    if (VK_SUCCESS != vkCreateDevice(_m_phy_dev, &devCreateInfo, nullptr, &_m_device)) {
+    if (VK_SUCCESS != vkCreateDevice(_m_app_physical_dev.getVkPhysicalDevice(), &devCreateInfo, nullptr, &_m_device)) {
         DBG_ERR("NOT SUCCESS!!");
     }
     PRETTY_PRINT("ALL GOOD");
