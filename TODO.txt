@@ -1,0 +1,2 @@
+[ ] Fix the cleanup(singletons), use smart pointers for everything
+
