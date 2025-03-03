@@ -32,7 +32,6 @@ Instance* Host::getVkInstance() {
         _m_vk_instance = new Instance();
     }   
     return _m_vk_instance;
-
 }
 
 void Host::printHostInfo() {

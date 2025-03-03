@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 
 #include "vulkan/vulkan_core.h"
 
@@ -59,22 +60,30 @@ AppResult Device::init(void) {
     /* queue Creation */
     VkDeviceQueueCreateInfo queue_create_info {
         .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-            .pNext = nullptr,
-            .flags = 0,
-            .queueFamilyIndex = 0,
+        .pNext = nullptr,
+        .flags = 0,
+        .queueFamilyIndex = 0,
+        .queueCount = 1,
     };
 
     VkDeviceCreateInfo devCreateInfo {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-            .pNext = nullptr,
-            .flags = 0,
+        .pNext = nullptr,
+        .flags = 0,
+        .pQueueCreateInfos = &queue_create_info,
     };
 
-    VkDevice device;
+    devCreateInfo.ppEnabledExtensionNames = _m_extensions.data();
+    devCreateInfo.enabledExtensionCount = _m_extensions.size();
 
     if (VK_SUCCESS != vkCreateDevice(_m_app_physical_dev.getVkPhysicalDevice(), &devCreateInfo, nullptr, &_m_device)) {
         DBG_ERR("NOT SUCCESS!!");
     }
     PRETTY_PRINT("ALL GOOD");
+}
+
+void Device::wait() {
+    VkResult res = vkDeviceWaitIdle(_m_device);
+    assert(res == VK_SUCCESS);
 }
 

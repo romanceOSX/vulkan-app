@@ -22,6 +22,7 @@ enum class AppResult;
 class Device {
     public:
         Device() = delete;
+        void wait(void);
         Device(PhysicalDevice& dev): _m_app_physical_dev{dev} { }
         AppResult addExtension(const char*);
         AppResult init(void);
@@ -33,7 +34,6 @@ class Device {
 
         PhysicalDevice&                         _m_app_physical_dev;
         VkDevice                                _m_device;
-        VkPhysicalDevice                        _m_phy_dev;
         VkPhysicalDeviceProperties              _m_gpu_props;
         VkPhysicalDeviceMemoryProperties        _m_gpu_mem_props;
         std::vector<const char*>                _m_extensions;
