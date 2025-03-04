@@ -12,9 +12,17 @@ if (DEFINED ENV{APP_NAME})
 else()
     set(APP_OUT_NAME vulkan_app)
 endif()
+
+# Where did I get this?
+# https://www.glfw.org
 set(GLFW_PATH $ENV{HOME}/git/glfw)
 set(APP_SRC_DIR src)
 
+# GLM lib
+# https://github.com/g-truc/glm
+find_package(glm CONFIG REQUIRED)
+
+# Project setup
 project(${APP_OUT_NAME})
 
 set(APP_SOURCES
@@ -37,4 +45,6 @@ target_include_directories(vulkan_lib INTERFACE /usr/local/include)
 
 target_link_libraries(${APP_OUT_NAME} vulkan_lib) 
 target_link_libraries(${APP_OUT_NAME} glfw)
+# glm header-only library
+target_link_libraries(${APP_OUT_NAME} glm::glm-header-only)
 

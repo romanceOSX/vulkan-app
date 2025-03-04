@@ -169,3 +169,7 @@ CONCEPTS
     Drawing vs Rendering
         Drawing actually asks the GPU to draw something
     
+Resource management
+    RAII is the adviced approach for bigger vulkan programs
+
+
