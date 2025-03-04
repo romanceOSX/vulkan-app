@@ -3,6 +3,7 @@
 #include <memory> 
 #include <stdexcept>
 #include <expected>
+#include <vulkan/vulkan_core.h>
 
 #include "app.h"
 #include "host.h"
@@ -43,9 +44,7 @@ void VulkanApp::run() {
     //VkPhysicalDevice *dev = Host::getDefaultDevice();
 
     Device dev{Host::getDefaultDevice()};
-    //dev.addExtension("ext1");
-    //dev.addExtension("ext2");
-    //dev.addExtension("ext3");
+    //dev.getQueue()
     dev.init();
     dev.wait();
     CHECK();
@@ -76,7 +75,37 @@ void VulkanApp::_initWindow() {
 }
 
 void VulkanApp::_initVulkan() {
+    Host* host = Host::getInstance();
+    Instance* vi = host->getVkInstance();
 
+    /* Extensions needed for MacOS */
+    vi->addExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+    vi->addExtension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    /* WSI Extension */
+    vi->addExtension(VK_KHR_SURFACE_EXTENSION_NAME);
+
+    /* Initialize vulkan instance */
+    assert((VK_SUCCESS == vi->init()));
+
+    host->printHostInfo(); 
+
+    auto dev = Device(Host::getDefaultDevice());
+    auto queue = dev.getDeviceQueue();
+
+    /* Command Buffer allocation */
+    VkCommandPool commandPool;
+    VkCommandPoolCreateInfo command_pool_create = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
+        .queueFamilyIndex = dev.getQueueFamilyIndex(),
+    };
+
+    if (VK_SUCCESS != vkCreateCommandPool(
+                dev.getVkDevice(), &command_pool_create,
+                nullptr, &commandPool)) {
+        DBG_ERR("Failed to create Command Pool");
+    }
 }
 
 void VulkanApp::_mainLoop() {

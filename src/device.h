@@ -22,11 +22,14 @@ enum class AppResult;
 class Device {
     public:
         Device() = delete;
-        void wait(void);
         Device(PhysicalDevice& dev): _m_app_physical_dev{dev} { }
+        void wait(void);
         AppResult addExtension(const char*);
         AppResult init(void);
         void getDeviceQueueProperties(VkPhysicalDevice& dev);
+        VkQueue getDeviceQueue();
+        uint32_t getQueueFamilyIndex();
+        VkDevice getVkDevice();
 
     private:
         uint32_t _get_default_index(void);
@@ -34,11 +37,13 @@ class Device {
 
         PhysicalDevice&                         _m_app_physical_dev;
         VkDevice                                _m_device;
+        VkQueue                                 _m_queue;
         VkPhysicalDeviceProperties              _m_gpu_props;
         VkPhysicalDeviceMemoryProperties        _m_gpu_mem_props;
         std::vector<const char*>                _m_extensions;
         std::vector<VkQueueFamilyProperties>    _m_queue_family_props;
         uint32_t                                _m_graphics_queue_family_index;
         uint32_t                                _m_queue_family_count;
+        uint32_t                                _m_queue_family_index;
 };
 

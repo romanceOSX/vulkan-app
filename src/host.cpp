@@ -78,7 +78,7 @@ void Host::printHostInfo() {
             }
 
             PRETTY_PRINT_CUSTOM("Queue Information", "💧");
-            std::cout << "Available Queues: " << dev.getQueueCount();
+            std::cout << "Available Queues: " << dev.getQueueCount() << std::endl;
 
             for (auto& queue: dev.getDeviceQueueProperties()) {
                 std::cout << "|---- Queue Flags: " << queue.queueFlags << std::endl
