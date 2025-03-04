@@ -173,3 +173,40 @@ Resource management
     RAII is the adviced approach for bigger vulkan programs
 
 
+Queues & Devices review 2025-03-04
+    Each Device can contain a number of Queue Families, say
+        Dev{Qf1, Qf2, Qf3, ... Qfn}
+    Queue families are characterized by their capabilities, these
+    are represented by a flag parameter, also each queue family has
+    a number of queues that support such family say
+        There are 3 queues in Qf1 which have the flag of 0xff
+
+    The way vulkan retrieves this information is by querying the flags,
+    and queue family by the index of an array vulkan retrieves to you
+        vkGetPhysicalDeviceQueueFamilyProperties
+
+    Once we identify the wanted queue type, we store the index of the
+    Queue Family and then create the logical queue while creating the
+    logical device
+
+    **How are queues shared accross vulkan instances?
+    **Can I requests more queues than the availables within a family?
+
+Queue submission
+    vkQueueSubmit submits 'work' to the queue, they define a set of queue
+    operations to be executed by the underlying physical device
+
+Command Buffers
+    There are two types
+        Primary command buffers
+            They execute secondary command buffers
+            They are direclty submitted to the queue
+            Command buffer state
+                Initial
+                Recording
+                Executable
+                Pending
+
+Command Pools
+
+

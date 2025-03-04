@@ -4,6 +4,8 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
+#include <iostream>
+
 /* 
  * Utility Macros
  */
@@ -32,6 +34,10 @@ class Host {
         Instance* getVkInstance();
         void printHostInfo();
         uint32_t getVkInstanceVersion(void);
+        /*
+         * Vulkan Instance must be initialized already
+         * TODO: add a check for the vk instance validity 
+         */
         static PhysicalDevice& getDefaultDevice(void);
         ~Host();
 
