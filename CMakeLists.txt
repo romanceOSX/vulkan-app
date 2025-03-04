@@ -32,6 +32,7 @@ set(APP_SOURCES
     ${APP_SRC_DIR}/instance.cpp
     ${APP_SRC_DIR}/device.cpp
     ${APP_SRC_DIR}/physical_device.cpp
+    ${APP_SRC_DIR}/command_pool.cpp
 )
 
 add_subdirectory(${GLFW_PATH} glfw)
