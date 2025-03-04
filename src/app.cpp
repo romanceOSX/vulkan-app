@@ -4,9 +4,6 @@
 #include <stdexcept>
 #include <expected>
 
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan_core.h>
-
 #include "app.h"
 #include "host.h"
 #include "instance.h"
@@ -60,5 +57,43 @@ void VulkanApp::run() {
 
     //Device dev(instance);
     delete host;
+
+    /* Ideally run should be like this: */
+    // _initVulkan();
+    // _mainLoop();
+    // _cleanup();
+}
+
+void VulkanApp::_initWindow() {
+    glfwInit();
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+#ifndef APP_RESIZABLE_WINDOW
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+#endif /* !APP_RESIZABLE_WINDOW */
+
+    _m_window = glfwCreateWindow(APP_WINDOW_WIDTH, APP_WINDOW_HEIGHT, APP_WINDOW_NAME, nullptr, nullptr);
+}
+
+void VulkanApp::_initVulkan() {
+
+}
+
+void VulkanApp::_mainLoop() {
+    while (!glfwWindowShouldClose(_m_window)) {
+        glfwPollEvents();
+    }
+}
+
+void VulkanApp::_cleanup() {
+    glfwDestroyWindow(_m_window);
+    glfwTerminate();
+}
+
+void VulkanApp::run_stub() {
+    _initWindow();
+    _initVulkan();
+    _mainLoop();
+    _cleanup();
 }
 
