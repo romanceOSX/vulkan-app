@@ -22,6 +22,7 @@ enum class AppResult;
 class Device {
     public:
         Device() = delete;
+        Device(Device& other) = delete;
         Device(PhysicalDevice& dev): _m_app_physical_dev{dev} { }
         void wait(void);
         AppResult addExtension(const char*);

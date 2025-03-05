@@ -10,6 +10,7 @@
 #include "instance.h"
 #include "device.h"
 #include "physical_device.h"
+#include "command_pool.h"
 
 VulkanApp* VulkanApp::getInstance() {
     if (nullptr == _m_app_instance) {
@@ -74,6 +75,10 @@ void VulkanApp::_initWindow() {
     _m_window = glfwCreateWindow(APP_WINDOW_WIDTH, APP_WINDOW_HEIGHT, APP_WINDOW_NAME, nullptr, nullptr);
 }
 
+/* TODO
+ *  - FIX: Objects here should be class members since they must live outside of their
+ *         method scope
+ */
 void VulkanApp::_initVulkan() {
     Host* host = Host::getInstance();
     Instance* vi = host->getVkInstance();
@@ -93,19 +98,8 @@ void VulkanApp::_initVulkan() {
     auto queue = dev.getDeviceQueue();
 
     /* Command Buffer allocation */
-    VkCommandPool commandPool;
-    VkCommandPoolCreateInfo command_pool_create = {
-        .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-        .pNext = nullptr,
-        .flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
-        .queueFamilyIndex = dev.getQueueFamilyIndex(),
-    };
-
-    if (VK_SUCCESS != vkCreateCommandPool(
-                dev.getVkDevice(), &command_pool_create,
-                nullptr, &commandPool)) {
-        DBG_ERR("Failed to create Command Pool");
-    }
+    CommandPool cmdPool{dev};
+    PRETTY_PRINT("GOOOOOOOOOOOOOOOD");
 }
 
 void VulkanApp::_mainLoop() {
