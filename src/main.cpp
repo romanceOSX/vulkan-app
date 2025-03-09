@@ -26,8 +26,17 @@ int run_app() {
     return 0;
 }
 
+void _physical_device_test() {
+    auto instance = Instance();
+    instance.add_extension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+    instance.add_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    instance.add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
+    instance.init();
+
+    auto vk_phy_devs = instance.get_vk_devices();
 int main(int argc, char *argv[]) {
     //run_app();
+    _physical_device_test();
 
     return 0;
 }

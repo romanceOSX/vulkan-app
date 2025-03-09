@@ -57,6 +57,9 @@ VkResult Instance::init() {
             return result;
     }
 
+    /* Query physical devices available */
+    _query_physical_devices();
+
     return result;
 }
 
@@ -67,5 +70,26 @@ VkInstance Instance::getInstance() {
 
 bool Instance::isInit(void) {
     return _m_is_init;
+}
+
+void Instance::_query_physical_devices() {
+    uint32_t devCount;
+
+    vkEnumeratePhysicalDevices(m_vk_instance, &devCount, nullptr);
+    m_vk_physical_devices.resize(devCount);
+    vkEnumeratePhysicalDevices(m_vk_instance, &devCount, m_vk_physical_devices.data());
+
+    /* TODO: Query physical device groups as well */
+    /* get physical device groups */
+    //uint32_t devGroupsCount;
+
+    //vkEnumeratePhysicalDeviceGroups(m_vk_instance, &devGroupsCount, nullptr);
+    //_m_physical_dev_groups.resize(devGroupsCount);
+    //vkEnumeratePhysicalDeviceGroups(m_vk_instance, &devGroupsCount, _m_physical_dev_groups.data());
+}
+
+
+std::vector<VkPhysicalDevice>& Instance::get_vk_devices() {
+    return m_vk_physical_devices;
 }
 
