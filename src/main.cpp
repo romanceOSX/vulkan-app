@@ -34,6 +34,12 @@ void _physical_device_test() {
     instance.init();
 
     auto vk_phy_devs = instance.get_vk_devices();
+
+    /* Create glfw window */
+    auto window = Window(instance);
+
+    /* Run window? */
+    //window.wait_to_close_window();
 int main(int argc, char *argv[]) {
     //run_app();
     _physical_device_test();
