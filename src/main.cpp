@@ -1,14 +1,20 @@
 /* Main Vulkan application */
 
 #include <iostream>
+#include <vector>
+#include <iterator>
 
 #include "app.h"
+#include "instance.h"
+#include "physical_device.h"
+#include "device.h"
+#include "window.hpp"
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
-int main(int argc, char *argv[]) {
+int run_app() {
     VulkanApp* app = VulkanApp::getInstance();
 
     try {
@@ -17,8 +23,11 @@ int main(int argc, char *argv[]) {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
+    return 0;
+}
 
-    //_test();
+int main(int argc, char *argv[]) {
+    //run_app();
 
     return 0;
 }
