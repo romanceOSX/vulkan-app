@@ -48,3 +48,12 @@ VkPhysicalDevice PhysicalDevice::getVkPhysicalDevice(void) {
     return m_vk_physical_device;
 }
 
+void PhysicalDevice::print_info() {
+    std::cout << "Available queue families: " << std::size(m_vk_queue_families) << std::endl;
+    /* print device name and info */
+    for (auto& queue: m_vk_queue_families) {
+        std::cout << "--Number of queues: " << queue.queueCount << std::endl;
+        std::cout << "  Queue flags: " << queue.queueFlags << std::endl;
+    }
+}
+

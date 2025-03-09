@@ -27,6 +27,7 @@ class PhysicalDevice {
         uint32_t getQueueCount(void);
         std::vector<VkQueueFamilyProperties>& getDeviceQueueProperties(void);
         std::vector<VkExtensionProperties>& getDeviceExtensions(void);
+        void print_info();
 
     private:
         void _queryDeviceProperties();

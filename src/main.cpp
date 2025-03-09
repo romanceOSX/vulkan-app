@@ -43,6 +43,15 @@ void _physical_device_test() {
 
     /* Physical devices not VkPhysicalDevice */
     std::vector<PhysicalDevice> phy_devs;
+
+    for (auto& dev: vk_phy_devs) {
+        phy_devs.emplace_back(dev);
+    }
+    
+    for (auto& dev: phy_devs) {
+        std::cout << "Printing physical device info:" << std::endl;
+        dev.print_info();
+    }
 }
 
 int main(int argc, char *argv[]) {
