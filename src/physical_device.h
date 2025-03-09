@@ -6,6 +6,13 @@
 #include "vulkan/vulkan.h"
 #include <vulkan/vulkan_core.h>
 
+class Window;
+class QueueFamily;
+
+/*
+ * Note that to query physical properties of devices you don't actually need
+ * a VkInstance
+ */
 
 // TODO: make constructor private and only accessible to internal classes
 // TODO: query layer-specific extensions?
@@ -20,8 +27,9 @@ class PhysicalDevice {
     friend class Instance;
 
     public:
-        PhysicalDevice(VkPhysicalDevice dev);
         PhysicalDevice() = delete;
+        PhysicalDevice(VkPhysicalDevice dev);
+        std::optional<uint32_t> get_suitable_queue_index(Window& window);
         VkPhysicalDeviceProperties& getDeviceProperties(void);
         VkPhysicalDevice getVkPhysicalDevice(void);
         uint32_t getQueueCount(void);
@@ -40,4 +48,29 @@ class PhysicalDevice {
         std::vector<VkQueueFamilyProperties>        m_vk_queue_families;
         uint32_t                                    m_queue_family_count;
 };
+
+/*
+ * Class that represents a single queue family, mainly used for determining
+ * correct requirements for graphic and computing capabilities
+ */
+class QueueFamily {
+    public:
+        QueueFamily(VkQueueFamilyProperties& queue_family,
+                uint32_t family_index,
+                PhysicalDevice& phy_dev,
+                Window& window);
+        bool is_graphics();
+        bool is_presentation();
+        uint32_t get_index();
+
+    private:
+        VkQueueFamilyProperties&        m_vk_queue_family;
+        uint32_t                        m_queue_family_index;
+        Window&                         m_window;
+        PhysicalDevice&                 m_physical_device;
+        bool                            m_is_graphics       = false;
+        bool                            m_is_presentation   = false;
+        std::optional<uint32_t>         m_suitable_queue_family_index;
+};
+
 

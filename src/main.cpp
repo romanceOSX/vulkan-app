@@ -51,6 +51,13 @@ void _physical_device_test() {
     for (auto& dev: phy_devs) {
         std::cout << "Printing physical device info:" << std::endl;
         dev.print_info();
+        std::cout << "-- Is device suitable?: "  << std::endl;
+        if (auto queue_family_index = dev.get_suitable_queue_index(window)) {
+            std::cout << "true! at queue index: " 
+                << std::boolalpha
+                << queue_family_index.value() 
+                << std::endl;
+        }
     }
 }
 
