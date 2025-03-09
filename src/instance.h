@@ -25,11 +25,13 @@ class Instance {
         VkInstance get_vk_instance(void);
         std::vector<VkPhysicalDevice>& get_vk_devices(void);
         Instance(Instance& other) = delete;
-        AppResult addExtension(const char* ext);
+        AppResult add_extension(const char* ext);
         AppResult addLayer(const char* layer);
         bool isInit(void);
 
     private:
+        void _query_physical_devices();
+
         uint32_t                                _m_api_version;
         std::vector<LayerProperties>            _m_available_layers;
         std::vector<VkExtensionProperties>      _m_available_instance_extensions;

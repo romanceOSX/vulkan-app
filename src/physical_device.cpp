@@ -4,7 +4,7 @@
 
 #include "physical_device.h"
 
-PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): _m_physical_dev(dev) {
+PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): m_vk_physical_device(dev) {
     /* Get device properties */
     _queryDeviceProperties();
     _queryQueueProperties();
@@ -12,24 +12,24 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): _m_physical_dev(dev) {
 }
 
 void PhysicalDevice::_queryDeviceProperties() {
-    vkGetPhysicalDeviceProperties(_m_physical_dev, &_m_physical_dev_props);
+    vkGetPhysicalDeviceProperties(m_vk_physical_device, &m_vk_physical_device_props);
 }
 
 void PhysicalDevice::_queryQueueProperties() {
-    vkGetPhysicalDeviceQueueFamilyProperties(_m_physical_dev, &_m_queueCount, nullptr);
-    _m_available_queues.resize(_m_queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(_m_physical_dev, &_m_queueCount, _m_available_queues.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_family_count, nullptr);
+    m_vk_queue_families.resize(m_queue_family_count);
+    vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_family_count, m_vk_queue_families.data());
 }
 
 void PhysicalDevice::_queryDeviceExtensions() {
     uint32_t prop_count;
-    vkEnumerateDeviceExtensionProperties(_m_physical_dev, nullptr, &prop_count, nullptr);
+    vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, nullptr);
     _m_available_extensions.resize(prop_count);
-    vkEnumerateDeviceExtensionProperties(_m_physical_dev, nullptr, &prop_count, _m_available_extensions.data());
+    vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, _m_available_extensions.data());
 }
 
 std::vector<VkQueueFamilyProperties>& PhysicalDevice::getDeviceQueueProperties() {
-    return _m_available_queues;
+    return m_vk_queue_families;
 }
 
 std::vector<VkExtensionProperties>& PhysicalDevice::getDeviceExtensions() {
@@ -37,14 +37,14 @@ std::vector<VkExtensionProperties>& PhysicalDevice::getDeviceExtensions() {
 }
 
 uint32_t PhysicalDevice::getQueueCount(void) {
-    return _m_queueCount;
+    return m_queue_family_count;
 }
 
 VkPhysicalDeviceProperties& PhysicalDevice::getDeviceProperties(void) {
-    return _m_physical_dev_props;  
+    return m_vk_physical_device_props;  
 }
 
 VkPhysicalDevice PhysicalDevice::getVkPhysicalDevice(void) {
-    return _m_physical_dev;
+    return m_vk_physical_device;
 }
 

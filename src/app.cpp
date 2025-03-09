@@ -29,10 +29,10 @@ void VulkanApp::run() {
     Instance* vi = host->getVkInstance();
 
     /* Extensions needed for MacOS */
-    vi->addExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
-    vi->addExtension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    vi->add_extension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+    vi->add_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
     /* Extra Extensions */
-    vi->addExtension(VK_KHR_SURFACE_EXTENSION_NAME);
+    vi->add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
     /* Debug facility */
     //vi->addExtension(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
     //vi->addLayer("VK_LAYER_LUNARG_api_dump");
@@ -84,10 +84,10 @@ void VulkanApp::_initVulkan() {
     Instance* vi = host->getVkInstance();
 
     /* Extensions needed for MacOS */
-    vi->addExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
-    vi->addExtension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    vi->add_extension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+    vi->add_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
     /* WSI Extension */
-    vi->addExtension(VK_KHR_SURFACE_EXTENSION_NAME);
+    vi->add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
 
     /* Initialize vulkan instance */
     assert((VK_SUCCESS == vi->init()));

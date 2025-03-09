@@ -40,6 +40,11 @@ void _physical_device_test() {
 
     /* Run window? */
     //window.wait_to_close_window();
+
+    /* Physical devices not VkPhysicalDevice */
+    std::vector<PhysicalDevice> phy_devs;
+}
+
 int main(int argc, char *argv[]) {
     //run_app();
     _physical_device_test();

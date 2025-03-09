@@ -10,7 +10,7 @@
 
 Instance::Instance() { }
 
-AppResult Instance::addExtension(const char* ext) {
+AppResult Instance::add_extension(const char* ext) {
     AppResult res = AppResult::APP_SUCCESS;
 
     _m_extensions.push_back(ext);
@@ -42,12 +42,11 @@ VkResult Instance::init() {
     instance_info.enabledLayerCount = static_cast<uint32_t>(_m_layers.size());
     instance_info.ppEnabledLayerNames = _m_layers.data();
 
-    VkResult result = vkCreateInstance(&instance_info, nullptr, &_m_instance);
+    VkResult result = vkCreateInstance(&instance_info, nullptr, &m_vk_instance);
 
     if (result == VK_SUCCESS) {
         _m_is_init = true;
     }
-
     if (result == VK_ERROR_INCOMPATIBLE_DRIVER) {
         DBG_ERR("Incompatible Driver!!!");
             return result;
@@ -63,8 +62,8 @@ VkResult Instance::init() {
     return result;
 }
 
-VkInstance Instance::getInstance() {
-    return _m_instance;
+VkInstance Instance::get_vk_instance() {
+    return m_vk_instance;
 }
 
 

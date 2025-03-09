@@ -82,7 +82,7 @@ AppResult Device::init(void) {
     devCreateInfo.ppEnabledExtensionNames = _m_extensions.data();
     devCreateInfo.enabledExtensionCount = _m_extensions.size();
 
-    if (VK_SUCCESS != vkCreateDevice(_m_app_physical_dev.getVkPhysicalDevice(), &devCreateInfo, nullptr, &_m_device)) {
+    if (VK_SUCCESS != vkCreateDevice(m_physical_device.getVkPhysicalDevice(), &devCreateInfo, nullptr, &_m_device)) {
         DBG_ERR("NOT SUCCESS!!");
     }
 
@@ -108,3 +108,8 @@ uint32_t Device::getQueueFamilyIndex() {
 VkDevice Device::getVkDevice() {
     return _m_device;
 }
+
+VkPhysicalDevice Device::get_vk_physical_dev() {
+    return m_physical_device.getVkPhysicalDevice();
+}
+

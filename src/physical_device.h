@@ -33,10 +33,10 @@ class PhysicalDevice {
         void _queryDeviceExtensions();
         void _queryQueueProperties();
 
-        VkPhysicalDeviceProperties                  _m_physical_dev_props;
-        VkPhysicalDevice                            _m_physical_dev;
+        VkPhysicalDeviceProperties                  m_vk_physical_device_props;
+        VkPhysicalDevice                            m_vk_physical_device;
         std::vector<VkExtensionProperties>          _m_available_extensions;
-        std::vector<VkQueueFamilyProperties>        _m_available_queues;
-        uint32_t                                    _m_queueCount;
+        std::vector<VkQueueFamilyProperties>        m_vk_queue_families;
+        uint32_t                                    m_queue_family_count;
 };
 

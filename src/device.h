@@ -23,7 +23,7 @@ class Device {
     public:
         Device() = delete;
         Device(Device& other) = delete;
-        Device(PhysicalDevice& dev): _m_app_physical_dev{dev} { }
+        Device(PhysicalDevice& dev): m_physical_device{dev} { }
         void wait(void);
         AppResult addExtension(const char*);
         AppResult init(void);
@@ -31,12 +31,13 @@ class Device {
         VkQueue getDeviceQueue();
         uint32_t getQueueFamilyIndex();
         VkDevice getVkDevice();
+        VkPhysicalDevice get_vk_physical_dev();
 
     private:
         uint32_t _get_default_index(void);
         VkPhysicalDevice _get_default_device(void);
 
-        PhysicalDevice&                         _m_app_physical_dev;
+        PhysicalDevice&                         m_physical_device;
         VkDevice                                _m_device;
         VkQueue                                 _m_queue;
         VkPhysicalDeviceProperties              _m_gpu_props;

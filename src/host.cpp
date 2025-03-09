@@ -96,12 +96,13 @@ void Host::printHostInfo() {
     }
 }
 
+/* TODO: Deprecate this function */
 VkResult Host::_getHostPhysicalDevices() {
     /* get physical devices */
     VkResult res;
     uint32_t devCount;
 
-    VkInstance instance = getVkInstance()->getInstance();
+    VkInstance instance = getVkInstance()->get_vk_instance();
 
     vkEnumeratePhysicalDevices(instance, &devCount, nullptr);
     _m_vk_physical_devs.resize(devCount);
