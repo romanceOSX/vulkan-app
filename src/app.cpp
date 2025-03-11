@@ -44,10 +44,10 @@ void VulkanApp::run() {
 
     //VkPhysicalDevice *dev = Host::getDefaultDevice();
 
-    Device dev{Host::getDefaultDevice()};
+    //Device dev{Host::getDefaultDevice()};
     //dev.getQueue()
-    dev.init();
-    dev.wait();
+    //dev.init();
+    //dev.wait();
     CHECK();
     
     ///* Print host information */
@@ -94,11 +94,11 @@ void VulkanApp::_initVulkan() {
 
     host->printHostInfo(); 
 
-    auto dev = Device(Host::getDefaultDevice());
-    auto queue = dev.getDeviceQueue();
+    //auto dev = Device(Host::getDefaultDevice());
+    //auto queue = dev.getDeviceQueue();
 
-    /* Command Buffer allocation */
-    CommandPool cmdPool{dev};
+    ///* Command Buffer allocation */
+    //CommandPool cmdPool{dev};
     PRETTY_PRINT("GOOOOOOOOOOOOOOOD");
 }
 
