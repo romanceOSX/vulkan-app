@@ -1,7 +1,8 @@
-#include "command_pool.h"
 
-#include "host.h"
-#include "device.h"
+#include "command_pool.hpp"
+#include "host.hpp"
+#include "device.hpp"
+
 #include <vulkan/vulkan_core.h>
 
 /*

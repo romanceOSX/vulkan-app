@@ -3,9 +3,9 @@
 
 #include "vulkan/vulkan_core.h"
 
-#include "host.h"
-#include "device.h"
-#include "physical_device.h"
+#include "host.hpp"
+#include "device.hpp"
+#include "physical_device.hpp"
 
 void Device::getDeviceQueueProperties(VkPhysicalDevice& dev) {
     uint32_t propCount;

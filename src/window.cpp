@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <vulkan/vulkan_core.h>
 
-#include "app_settings.h"
+#include "app_settings.hpp"
 #include "window.hpp"
 
 Window::Window(Instance& i): m_instance{i} {

@@ -4,10 +4,10 @@
 #include <vector>
 #include <iterator>
 
-#include "app.h"
-#include "instance.h"
-#include "physical_device.h"
-#include "device.h"
+#include "app.hpp"
+#include "instance.hpp"
+#include "physical_device.hpp"
+#include "device.hpp"
 #include "window.hpp"
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE

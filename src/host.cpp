@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "host.h"
-#include "instance.h"
-#include "device.h"
-#include "physical_device.h"
+#include "host.hpp"
+#include "instance.hpp"
+#include "device.hpp"
+#include "physical_device.hpp"
 
 /* static data members */
 std::vector<VkPhysicalDevice> Host::_m_vk_physical_devs{};

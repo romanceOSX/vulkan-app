@@ -5,9 +5,9 @@
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
 
-#include "instance.h"
-#include "host.h"
-#include "device.h"
+#include "instance.hpp"
+#include "host.hpp"
+#include "device.hpp"
 
 class Window {
     public:

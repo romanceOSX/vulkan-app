@@ -5,12 +5,12 @@
 #include <expected>
 #include <vulkan/vulkan_core.h>
 
-#include "app.h"
-#include "host.h"
-#include "instance.h"
-#include "device.h"
-#include "physical_device.h"
-#include "command_pool.h"
+#include "app.hpp"
+#include "host.hpp"
+#include "instance.hpp"
+#include "device.hpp"
+#include "physical_device.hpp"
+#include "command_pool.hpp"
 
 VulkanApp* VulkanApp::getInstance() {
     if (nullptr == _m_app_instance) {
