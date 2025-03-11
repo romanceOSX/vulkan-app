@@ -5,6 +5,7 @@
 #include <iterator>
 
 #include "app.hpp"
+#include "host.hpp"
 #include "instance.hpp"
 #include "physical_device.hpp"
 #include "device.hpp"
@@ -48,6 +49,7 @@ void _physical_device_test() {
         phy_devs.emplace_back(dev);
     }
     
+    /* find suitable device */
     for (auto& dev: phy_devs) {
         std::cout << "Printing physical device info:" << std::endl;
         dev.print_info();
@@ -57,6 +59,9 @@ void _physical_device_test() {
                 << std::boolalpha
                 << queue_family_index.value() 
                 << std::endl;
+            PRETTY_PRINT("Creating logical device");
+            Device device{dev, window};
+            device.init(1);
         }
     }
 }

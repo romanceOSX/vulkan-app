@@ -9,10 +9,18 @@
  * Forward declarations
  */
 class PhysicalDevice;
+class Window;
 enum class AppResult;
 
-// TODO: Implement logical device wrapper, see Instance class for reference
-// TODO: Add validation for existing, valid extensions
+/*
+ * device
+ *  -> physical device
+ *      -> window
+ *  -> window
+ */
+
+/* TODO: Implement logical device wrapper, see Instance class for reference */
+/* TODO: Add validation for existing, valid extensions */
 /*
  * Class responsible for:
  *  - Querying host's availbale device(s) information
@@ -23,29 +31,28 @@ class Device {
     public:
         Device() = delete;
         Device(Device& other) = delete;
-        Device(PhysicalDevice& dev): m_physical_device{dev} { }
+        Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} { }
         void wait(void);
-        AppResult addExtension(const char*);
-        AppResult init(void);
-        void getDeviceQueueProperties(VkPhysicalDevice& dev);
+        void addExtension(const char*);
+        AppResult init(uint32_t count);
         VkQueue getDeviceQueue();
         uint32_t getQueueFamilyIndex();
         VkDevice getVkDevice();
         VkPhysicalDevice get_vk_physical_dev();
 
     private:
-        uint32_t _get_default_index(void);
-        VkPhysicalDevice _get_default_device(void);
+        uint32_t _get_suitable_queue_index(void);
 
         PhysicalDevice&                         m_physical_device;
-        VkDevice                                _m_device;
-        VkQueue                                 _m_queue;
+        Window&                                 m_window;
+        VkDevice                                m_vk_device;
+        VkQueue                                 m_queue;
         VkPhysicalDeviceProperties              _m_gpu_props;
         VkPhysicalDeviceMemoryProperties        _m_gpu_mem_props;
         std::vector<const char*>                _m_extensions;
         std::vector<VkQueueFamilyProperties>    _m_queue_family_props;
         uint32_t                                _m_graphics_queue_family_index;
         uint32_t                                _m_queue_family_count;
-        uint32_t                                _m_queue_family_index;
+        uint32_t                                m_queue_family_index;
 };
 

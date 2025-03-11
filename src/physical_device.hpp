@@ -31,7 +31,7 @@ class PhysicalDevice {
         PhysicalDevice(VkPhysicalDevice dev);
         std::optional<uint32_t> get_suitable_queue_index(Window& window);
         VkPhysicalDeviceProperties& getDeviceProperties(void);
-        VkPhysicalDevice getVkPhysicalDevice(void);
+        VkPhysicalDevice get_vk_physical_device(void);
         uint32_t getQueueCount(void);
         std::vector<VkQueueFamilyProperties>& getDeviceQueueProperties(void);
         std::vector<VkExtensionProperties>& getDeviceExtensions(void);

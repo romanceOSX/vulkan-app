@@ -46,7 +46,7 @@ VkPhysicalDeviceProperties& PhysicalDevice::getDeviceProperties(void) {
     return m_vk_physical_device_props;  
 }
 
-VkPhysicalDevice PhysicalDevice::getVkPhysicalDevice(void) {
+VkPhysicalDevice PhysicalDevice::get_vk_physical_device(void) {
     return m_vk_physical_device;
 }
 
@@ -97,7 +97,7 @@ QueueFamily::QueueFamily(VkQueueFamilyProperties& queue_family, uint32_t family_
     /* check for presentation */
     VkBool32 is_suitable;
     vkGetPhysicalDeviceSurfaceSupportKHR(
-            m_physical_device.getVkPhysicalDevice(),
+            m_physical_device.get_vk_physical_device(),
             m_queue_family_index,
             m_window.get_vk_surface(),
             &is_suitable
