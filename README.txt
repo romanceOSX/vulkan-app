@@ -209,4 +209,10 @@ Command Buffers
 
 Command Pools
 
-
+REDESIGN 2025-03-10
+    VulkanInstance
+        PhysicalDevices
+            QueueFamilies
+    Host
+        -> VulkanInstance
+        -> PhysicalDevices
