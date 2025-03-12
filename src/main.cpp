@@ -4,6 +4,7 @@
 #include <vector>
 #include <iterator>
 
+#include "app_settings.hpp"
 #include "app.hpp"
 #include "host.hpp"
 #include "instance.hpp"
@@ -59,7 +60,7 @@ void _physical_device_test() {
                 << std::boolalpha
                 << queue_family_index.value() 
                 << std::endl;
-            PRETTY_PRINT("Creating logical device");
+            APP_PRETTY_PRINT("Creating logical device");
             Device device{dev, window};
             device.init(1);
         }

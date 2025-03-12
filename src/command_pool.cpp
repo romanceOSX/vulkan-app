@@ -1,4 +1,5 @@
 
+#include "app_settings.hpp"
 #include "command_pool.hpp"
 #include "host.hpp"
 #include "device.hpp"
@@ -20,7 +21,7 @@ CommandPool::CommandPool(Device& dev): _m_dev{dev} {
     if (VK_SUCCESS != vkCreateCommandPool(
                 dev.getVkDevice(), &command_pool_create,
                 nullptr, &commandPool)) {
-        DBG_ERR("Failed to create Command Pool");
+        APP_DBG_ERR("Failed to create Command Pool");
     }
 }
 

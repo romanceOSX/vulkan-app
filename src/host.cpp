@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "app_settings.hpp"
 #include "host.hpp"
 #include "instance.hpp"
 #include "device.hpp"
@@ -16,7 +17,7 @@ Host::Host() {
 
 Host::~Host() {
     /* Populate available host layers and extensions */
-    PRETTY_PRINT("Destroying APP");
+    APP_PRETTY_PRINT("Destroying APP");
     delete _m_vk_instance;
 }
 
@@ -35,10 +36,10 @@ Instance* Host::getVkInstance() {
 }
 
 void Host::printHostInfo() {
-    PRETTY_PRINT("Vulkan API Version");
+    APP_PRETTY_PRINT("Vulkan API Version");
     std::cout << "v" << getVkInstanceVersion() << std::endl;
 
-    PRETTY_PRINT("Instance Layers and extensions");
+    APP_PRETTY_PRINT("Instance Layers and extensions");
     for (auto layer: _m_layers) {
         std::cout << "+ " << layer.properties.layerName << std::endl;
         for (auto extension: layer.extensions) {
@@ -47,13 +48,13 @@ void Host::printHostInfo() {
         }
     }
 
-    PRETTY_PRINT("Instance Extensions");
+    APP_PRETTY_PRINT("Instance Extensions");
     for (auto extension: _m_instance_extensions) {
         std::cout << "+ " << extension.extensionName << " (v" <<
             extension.specVersion << ")" << std::endl;
     }
 
-    PRETTY_PRINT("Available Physical Devices");
+    APP_PRETTY_PRINT("Available Physical Devices");
     /* Physical Device information is only available after Instance init */
     if (getVkInstance()->isInit()) {
         if (!_m_isVkInstanceInit) {
@@ -65,19 +66,19 @@ void Host::printHostInfo() {
             _m_physical_devs.size() << std::endl;
 
         for (auto& dev: _m_physical_devs) {
-            PRETTY_PRINT_CUSTOM("Physical Device", "🥫");
+            APP_PRETTY_PRINT_CUSTOM("Physical Device", "🥫");
             auto devProps = dev.getDeviceProperties();
             std::cout << "Device Name: " << devProps.deviceName << std::endl
                 << "Device Type: " << devProps.deviceType << std::endl;
 
-            PRETTY_PRINT_CUSTOM("Device Available Extensions", "🐝");
+            APP_PRETTY_PRINT_CUSTOM("Device Available Extensions", "🐝");
             auto extensions = dev.getDeviceExtensions();
             for (auto& ext: extensions) {
                 std::cout << "--> " << ext.extensionName 
                     << " (v" << ext.specVersion << ")" << std::endl;
             }
 
-            PRETTY_PRINT_CUSTOM("Queue Information", "💧");
+            APP_PRETTY_PRINT_CUSTOM("Queue Information", "💧");
             std::cout << "Available Queues: " << dev.getQueueCount() << std::endl;
 
             for (auto& queue: dev.getDeviceQueueProperties()) {
@@ -85,7 +86,7 @@ void Host::printHostInfo() {
                     << "      Queue Count: " << queue.queueCount << std::endl;
             }
 
-            PRETTY_PRINT("Device Groups");
+            APP_PRETTY_PRINT("Device Groups");
             for (auto& devGroup: _m_physical_dev_groups) {
                 std::cout << "Device Count: " << devGroup.physicalDeviceCount << std::endl;
             }

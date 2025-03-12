@@ -5,6 +5,7 @@
 #include "vulkan/vulkan.h"
 #include <vulkan/vulkan_core.h>
 
+#include "app_settings.hpp"
 #include "instance.hpp"
 #include "host.hpp"
 
@@ -48,11 +49,11 @@ VkResult Instance::init() {
         _m_is_init = true;
     }
     if (result == VK_ERROR_INCOMPATIBLE_DRIVER) {
-        DBG_ERR("Incompatible Driver!!!");
+        APP_DBG_ERR("Incompatible Driver!!!");
             return result;
     }
     else if (result != VK_SUCCESS) {
-        DBG_ERR("Unknown Error");
+        APP_DBG_ERR("Unknown Error");
             return result;
     }
 
@@ -86,7 +87,6 @@ void Instance::_query_physical_devices() {
     //_m_physical_dev_groups.resize(devGroupsCount);
     //vkEnumeratePhysicalDeviceGroups(m_vk_instance, &devGroupsCount, _m_physical_dev_groups.data());
 }
-
 
 std::vector<VkPhysicalDevice>& Instance::get_vk_devices() {
     return m_vk_physical_devices;

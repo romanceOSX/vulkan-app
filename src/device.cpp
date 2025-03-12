@@ -3,6 +3,7 @@
 
 #include "vulkan/vulkan_core.h"
 
+#include "app_settings.hpp"
 #include "host.hpp"
 #include "device.hpp"
 #include "physical_device.hpp"
@@ -21,7 +22,7 @@ void Device::addExtension(const char *ext) {
 AppResult Device::init(uint32_t count) {
     /* calculate family index */
     m_queue_family_index = _get_suitable_queue_index();
-    PRETTY_PRINT(m_queue_family_index);
+    APP_PRETTY_PRINT(m_queue_family_index);
 
     float queue_priority = 1.0f;
 
@@ -47,12 +48,12 @@ AppResult Device::init(uint32_t count) {
     devCreateInfo.enabledExtensionCount = _m_extensions.size();
 
     if (VK_SUCCESS != vkCreateDevice(m_physical_device.get_vk_physical_device(), &devCreateInfo, nullptr, &m_vk_device)) {
-        DBG_ERR("NOT SUCCESS!!");
+        APP_DBG_ERR("NOT SUCCESS!!");
     }
 
     vkGetDeviceQueue(m_vk_device, m_queue_family_index, 0, &m_queue);
     
-    PRETTY_PRINT("Logical device created succesfully");
+    APP_PRETTY_PRINT("Logical device created succesfully");
 }
 
 void Device::wait() {

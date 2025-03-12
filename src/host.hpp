@@ -6,15 +6,6 @@
 
 #include <iostream>
 
-/* 
- * Utility Macros
- */
-// TODO: move these macros to app.h general app utilities header
-#define PRETTY_PRINT(str) std::cout << "🎆 ~~~ " << str << " ~~~ 🎆" << std::endl
-#define DBG_ERR(msg) std::cout << "❌❌ " msg << std::endl
-#define PRETTY_PRINT_CUSTOM(msg, symbol) std::cout << #symbol " ~~~ " << msg << " ~~~ " #symbol << std::endl
-#define CHECK() (std::cout << "✅ ✅ ✅" << std::endl)
-
 /*
  * Forward declarations
  */

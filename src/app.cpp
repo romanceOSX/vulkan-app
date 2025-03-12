@@ -6,6 +6,7 @@
 #include <vulkan/vulkan_core.h>
 
 #include "app.hpp"
+#include "app_settings.hpp"
 #include "host.hpp"
 #include "instance.hpp"
 #include "device.hpp"
@@ -20,7 +21,7 @@ VulkanApp* VulkanApp::getInstance() {
 }
 
 VulkanApp::~VulkanApp() {
-    PRETTY_PRINT("Cleaning up VulkanApp ♻️");
+    APP_PRETTY_PRINT("Cleaning up VulkanApp ♻️");
     delete _m_app_instance;
 }
 
@@ -99,7 +100,7 @@ void VulkanApp::_initVulkan() {
 
     ///* Command Buffer allocation */
     //CommandPool cmdPool{dev};
-    PRETTY_PRINT("GOOOOOOOOOOOOOOOD");
+    APP_PRETTY_PRINT("GOOOOOOOOOOOOOOOD");
 }
 
 void VulkanApp::_mainLoop() {
