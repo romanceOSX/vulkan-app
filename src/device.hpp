@@ -32,10 +32,11 @@ class Device {
         Device() = delete;
         Device(Device& other) = delete;
         Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} { }
+        ~Device();
         void wait(void);
         void addExtension(const char*);
         AppResult init(uint32_t count);
-        VkQueue getDeviceQueue();
+        VkQueue get_vk_queue();
         uint32_t getQueueFamilyIndex();
         VkDevice getVkDevice();
         VkPhysicalDevice get_vk_physical_dev();
@@ -47,12 +48,12 @@ class Device {
         Window&                                 m_window;
         VkDevice                                m_vk_device;
         VkQueue                                 m_queue;
-        VkPhysicalDeviceProperties              _m_gpu_props;
-        VkPhysicalDeviceMemoryProperties        _m_gpu_mem_props;
-        std::vector<const char*>                _m_extensions;
-        std::vector<VkQueueFamilyProperties>    _m_queue_family_props;
-        uint32_t                                _m_graphics_queue_family_index;
-        uint32_t                                _m_queue_family_count;
+        VkPhysicalDeviceProperties              m_gpu_props;
+        VkPhysicalDeviceMemoryProperties        m_gpu_mem_props;
+        std::vector<const char*>                m_extensions;
+        std::vector<VkQueueFamilyProperties>    m_queue_family_props;
+        uint32_t                                m_graphics_queue_family_index;
+        uint32_t                                m_queue_family_count;
         uint32_t                                m_queue_family_index;
 };
 

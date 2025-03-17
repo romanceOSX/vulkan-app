@@ -16,7 +16,7 @@ uint32_t Device::_get_suitable_queue_index(void) {
 }
 
 void Device::addExtension(const char *ext) {
-    _m_extensions.push_back(ext); 
+    m_extensions.push_back(ext); 
 }
 
 AppResult Device::init(uint32_t count) {
@@ -44,14 +44,14 @@ AppResult Device::init(uint32_t count) {
         .pQueueCreateInfos = &queue_create_info,
     };
 
-    devCreateInfo.ppEnabledExtensionNames = _m_extensions.data();
-    devCreateInfo.enabledExtensionCount = _m_extensions.size();
+    devCreateInfo.ppEnabledExtensionNames = m_extensions.data();
+    devCreateInfo.enabledExtensionCount = m_extensions.size();
 
     if (VK_SUCCESS != vkCreateDevice(m_physical_device.get_vk_physical_device(), &devCreateInfo, nullptr, &m_vk_device)) {
         APP_DBG_ERR("NOT SUCCESS!!");
     }
 
-    vkGetDeviceQueue(m_vk_device, m_queue_family_index, 0, &m_queue);
+    vkGetDeviceQueue(m_vk_device, m_queue_family_index, 0, &m_vk_queue);
     
     APP_PRETTY_PRINT("Logical device created succesfully");
 }
@@ -62,8 +62,8 @@ void Device::wait() {
 }
 
 /* TODO: add a check for valid device init */
-VkQueue Device::getDeviceQueue() {
-    return m_queue;
+VkQueue Device::get_vk_queue() {
+    return m_vk_queue;
 }
 
 uint32_t Device::getQueueFamilyIndex() {
@@ -76,5 +76,9 @@ VkDevice Device::getVkDevice() {
 
 VkPhysicalDevice Device::get_vk_physical_dev() {
     return m_physical_device.get_vk_physical_device();
+}
+
+Device::~Device() {
+    vkDestroyDevice(m_vk_device, nullptr);
 }
 
