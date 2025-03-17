@@ -44,7 +44,7 @@ class PhysicalDevice {
 
         VkPhysicalDeviceProperties                  m_vk_physical_device_props;
         VkPhysicalDevice                            m_vk_physical_device;
-        std::vector<VkExtensionProperties>          _m_available_extensions;
+        std::vector<VkExtensionProperties>          m_available_extensions;
         std::vector<VkQueueFamilyProperties>        m_vk_queue_families;
         uint32_t                                    m_queue_family_count;
 };

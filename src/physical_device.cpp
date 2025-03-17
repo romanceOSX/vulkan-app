@@ -26,8 +26,8 @@ void PhysicalDevice::_queryQueueProperties() {
 void PhysicalDevice::_queryDeviceExtensions() {
     uint32_t prop_count;
     vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, nullptr);
-    _m_available_extensions.resize(prop_count);
-    vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, _m_available_extensions.data());
+    m_available_extensions.resize(prop_count);
+    vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, m_available_extensions.data());
 }
 
 std::vector<VkQueueFamilyProperties>& PhysicalDevice::getDeviceQueueProperties() {
@@ -35,7 +35,7 @@ std::vector<VkQueueFamilyProperties>& PhysicalDevice::getDeviceQueueProperties()
 }
 
 std::vector<VkExtensionProperties>& PhysicalDevice::getDeviceExtensions() {
-    return _m_available_extensions;
+    return m_available_extensions;
 }
 
 uint32_t PhysicalDevice::getQueueCount(void) {
