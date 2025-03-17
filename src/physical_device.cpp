@@ -1,8 +1,11 @@
 #include <iostream>
 #include <iterator>
+#include <string>
+#include <set>
 
 #include "vulkan/vulkan_core.h"
 
+#include "app_settings.hpp"
 #include "physical_device.hpp"
 #include "window.hpp"
 
@@ -67,6 +70,22 @@ void PhysicalDevice::print_info() {
 std::optional<uint32_t> PhysicalDevice::get_suitable_queue_index(Window& window) {
     std::vector<QueueFamily> queue_families;
 
+    std::vector<const char*> required_extensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
+    };
+
+    /* Check if device has VK_KHR_DISPLAY_SWAPCHAIN_EXTENSION_NAME ext */
+    bool is_swapchain_supported = false;
+
+    std::set<std::string> required_set{std::begin(required_extensions), std::end(required_extensions)};
+    for (const auto& ext: m_available_extensions) {
+        required_set.erase(ext.extensionName);
+    }
+
+    if (!(is_swapchain_supported = required_set.empty())) {
+        return {};
+    }
+
     for (size_t i = 0; i < std::size(m_vk_queue_families); i++) {
         queue_families.emplace_back(m_vk_queue_families.at(i), i, *this, window);
     }
@@ -77,6 +96,7 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_index(Window& window)
             return queue_family.get_index();
         }
     }
+
     return {};
 }
 
