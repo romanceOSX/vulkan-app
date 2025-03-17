@@ -47,7 +47,7 @@ class Device {
         PhysicalDevice&                         m_physical_device;
         Window&                                 m_window;
         VkDevice                                m_vk_device;
-        VkQueue                                 m_queue;
+        VkQueue                                 m_vk_queue;
         VkPhysicalDeviceProperties              m_gpu_props;
         VkPhysicalDeviceMemoryProperties        m_gpu_mem_props;
         std::vector<const char*>                m_extensions;
