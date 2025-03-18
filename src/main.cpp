@@ -67,9 +67,30 @@ void _physical_device_test() {
     }
 }
 
+void _test_glfw() {
+    glfwInit();
+
+    if (glfwVulkanSupported()) {
+        std::cout << "VULKAN IS SUPPORTED" << std::endl;
+    }
+
+    uint32_t count;
+    const char** extensions = glfwGetRequiredInstanceExtensions(&count);
+
+    if (nullptr != extensions) {
+        std::cout << "AVAILABLE EXTENSIONS!" << std::endl;
+        std::cout << "Count: " << count << std::endl;
+        for (size_t i = 0; i < count; i++) {
+            std::cout << *(extensions + i) << std::endl;
+        }
+    }
+    
+}
+
 int main(int argc, char *argv[]) {
     //run_app();
     _physical_device_test();
+    //_test_glfw();
 
     return 0;
 }
