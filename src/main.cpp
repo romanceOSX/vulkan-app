@@ -15,6 +15,7 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+#include "vulkan/vulkan_metal.h"
 
 int run_app() {
     VulkanApp* app = VulkanApp::getInstance();
@@ -33,6 +34,7 @@ void _physical_device_test() {
     instance.add_extension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
     instance.add_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
     instance.add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
+    instance.add_extension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
     instance.init();
 
     auto vk_phy_devs = instance.get_vk_devices();

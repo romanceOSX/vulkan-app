@@ -17,9 +17,11 @@ Window::Window(Instance& i): m_instance{i} {
 
     /* TODO: window surface creation does not work out of the box */
     /* Create vk surface */
-    //if (VK_SUCCESS != glfwCreateWindowSurface(m_instance.get_vk_instance(), m_glfw_window, nullptr, &m_surface)) {
-    //    throw std::runtime_error("Failed to create window surface ❌");
-    //}
+    VkResult res = glfwCreateWindowSurface(m_instance.get_vk_instance(), m_glfw_window, nullptr, &m_vk_surface);
+    std::cout << "RES " << res << std::endl;
+    if (VK_SUCCESS != res) {
+        throw std::runtime_error("Failed to create window surface ❌");
+    }
 }
 
 /* Stub constructor */
