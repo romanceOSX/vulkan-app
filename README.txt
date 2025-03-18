@@ -216,3 +216,43 @@ REDESIGN 2025-03-10
     Host
         -> VulkanInstance
         -> PhysicalDevices
+
+IMPLEMENTATION
+    Framebuffer
+        --> https://en.wikipedia.org/wiki/Framebuffer
+        Portion of RAM containing bitmaps that drives a video display
+        It is part of the RAM in a program that is used by the application
+        for representation of the content to be shown on the display
+
+    Swapchain
+        --> Spec 34.5 
+        It is a queue of messages that are waiting to be presented to the screen
+        The application 'acquires' the image, draws on it, and returns it
+
+        The main purpose is to synchronize the presentation of images with the
+        refresh rate of the screen
+
+        A physical device might or might not support the swapchain, this is platform
+        dependent and hence it is provided as a device-extension
+
+        We also need to check for the following properties:
+            - Surface capabilities
+                - min/max number of images in the swapchain
+                - min/max width and height of images
+            - Surface formats
+                - pixel format
+                - color space
+            - Available presentation modes
+
+        The capabilities of the Swapchain targeting a surface are the intersection of the
+        following:
+            - WSI platform
+            - Native window or display
+            - Physical device
+
+        SwapChain
+            -> PhysicalDevice
+            -> SurfaceKHR
+            -> 
+    
+TODO
