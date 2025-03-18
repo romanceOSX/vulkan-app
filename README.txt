@@ -254,5 +254,25 @@ IMPLEMENTATION
             -> PhysicalDevice
             -> SurfaceKHR
             -> 
-    
 TODO
+
+MoltenVK
+    --> https://vulkan.lunarg.com/doc/sdk/latest/mac/getting_started.html
+    Options
+        - Link directly to MoltenVK (either statically or dynamically)
+            Allows mixed used of vulkan and metal
+        - XCFramework static library
+    Recommended option
+        Use MoltenVK as dynamic lib and the Vulkan Loader
+            MoltenVK will be threated as an ICD by the Vulkan Loader
+        In this mode we would only need to link agains the loader, not MoltenVk
+        We will still need ot include the MoltenVK and Loader's dynamic libraries when shipping
+
+GLFW
+    --> https://www.glfw.org/docs/latest/vulkan_guide.html
+
+    Issue is that I am not able to create a VkSurfaceKHR out of the glfw window for some reason
+    We are getting a -7 VkResult
+        VK_ERROR_EXTENSION_NOT_PRESENT = -7,
+    GLFW triangle sample app is also not being successfully created
+
