@@ -1,2 +1,10 @@
+Dev TODO list
+
 [ ] Fix the cleanup(singletons), use smart pointers for everything
+
+2025-03-17
+[ ] Review proper place to put these notes
+[ ] Add a front README.md
+[ ] Evaluate if creating a wsi.cpp module should be proper
+[ ] Check most convenient way to raise exceptions
 
