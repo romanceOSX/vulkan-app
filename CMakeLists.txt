@@ -20,7 +20,8 @@ set(APP_SRC_DIR src)
 
 # GLM lib
 # https://github.com/g-truc/glm
-find_package(glm CONFIG REQUIRED)
+find_package(glm REQUIRED)
+find_package(Vulkan REQUIRED)
 
 # Project setup
 project(${APP_OUT_NAME})
@@ -39,13 +40,7 @@ set(APP_SOURCES
 add_subdirectory(${GLFW_PATH} glfw)
 add_executable(${APP_OUT_NAME} ${APP_SOURCES})
 
-add_library(vulkan_lib UNKNOWN IMPORTED)
-set_target_properties(vulkan_lib PROPERTIES
-    IMPORTED_LOCATION /usr/local/lib/libvulkan.dylib
-)
-target_include_directories(vulkan_lib INTERFACE /usr/local/include)
-
-target_link_libraries(${APP_OUT_NAME} vulkan_lib) 
+target_link_libraries(${APP_OUT_NAME} Vulkan::Vulkan) 
 target_link_libraries(${APP_OUT_NAME} glfw)
 # glm header-only library
 target_link_libraries(${APP_OUT_NAME} glm::glm-header-only)
