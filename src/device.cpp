@@ -22,7 +22,6 @@ void Device::addExtension(const char *ext) {
 AppResult Device::init(uint32_t count) {
     /* calculate family index */
     m_queue_family_index = _get_suitable_queue_index();
-    APP_PRETTY_PRINT(m_queue_family_index);
 
     float queue_priority = 1.0f;
 
