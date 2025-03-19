@@ -92,3 +92,7 @@ std::vector<VkPhysicalDevice>& Instance::get_vk_devices() {
     return m_vk_physical_devices;
 }
 
+Instance::~Instance() {
+    vkDestroyInstance(m_vk_instance, nullptr);
+}
+

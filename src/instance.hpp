@@ -21,6 +21,7 @@ class Instance {
 
     public:
         Instance();
+        ~Instance();
         VkResult init(void);
         VkInstance get_vk_instance(void);
         std::vector<VkPhysicalDevice>& get_vk_devices(void);
