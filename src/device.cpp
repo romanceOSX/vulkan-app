@@ -81,3 +81,20 @@ Device::~Device() {
     vkDestroyDevice(m_vk_device, nullptr);
 }
 
+SwapChain::SwapChain(VkPhysicalDevice phy_dev, VkSurfaceKHR surface):
+            m_vk_phy_dev{phy_dev}, 
+            m_vk_surface{surface} 
+{
+    VkResult res;
+    res = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+            m_vk_phy_dev,
+            m_vk_surface,
+            &m_vk_surface_capabilities
+    );
+};
+
+void SwapChain::print_info() {
+    std::cout << "⛓️‍💥 Printing swapchain info" << std::endl
+        << "Max Image Count: " << m_vk_surface_capabilities.maxImageCount << std::endl;
+}
+

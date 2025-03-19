@@ -57,3 +57,14 @@ class Device {
         uint32_t                                m_queue_family_index;
 };
 
+class SwapChain {
+    public:
+        SwapChain(const VkPhysicalDevice phy_dev, VkSurfaceKHR surface);
+        void print_info();
+
+    private:
+        VkPhysicalDevice                        m_vk_phy_dev;
+        VkSurfaceKHR                            m_vk_surface;
+        VkSurfaceCapabilitiesKHR                m_vk_surface_capabilities;
+};
+
