@@ -7,6 +7,7 @@
 #include "host.hpp"
 #include "device.hpp"
 #include "physical_device.hpp"
+#include "window.hpp"
 
 uint32_t Device::_get_suitable_queue_index(void) {
     if (auto ret = m_physical_device.get_suitable_queue_index(m_window)) {
@@ -82,13 +83,14 @@ Device::~Device() {
 }
 
 SwapChain::SwapChain(VkPhysicalDevice phy_dev, VkSurfaceKHR surface):
+SwapChain::SwapChain(const VkPhysicalDevice phy_dev, Window& window):
             m_vk_phy_dev{phy_dev}, 
-            m_vk_surface{surface} 
+            m_window{window} 
 {
     VkResult res;
     res = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
             m_vk_phy_dev,
-            m_vk_surface,
+            m_window.get_vk_surface(),
             &m_vk_surface_capabilities
     );
 };
