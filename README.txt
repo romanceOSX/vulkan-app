@@ -75,6 +75,16 @@ Host
         Queue Families
             *Queues
 
+WSI spec.
+    --> Ch. 34
+    WSI involves how to get the results of a render to the user's display
+    Since off-screen rendering exists, then there this is an optional extension
+
+    WSI platform
+        A platform is an abstraction for the underlying window system (wayland, MS Windows, etc)
+    WSI surface
+        These are the abstrancted handle to the platform's window
+
 WSI -> Window System Interface
     It introduces the VkSurfaceKHR and the VkSwapchainKHR
     Window Surface
@@ -95,6 +105,14 @@ WSI -> Window System Interface
             - Draw on the image
             - Give the swapchain the image back
             - The swapchain renders it on screen
+
+Render pass
+    --> spec. ch. 8
+    Draw commmands must be recorded within a render pass instance
+    Render pass(*Draw command)
+    
+
+
 
 Image Views and Framebuffers
     To draw an image from the swapchain we have to wrap it in a VkImageView and
@@ -253,8 +271,27 @@ IMPLEMENTATION
         SwapChain
             -> PhysicalDevice
             -> SurfaceKHR
-            -> 
+
+        Tutorial
+            There are three types of settings to determine:
+                - Surface format (color depth)
+                    - Color Format
+                    - Color Space
+                - Presentation mode (ocnditions for 'swapping' images to the screen)
+                    - immediate
+                    - FIFO
+                        this is the only guaranteed one
+                    - FIFO relaxed
+                    - Mailbox
+                - Swap Extent (resolution of images in the swapchain)
+                    It is almost always equal to the resolution of the 
+
+            We part from what we want, then if it is not available the program determines
+            the next best possible value
+
+            What is color space?**
 TODO
+    -->
 
 MoltenVK
     --> https://vulkan.lunarg.com/doc/sdk/latest/mac/getting_started.html
