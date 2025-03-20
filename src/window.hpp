@@ -18,6 +18,7 @@ class Window {
         bool is_device_suitable(Device& dev);
         void wait_to_close_window();
         VkSurfaceKHR get_vk_surface();
+        GLFWwindow* get_glfw_window();
 
     private:
         VkSurfaceKHR        m_vk_surface;

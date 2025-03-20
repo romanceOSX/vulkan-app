@@ -59,3 +59,7 @@ VkSurfaceKHR Window::get_vk_surface() {
     return m_vk_surface; 
 }
 
+GLFWwindow* Window::get_glfw_window() {
+    return m_glfw_window;
+}
+
