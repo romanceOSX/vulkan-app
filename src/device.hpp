@@ -63,6 +63,9 @@ class SwapChain {
         void print_info();
 
     private:
+        VkSurfaceFormatKHR _choose_swap_surface_format(std::vector<VkSurfaceFormatKHR>& available_formats);
+        VkPresentModeKHR _choose_swap_present_mode(std::vector<VkPresentModeKHR>& available_modes);
+        VkExtent2D _choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabilities);
         VkPhysicalDevice                        m_vk_phy_dev;
         Window&                                 m_window;
         VkSurfaceCapabilitiesKHR                m_vk_surface_capabilities;

@@ -83,6 +83,50 @@ Device::~Device() {
 }
 
 SwapChain::SwapChain(VkPhysicalDevice phy_dev, VkSurfaceKHR surface):
+/*
+ * Swapchain class implementations
+ */
+VkSurfaceFormatKHR SwapChain::_choose_swap_surface_format(std::vector<VkSurfaceFormatKHR>& available_formats) {
+    /* (Format, Colorspace) => */
+    for (const auto& available_format: available_formats) {
+        if ((available_format.format == VK_FORMAT_B8G8R8A8_SRGB) &&
+            (available_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)) {
+            return available_format;           
+        }
+    }
+    /* Fallback case */
+    return available_formats.front();
+}
+
+VkPresentModeKHR SwapChain::_choose_swap_present_mode(std::vector<VkPresentModeKHR>& available_modes) {
+    for (const auto& mode: available_modes) {
+        if (VK_PRESENT_MODE_MAILBOX_KHR == mode) {
+            return mode;
+        }
+    }
+    /* guaranteed to be always available */
+    return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabilities) {
+    if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()){
+        return capabilities.currentExtent;
+    } else {
+        int width;
+        int height;
+        glfwGetFramebufferSize(m_window.get_glfw_window(), &width, &height);
+
+        VkExtent2D actual_extent = {
+            static_cast<uint32_t>(width),
+            static_cast<uint32_t>(height)
+        };
+        actual_extent.width = std::clamp(actual_extent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+        actual_extent.width = std::clamp(actual_extent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+
+        return actual_extent;
+    }
+}
+
 SwapChain::SwapChain(const VkPhysicalDevice phy_dev, Window& window):
             m_vk_phy_dev{phy_dev}, 
             m_window{window} 
