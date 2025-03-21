@@ -127,17 +127,24 @@ VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabi
     }
 }
 
-SwapChain::SwapChain(const VkPhysicalDevice phy_dev, Window& window):
-            m_vk_phy_dev{phy_dev}, 
-            m_window{window} 
-{
-    VkResult res;
-    res = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+/* function that checks the swapchain support given a physical device */
+/* TODO: this should be queried when choosing physical device */
+void SwapChain::_query_swapchain_support() {
+    /* query surface capabilities */
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
             m_vk_phy_dev,
             m_window.get_vk_surface(),
             &m_vk_surface_capabilities
     );
-};
+
+/* We assume that phy_dev does support the swapchain, previously determined */
+SwapChain::SwapChain(const VkPhysicalDevice phy_dev, Window& window):
+            m_vk_phy_dev{phy_dev}, 
+            m_window{window} 
+{
+    _query_swapchain_support();
+
+}
 
 void SwapChain::print_info() {
     std::cout << "⛓️‍💥 Printing swapchain info" << std::endl
