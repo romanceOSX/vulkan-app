@@ -1,4 +1,8 @@
 
+#include <algorithm>
+#include <stdexcept>
+#include <vulkan/vulkan_core.h>
+
 #include "swapchain.hpp"
 #include "device.hpp"
 #include "window.hpp"
@@ -147,6 +151,31 @@ SwapChain::SwapChain(Device& dev, Window& window):
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_swapchain, &image_count, nullptr);
     m_vk_swapchain_images.resize(image_count);
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_swapchain, &image_count, m_vk_swapchain_images.data());
+
+    size_t i = 0;
+    for (auto& image: m_vk_swapchain_image_views) {
+        VkImageViewCreateInfo image_view_create_info {
+            .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+            .image = m_vk_swapchain_images.at(i),
+            .viewType = VK_IMAGE_VIEW_TYPE_2D,
+            .format = m_vk_format,
+        };
+        image_view_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        image_view_create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        image_view_create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        image_view_create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+        image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        image_view_create_info.subresourceRange.baseMipLevel = 0;
+        image_view_create_info.subresourceRange.levelCount = 1;
+        image_view_create_info.subresourceRange.baseArrayLayer = 0;
+        image_view_create_info.subresourceRange.layerCount = 1;
+
+        if (vkCreateImageView(m_device.get_vk_device(), &image_view_create_info, nullptr, &(image)) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create image views! 😵");
+        }
+        i++;
+    }
 }
 
 void SwapChain::print_info() {
@@ -164,5 +193,16 @@ VkExtent2D SwapChain::get_vk_extent_2d() {
 
 std::vector<VkImage>& SwapChain::get_vk_images() {
     return m_vk_swapchain_images;
+}
+
+void SwapChain::_create_image_views() {
+    m_vk_swapchain_image_views.resize(m_vk_swapchain_images.size());
+}
+
+/* TODO: add a logging facility on this */
+SwapChain::~SwapChain() {
+    for (auto& image_view: m_vk_swapchain_image_views) {
+        vkDestroyImageView(m_device.get_vk_device(), image_view, nullptr);
+    }
 }
 
