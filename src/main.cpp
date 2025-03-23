@@ -1,8 +1,7 @@
-/* Main Vulkan application */
+/* Vulkan sample application */
 
 #include <iostream>
 #include <vector>
-#include <iterator>
 
 #include "app_settings.hpp"
 #include "app.hpp"
@@ -11,6 +10,7 @@
 #include "physical_device.hpp"
 #include "device.hpp"
 #include "window.hpp"
+#include "swapchain.hpp"
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>

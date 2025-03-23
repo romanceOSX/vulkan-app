@@ -58,26 +58,3 @@ class Device {
         uint32_t                                m_queue_family_index;
 };
 
-class SwapChain {
-    public:
-        SwapChain(Device& dev, Window& window);
-        void print_info();
-        VkFormat get_vk_format();
-        VkExtent2D get_vk_extent_2d();
-        std::vector<VkImage>& get_vk_images();
-
-    private:
-        void _query_swapchain_support();
-        VkSurfaceFormatKHR _choose_swap_surface_format(std::vector<VkSurfaceFormatKHR>& available_formats);
-        VkPresentModeKHR _choose_swap_present_mode(std::vector<VkPresentModeKHR>& available_modes);
-        VkExtent2D _choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabilities);
-        VkPhysicalDevice                m_vk_phy_dev;
-        Window&                         m_window;
-        VkSurfaceCapabilitiesKHR        m_vk_surface_capabilities;
-        VkSwapchainKHR                  m_swapchain;
-        Device&                         m_device;
-        std::vector<VkImage>            m_vk_swapchain_images;
-        VkFormat                        m_vk_format;
-        VkExtent2D                      m_vk_extent_2d;
-};
-
