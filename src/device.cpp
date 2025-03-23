@@ -211,6 +211,10 @@ void SwapChain::_query_swapchain_support() {
     {
         throw std::runtime_error("Failed to create swap chain 😵");
     }
+
+    /* populate data members */
+    m_vk_format = surface_format.format;
+    m_vk_extent_2d = extent;
 }
 
 /* We assume that phy_dev does support the swapchain, previously determined */
@@ -219,12 +223,30 @@ SwapChain::SwapChain(Device& dev, Window& window):
     m_vk_phy_dev{dev.get_vk_physical_dev()}, 
     m_window{window} 
 {
+    /* initialize swap chain */
     _query_swapchain_support();
 
+    /* query swap chain images */
+    uint32_t image_count;
+    vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_swapchain, &image_count, nullptr);
+    m_vk_swapchain_images.resize(image_count);
+    vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_swapchain, &image_count, m_vk_swapchain_images.data());
 }
 
 void SwapChain::print_info() {
     std::cout << "⛓️‍💥 Printing swapchain info" << std::endl
         << "Max Image Count: " << m_vk_surface_capabilities.maxImageCount << std::endl;
+}
+
+VkFormat SwapChain::get_vk_format() {
+    return m_vk_format;
+}
+
+VkExtent2D SwapChain::get_vk_extent_2d() {
+    return m_vk_extent_2d;
+}
+
+std::vector<VkImage>& SwapChain::get_vk_images() {
+    return m_vk_swapchain_images;
 }
 
