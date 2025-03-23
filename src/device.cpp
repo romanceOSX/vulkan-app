@@ -71,11 +71,11 @@ VkQueue Device::get_vk_queue() {
     return m_vk_queue;
 }
 
-uint32_t Device::getQueueFamilyIndex() {
+uint32_t Device::get_queue_family_index() {
     return m_queue_family_index;
 }
 
-VkDevice Device::getVkDevice() {
+VkDevice Device::get_vk_device() {
     return m_vk_device;
 }
 
@@ -204,7 +204,7 @@ void SwapChain::_query_swapchain_support() {
     swap_create_info.oldSwapchain = VK_NULL_HANDLE;
 
     /* create swap chain */
-    if (vkCreateSwapchainKHR(m_device.getVkDevice(),
+    if (vkCreateSwapchainKHR(m_device.get_vk_device(),
                 &swap_create_info,
                 nullptr,
                 &m_swapchain)) 

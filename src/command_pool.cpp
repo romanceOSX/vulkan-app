@@ -15,11 +15,11 @@ CommandPool::CommandPool(Device& dev): _m_dev{dev} {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .pNext = nullptr,
         .flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
-        .queueFamilyIndex = _m_dev.getQueueFamilyIndex(),
+        .queueFamilyIndex = _m_dev.get_queue_family_index(),
     };
 
     if (VK_SUCCESS != vkCreateCommandPool(
-                dev.getVkDevice(), &command_pool_create,
+                dev.get_vk_device(), &command_pool_create,
                 nullptr, &commandPool)) {
         APP_DBG_ERR("Failed to create Command Pool");
     }
@@ -27,14 +27,14 @@ CommandPool::CommandPool(Device& dev): _m_dev{dev} {
 
 void CommandPool::reset() {
     vkResetCommandPool(
-            _m_dev.getVkDevice(),
+            _m_dev.get_vk_device(),
             _m_command_pool,
             VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
     );
 }
 
 void CommandPool::destroy() {
-    vkDestroyCommandPool(_m_dev.getVkDevice(),
+    vkDestroyCommandPool(_m_dev.get_vk_device(),
             _m_command_pool,
             nullptr
     );
@@ -71,7 +71,7 @@ CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
     };
 
     vkAllocateCommandBuffers(
-            _m_dev.getVkDevice(),
+            _m_dev.get_vk_device(),
             &allocate_info,
             _m_cmdBuffs.data()
     );  
@@ -89,7 +89,7 @@ std::vector<VkCommandBuffer>& CommandBuffer::getCmdBuffs() {
 }
 
 void CommandBuffer::free() {
-    vkFreeCommandBuffers(_m_dev.getVkDevice(),
+    vkFreeCommandBuffers(_m_dev.get_vk_device(),
             _m_cmdPool.getVkCmdPool(),
             _m_cmdBuffs.size(),
             _m_cmdBuffs.data()

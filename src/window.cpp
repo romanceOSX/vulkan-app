@@ -42,7 +42,7 @@ bool Window::is_device_suitable(Device &dev) {
     VkBool32 res;
     vkGetPhysicalDeviceSurfaceSupportKHR(
             dev.get_vk_physical_dev(),
-            dev.getQueueFamilyIndex(),
+            dev.get_queue_family_index(),
             m_vk_surface,
             &res
     );

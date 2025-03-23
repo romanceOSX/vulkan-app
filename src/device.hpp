@@ -38,8 +38,8 @@ class Device {
         void addExtension(const char*);
         AppResult init(uint32_t count);
         VkQueue get_vk_queue();
-        uint32_t getQueueFamilyIndex();
-        VkDevice getVkDevice();
+        uint32_t get_queue_family_index();
+        VkDevice get_vk_device();
         VkPhysicalDevice get_vk_physical_dev();
 
     private:
