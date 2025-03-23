@@ -10,6 +10,7 @@
  */
 class PhysicalDevice;
 class Window;
+class Device;
 enum class AppResult;
 
 /*
@@ -59,7 +60,7 @@ class Device {
 
 class SwapChain {
     public:
-        SwapChain(const VkPhysicalDevice phy_dev, Window& window);
+        SwapChain(Device& dev, Window& window);
         void print_info();
 
     private:
@@ -70,5 +71,7 @@ class SwapChain {
         VkPhysicalDevice                        m_vk_phy_dev;
         Window&                                 m_window;
         VkSurfaceCapabilitiesKHR                m_vk_surface_capabilities;
+        VkSwapchainKHR                          m_swapchain;
+        Device&                                 m_device;
 };
 

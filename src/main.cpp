@@ -62,9 +62,15 @@ void _physical_device_test() {
                 << std::boolalpha
                 << queue_family_index.value() 
                 << std::endl;
+
             APP_PRETTY_PRINT("Creating logical device");
             Device device{dev, window};
+            device.addExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
             device.init(1);
+
+            /* query swapchain properties */
+            SwapChain swap{device, window};
+            swap.print_info();
         }
     }
 }
