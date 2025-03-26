@@ -313,3 +313,63 @@ GLFW
         VK_ERROR_EXTENSION_NOT_PRESENT = -7,
     GLFW triangle sample app is also not being successfully created
 
+IMAGE VIEWS
+    An image alone is not manipulated directly, it is manipulated rather by an
+    image view
+
+GRAPHICS PIPELINE
+    --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/00_Introduction.html
+    --> specs ch. 10
+
+    The graphics pipeline is the sequence of operations that take the vertices
+    and textures of my meshes all the way to the pixels in the render targets
+
+    - input assembler 
+        collects raw vertex data
+    - vertex shader         (+)
+        applies transformations on vectors (such as model space to screen space)
+    - tessellation shaders  (+)
+        subdivides geometry based on some rules
+    - geometry shader       (+)
+        run on every primitive, similar to tesselation, rarely used today
+    - rasterization
+        discretizes the primitives into 'fragments'
+    - fragment shader       (+)
+        determines which 'framebuffers' the 'fragments' are written to 
+        lighting and normals?
+    - color blending
+        filters?
+
+    (+) means that the stage is programmable, and you can load any code to the graphics
+        card
+
+SHADER MODULES
+    --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/01_Shader_modules.html
+    Shader code needs to be specified in bytecode format (not in human readable format as previous APIs
+    such as GLSL and HLSL), this format is SPIR-V, used by vulkan and OPENCL
+        Descriptive language => Byte language => vendor language
+        GLSL                 => SPIR-V        => CUDA?
+    GLSL is a c-like syntax language, it has primitive operations on vector arithmetic
+
+    Vertex Shader
+        Takes as input the set (model space position, color, normal, texture coordinates)
+        Output (clip coordinates, attributes(color, texture coordinates))
+
+        clip coordinate -> normalized device coordinate -> homogeneus coordinates
+        
+        having a 4 element vector, we divide the vector by its last element
+
+        it maps the framebuffer to a [-1, 1] x [-1, 1] coordinate system
+
+        Compiling the shaders
+            - Use glslc and integrate a shader compiling stage in the build pipeline
+            - Compile it at runtime through the library 'libshaderc' (included with the SDK)
+
+Homogeneus coordinates
+    --> https://en.wikipedia.org/wiki/Homogeneous_coordinates
+    
+
+
+
+
+
