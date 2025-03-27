@@ -11,6 +11,7 @@
 #include "device.hpp"
 #include "window.hpp"
 #include "swapchain.hpp"
+#include "pipeline.hpp"
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>
@@ -95,10 +96,15 @@ void _test_glfw() {
     
 }
 
+void _shader_modules_test() {
+    Pipeline pipeline;
+}
+
 int main(int argc, char *argv[]) {
     //run_app();
-    _physical_device_test();
+    //_physical_device_test();
     //_test_glfw();
+    _shader_modules_test();
 
     return 0;
 }

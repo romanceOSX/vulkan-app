@@ -3,6 +3,7 @@
 
 class Pipeline {
     public:
+        Pipeline();
     private:
 };
 
