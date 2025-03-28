@@ -72,6 +72,9 @@ void _physical_device_test() {
             /* query swapchain properties */
             SwapChain swap{device, window};
             swap.print_info();
+
+            /* create pipeline */
+            Pipeline pipeline{device};
         }
     }
 }
@@ -96,15 +99,15 @@ void _test_glfw() {
     
 }
 
-void _shader_modules_test() {
-    Pipeline pipeline;
-}
+//void _shader_modules_test() {
+//    Pipeline pipeline;
+//}
 
 int main(int argc, char *argv[]) {
     //run_app();
-    //_physical_device_test();
+    _physical_device_test();
     //_test_glfw();
-    _shader_modules_test();
+    //_shader_modules_test();
 
     return 0;
 }
