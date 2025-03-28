@@ -365,6 +365,12 @@ SHADER MODULES
             - Use glslc and integrate a shader compiling stage in the build pipeline
             - Compile it at runtime through the library 'libshaderc' (included with the SDK)
 
+    Shader modules
+        Shader modules are just a thin wrapper around the shader SPIR-V bytecode
+        Note that the compilation from SPIR-V to gpu machine code does not happen until
+        the pipeline is created, this means that we can keep such shader modules as
+        stack variables since they are disposable
+
 Homogeneus coordinates
     --> https://en.wikipedia.org/wiki/Homogeneous_coordinates
     
