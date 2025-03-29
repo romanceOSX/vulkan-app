@@ -27,7 +27,7 @@ class Instance {
         std::vector<VkPhysicalDevice>& get_vk_devices(void);
         Instance(Instance& other) = delete;
         AppResult add_extension(const char* ext);
-        AppResult addLayer(const char* layer);
+        AppResult add_layer(const char* layer);
         bool isInit(void);
 
     private:

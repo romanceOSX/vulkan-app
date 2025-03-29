@@ -19,7 +19,7 @@ AppResult Instance::add_extension(const char* ext) {
     return res;
 }
 
-AppResult Instance::addLayer(const char* ext) {
+AppResult Instance::add_layer(const char* ext) {
     AppResult res = AppResult::APP_SUCCESS;
 
     _m_layers.push_back(ext);
