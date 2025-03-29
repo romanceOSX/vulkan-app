@@ -40,7 +40,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     auto frag_shader_module = this->create_shader_module(frag_file_bytes_v);
 
     /* assign vert shader module to pipeline stage */
-    VkPipelineShaderStageCreateInfo vert_shader_stage_info{ };
+    VkPipelineShaderStageCreateInfo vert_shader_stage_info{};
     vert_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     vert_shader_stage_info.stage = VK_SHADER_STAGE_VERTEX_BIT;
     vert_shader_stage_info.module = vert_shader_module;
@@ -48,7 +48,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     vert_shader_stage_info.pName = "main";
 
     /* assign fragment shader module to pipeline stage */
-    VkPipelineShaderStageCreateInfo frag_shader_stage_info{ };
+    VkPipelineShaderStageCreateInfo frag_shader_stage_info{};
     vert_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     vert_shader_stage_info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
     vert_shader_stage_info.module = frag_shader_module;
