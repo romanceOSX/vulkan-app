@@ -127,7 +127,7 @@ void SwapChain::_query_swapchain_support() {
     if (vkCreateSwapchainKHR(m_device.get_vk_device(),
                 &swap_create_info,
                 nullptr,
-                &m_swapchain)) 
+                &m_vk_swapchain)) 
     {
         throw std::runtime_error("Failed to create swap chain 😵");
     }
@@ -148,9 +148,9 @@ SwapChain::SwapChain(Device& dev, Window& window):
 
     /* query swap chain images */
     uint32_t image_count;
-    vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_swapchain, &image_count, nullptr);
+    vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, nullptr);
     m_vk_swapchain_images.resize(image_count);
-    vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_swapchain, &image_count, m_vk_swapchain_images.data());
+    vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, m_vk_swapchain_images.data());
 
     size_t i = 0;
     for (auto& image: m_vk_swapchain_image_views) {

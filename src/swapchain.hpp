@@ -30,7 +30,7 @@ class SwapChain {
         VkPhysicalDevice                m_vk_phy_dev;
         Window&                         m_window;
         VkSurfaceCapabilitiesKHR        m_vk_surface_capabilities;
-        VkSwapchainKHR                  m_swapchain;
+        VkSwapchainKHR                  m_vk_swapchain;
         Device&                         m_device;
         std::vector<VkImage>            m_vk_swapchain_images;
         VkFormat                        m_vk_format;
