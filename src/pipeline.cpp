@@ -156,6 +156,21 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     color_blending.blendConstants[1] = 0.0f;
     color_blending.blendConstants[2] = 0.0f;
     color_blending.blendConstants[3] = 0.0f;
+
+    /* Pipeline Layout */
+    VkPipelineLayoutCreateInfo pipeline_layout_info{};
+    pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipeline_layout_info.setLayoutCount = 0;
+    pipeline_layout_info.pSetLayouts = nullptr;
+    pipeline_layout_info.pushConstantRangeCount = 0;
+    pipeline_layout_info.pPushConstantRanges = nullptr;
+
+    /* TODO: add cleanup for this creation */
+    if (vkCreatePipelineLayout(m_device.get_vk_device(), &pipeline_layout_info, nullptr, &m_pipeline_layout)
+            != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create Pipeline layout 😵");
+    }
 }
 
 VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {

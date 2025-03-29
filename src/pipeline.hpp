@@ -11,7 +11,8 @@ class Pipeline {
         VkShaderModule create_shader_module(std::vector<char>& bytes);
 
     private:
-        Device&         m_device;
-        SwapChain&      m_swapchain;
+        Device&                 m_device;
+        SwapChain&              m_swapchain;
+        VkPipelineLayout        m_pipeline_layout;
 };
 
