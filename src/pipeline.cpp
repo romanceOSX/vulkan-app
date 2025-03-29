@@ -26,7 +26,10 @@ static std::vector<char> read_file(const std::string& filename) {
     return buffer;
 }
 
-Pipeline::Pipeline(Device& dev): m_device{dev} {
+Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
+    m_device{dev},
+    m_swapchain{swapchain}
+{
     auto vert_file_bytes_v = read_file("shaders/glsl/triangle/triangle.vert.spv");
     auto frag_file_bytes_v = read_file("shaders/glsl/triangle/triangle.frag.spv");
 
