@@ -5,6 +5,16 @@
 class Device;
 class SwapChain;
 
+class RenderPass {
+    public:
+        RenderPass(Device& device, SwapChain& swapchain);
+        VkRenderPass get_vk_render_pass();
+    private:
+        VkRenderPass            m_render_pass;
+        Device&                 m_device;
+        SwapChain&              m_swapchain;
+};
+
 class Pipeline {
     public:
         Pipeline(Device& dev, SwapChain& swapchain);
@@ -14,5 +24,6 @@ class Pipeline {
         Device&                 m_device;
         SwapChain&              m_swapchain;
         VkPipelineLayout        m_pipeline_layout;
+        VkPipeline              m_vk_pipeline;
 };
 
