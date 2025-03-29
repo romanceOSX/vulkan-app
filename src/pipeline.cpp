@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <vector>
 #include <string>
+#include <vulkan/vulkan_core.h>
 
 #include "pipeline.hpp"
 #include "device.hpp"
@@ -32,7 +33,29 @@ Pipeline::Pipeline(Device& dev): m_device{dev} {
     std::cout << "File bytes: " << vert_file_bytes_v.size() << std::endl;
     std::cout << "File bytes: " << frag_file_bytes_v.size() << std::endl;
 
-    auto shader_module = this->create_shader_module(vert_file_bytes_v);
+    auto vert_shader_module = this->create_shader_module(vert_file_bytes_v);
+    auto frag_shader_module = this->create_shader_module(frag_file_bytes_v);
+
+    /* assign vert shader module to pipeline stage */
+    VkPipelineShaderStageCreateInfo vert_shader_stage_info{ };
+    vert_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vert_shader_stage_info.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vert_shader_stage_info.module = vert_shader_module;
+    /* entrypoint function name */
+    vert_shader_stage_info.pName = "main";
+
+    /* assign fragment shader module to pipeline stage */
+    VkPipelineShaderStageCreateInfo frag_shader_stage_info{ };
+    vert_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vert_shader_stage_info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    vert_shader_stage_info.module = frag_shader_module;
+    /* entrypoint function name */
+    vert_shader_stage_info.pName = "main";
+
+    std::vector<VkPipelineShaderStageCreateInfo> shader_stages = {
+        frag_shader_stage_info,
+        vert_shader_stage_info,
+    };
 }
 
 VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {
