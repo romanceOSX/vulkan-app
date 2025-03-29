@@ -6,8 +6,6 @@ export APP_NAME=vulkan_app
 # Set up environment variables
 . /Users/david/VulkanSDK/1.4.309.0/setup-env.sh
 
-export 
-
 SRC_DIR=$(dirname "$(realpath "$0")")
 BUILD_DIR=$SRC_DIR/build
 TARGET=$BUILD_DIR/$APP_NAME
