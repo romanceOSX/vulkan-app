@@ -1,0 +1,15 @@
+Pipeline basics
+--> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/00_Introduction.html
+
+    - Vertex Input
+    - Input Assembly
+    - Rasterizer
+        Takes the geometry shaped by the vertices from the vertex shader and turns
+        it into fragments to be colored by the fragment shader
+        Also performs: 
+            - depth testing
+            - face culling
+            - scissor test
+
+What are pipeline states?
+

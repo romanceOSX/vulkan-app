@@ -371,11 +371,17 @@ SHADER MODULES
         the pipeline is created, this means that we can keep such shader modules as
         stack variables since they are disposable
 
+Shader stages
+    - create shader description through a .glsl file
+    - compile the .glsl to a spirv
+    - create the vk shader module 'thin wrapper'
+    - assign the shader module to a pipeline stage
+
+Fixed Functions
+    In contrast to other API's vulkan does not come with default pipeline stages
+    you need to be explicit about it
+
 Homogeneus coordinates
     --> https://en.wikipedia.org/wiki/Homogeneous_coordinates
     
-
-
-
-
 
