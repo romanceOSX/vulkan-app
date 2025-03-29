@@ -206,3 +206,7 @@ SwapChain::~SwapChain() {
     }
 }
 
+VkSwapchainKHR SwapChain::get_vk_swapchain() {
+    return m_vk_swapchain;
+}
+
