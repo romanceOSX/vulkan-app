@@ -34,6 +34,9 @@ Render Passes
 What are pipeline states?
     A Pipeline has 'rendering stages' and 'states'
     A Vk pipeline is a collection of stages and states
+    The term 'pipeline state', or the 'state', refers to the overall 'state', being
+    configuration, paramters, etc... that describe the pipeline as a whole, you can
+    think of this state term in the mathematical sense.
     The 'states' refer to the settings that determine the behaviour of such 'rendernig stages'
     Other names for 'pipeline states' would be 'pipeline settings' or 'pipeline parameters'
 
