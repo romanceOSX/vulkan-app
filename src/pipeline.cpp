@@ -5,6 +5,8 @@
 #include <string>
 #include <vulkan/vulkan_core.h>
 
+#include "app_settings.hpp"
+
 #include "device.hpp"
 #include "swapchain.hpp"
 #include "pipeline.hpp"
@@ -55,9 +57,6 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     subpass.pColorAttachments = &color_attachment_ref;
     
     /* render pass */
-    VkRenderPass render_pass;
-    VkPipelineLayout pipeline_layout;
-
     VkRenderPassCreateInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     render_pass_info.attachmentCount = 1;
@@ -66,7 +65,7 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     render_pass_info.pSubpasses = &subpass;
 
     /* TODO: destroy this thing */
-    if (vkCreateRenderPass(m_device.get_vk_device(), &render_pass_info, nullptr, &render_pass)
+    if (vkCreateRenderPass(m_device.get_vk_device(), &render_pass_info, nullptr, &m_render_pass)
             != VK_SUCCESS) {
         throw std::runtime_error("Failed to create render pass! 😵");
     }
@@ -85,9 +84,6 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
 {
     auto vert_file_bytes_v = read_file("shaders/glsl/triangle/triangle.vert.spv");
     auto frag_file_bytes_v = read_file("shaders/glsl/triangle/triangle.frag.spv");
-
-    std::cout << "File bytes: " << vert_file_bytes_v.size() << std::endl;
-    std::cout << "File bytes: " << frag_file_bytes_v.size() << std::endl;
 
     auto vert_shader_module = this->create_shader_module(vert_file_bytes_v);
     auto frag_shader_module = this->create_shader_module(frag_file_bytes_v);
@@ -113,13 +109,13 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
         vert_shader_stage_info,
     };
 
+    /* dynamic state */
     std::vector<VkDynamicState> dynamic_states = {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR,
     };
 
-    /* dynamic state */
-    VkPipelineDynamicStateCreateInfo dynamic_state {};
+    VkPipelineDynamicStateCreateInfo dynamic_state{};
     dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
     dynamic_state.pDynamicStates = dynamic_states.data();
@@ -156,15 +152,17 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     VkPipelineViewportStateCreateInfo viewport_state{};
     viewport_state.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     viewport_state.viewportCount = 1;
+    viewport_state.pViewports = &viewport;
     viewport_state.scissorCount = 1;
+    viewport_state.pScissors = &scissor;
     
-    /* Rasterizer */
+    /* rasterizer */
     VkPipelineRasterizationStateCreateInfo rasterizer{};
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     rasterizer.depthClampEnable = VK_FALSE;
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-    //rasterizer.lineWidth = 1.0f;
+    rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
     rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
@@ -174,7 +172,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     rasterizer.depthBiasClamp = 0.0f;
     rasterizer.depthBiasSlopeFactor = 0.0f;
 
-    /* Multisampling */
+    /* multisampling */
     VkPipelineMultisampleStateCreateInfo multisampling{};
     multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     multisampling.sampleShadingEnable = VK_FALSE;
@@ -184,12 +182,13 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     multisampling.alphaToCoverageEnable = VK_FALSE;
     multisampling.alphaToOneEnable = VK_FALSE;
 
-    /* ColorBlending */
+    /* colorblending */
     VkPipelineColorBlendAttachmentState color_blend_attachment{};
     color_blend_attachment.colorWriteMask =
         VK_COLOR_COMPONENT_R_BIT 
-        | VK_COLOR_COMPONENT_R_BIT
-        | VK_COLOR_COMPONENT_R_BIT;
+        | VK_COLOR_COMPONENT_G_BIT
+        | VK_COLOR_COMPONENT_B_BIT
+        | VK_COLOR_COMPONENT_A_BIT;
     color_blend_attachment.blendEnable = VK_FALSE;
     color_blend_attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
     color_blend_attachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
@@ -230,8 +229,10 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* create graphic pipeline */
     VkGraphicsPipelineCreateInfo pipeline_info;
     pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+
     pipeline_info.stageCount = shader_stages.size();
     pipeline_info.pStages = shader_stages.data();
+
     pipeline_info.pVertexInputState = &vertex_input_info;
     pipeline_info.pInputAssemblyState = &input_assembly;
     pipeline_info.pViewportState = &viewport_state;
@@ -240,11 +241,12 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     pipeline_info.pDepthStencilState = nullptr;
     pipeline_info.pColorBlendState = &color_blending;
     pipeline_info.pDynamicState = &dynamic_state;
+
     pipeline_info.layout = m_pipeline_layout;
+
     pipeline_info.renderPass = render_pass.get_vk_render_pass();
     pipeline_info.subpass = 0;
-    pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
-    pipeline_info.subpass = 0;
+
     pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
     pipeline_info.basePipelineIndex = -1;
 
@@ -258,13 +260,18 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
 
 VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {
     /* create shader module */
+    std::cout << "code.size(): " << spirv_bytes.size() << std::endl;
+    std::cout << "sizeof(uint32_t): " << sizeof(uint32_t) << std::endl;
+    
     VkShaderModuleCreateInfo create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     create_info.codeSize = spirv_bytes.size();
     create_info.pCode = reinterpret_cast<const uint32_t*>(spirv_bytes.data());
     
     VkShaderModule shader_module;
-    if (vkCreateShaderModule(m_device.get_vk_device(), &create_info, nullptr, &shader_module)) {
+    if (vkCreateShaderModule(m_device.get_vk_device(), &create_info, nullptr, &shader_module)
+            != VK_SUCCESS)
+    {
         throw std::runtime_error("Failed to create shader module 😵");
     }
 

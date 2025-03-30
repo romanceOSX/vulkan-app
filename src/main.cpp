@@ -36,6 +36,7 @@ void _physical_device_test() {
     instance.add_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
     instance.add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
     instance.add_extension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
+    //instance.add_layer("VK_LAYER_LUNARG_api_dump");
     instance.init();
 
     auto vk_phy_devs = instance.get_vk_devices();
@@ -70,11 +71,11 @@ void _physical_device_test() {
             device.init(1);
 
             /* query swapchain properties */
-            SwapChain swap{device, window};
-            swap.print_info();
+            SwapChain swapchain{device, window};
+            swapchain.print_info();
 
             /* create pipeline */
-            Pipeline pipeline{device};
+            Pipeline pipeline{device, swapchain};
         }
     }
 }
