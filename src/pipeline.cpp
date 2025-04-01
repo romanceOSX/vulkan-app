@@ -67,14 +67,14 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     render_pass_info.pSubpasses = &subpass;
 
     /* TODO: destroy this thing */
-    if (vkCreateRenderPass(m_device.get_vk_device(), &render_pass_info, nullptr, &m_render_pass)
+    if (vkCreateRenderPass(m_device.get_vk_device(), &render_pass_info, nullptr, &m_vk_render_pass)
             != VK_SUCCESS) {
         throw std::runtime_error("Failed to create render pass! 😵");
     }
 }
 
 VkRenderPass RenderPass::get_vk_render_pass() {
-    return m_render_pass;
+    return m_vk_render_pass;
 }
 
 /*
