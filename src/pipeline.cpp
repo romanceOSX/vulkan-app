@@ -47,6 +47,7 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     color_attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     color_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     color_attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    color_attachment.flags = 0;
 
     /* subpasses */
     VkAttachmentReference color_attachment_ref{};
@@ -126,6 +127,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* vertex input */
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertex_input_info.pNext = nullptr;
+    vertex_input_info.flags = 0;
     vertex_input_info.vertexBindingDescriptionCount = 0;
     vertex_input_info.pVertexBindingDescriptions = nullptr;
     vertex_input_info.vertexAttributeDescriptionCount = 0;
@@ -134,6 +137,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* input assembly */
     VkPipelineInputAssemblyStateCreateInfo input_assembly{};
     input_assembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    input_assembly.pNext = nullptr;
+    input_assembly.flags = 0;
     input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     input_assembly.primitiveRestartEnable = VK_FALSE;
     
@@ -154,6 +159,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* dynamic state config */
     VkPipelineViewportStateCreateInfo viewport_state{};
     viewport_state.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewport_state.pNext = nullptr;
+    viewport_state.flags = 0;
     viewport_state.viewportCount = 1;
     viewport_state.pViewports = &viewport;
     viewport_state.scissorCount = 1;
@@ -162,6 +169,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* rasterizer */
     VkPipelineRasterizationStateCreateInfo rasterizer{};
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.pNext = nullptr;
+    rasterizer.flags = 0;
     rasterizer.depthClampEnable = VK_FALSE;
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
@@ -202,6 +211,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
 
     VkPipelineColorBlendStateCreateInfo color_blending{};
     color_blending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    color_blending.pNext = nullptr;
+    color_blending.flags = 0;
     color_blending.logicOpEnable = VK_FALSE;
     color_blending.logicOp = VK_LOGIC_OP_COPY;
     color_blending.attachmentCount = 1;
@@ -214,6 +225,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* Pipeline Layout */
     VkPipelineLayoutCreateInfo pipeline_layout_info{};
     pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipeline_layout_info.pNext = nullptr;
+    pipeline_layout_info.flags = 0;
     pipeline_layout_info.setLayoutCount = 0;
     pipeline_layout_info.pSetLayouts = nullptr;
     pipeline_layout_info.pushConstantRangeCount = 0;
@@ -229,6 +242,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* create graphic pipeline */
     VkGraphicsPipelineCreateInfo pipeline_info;
     pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipeline_info.pNext = nullptr;
+    pipeline_info.flags = 0;
 
     pipeline_info.stageCount = shader_stages.size();
     pipeline_info.pStages = shader_stages.data();
@@ -247,15 +262,20 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     pipeline_info.renderPass = m_render_pass.get_vk_render_pass();
     pipeline_info.subpass = 0;
 
+    /* FIX: pipeline/validation layer error */
+    /* --> https://stackoverflow.com/questions/45460516/vkcreatepipeline-fails-and-validation-layer-segment-faults */
+    pipeline_info.pTessellationState = nullptr; 
+
     pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
     pipeline_info.basePipelineIndex = -1;
-
+                                                                                                                 
     /* TODO: do cleanup of pipeline object */
     if (vkCreateGraphicsPipelines(m_device.get_vk_device(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &m_vk_pipeline)
             != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create Graphics Pipeline 😵");
     }
+    PRETTY_PRINT_CUSTOM("Pipeline created succesfull!", "🐦‍🔥");
 }
 
 VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {
