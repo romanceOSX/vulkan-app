@@ -18,7 +18,6 @@ Window::Window(Instance& i): m_instance{i} {
     /* TODO: window surface creation does not work out of the box */
     /* Create vk surface */
     VkResult res = glfwCreateWindowSurface(m_instance.get_vk_instance(), m_glfw_window, nullptr, &m_vk_surface);
-    std::cout << "RES " << res << std::endl;
     if (VK_SUCCESS != res) {
         throw std::runtime_error("Failed to create window surface ❌");
     }

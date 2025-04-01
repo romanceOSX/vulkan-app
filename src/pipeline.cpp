@@ -280,14 +280,11 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
 
 VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {
     /* create shader module */
-    std::cout << "code.size(): " << spirv_bytes.size() << std::endl;
-    std::cout << "sizeof(uint32_t): " << sizeof(uint32_t) << std::endl;
     assert((spirv_bytes.size() % 4) == 0);
     
     VkShaderModuleCreateInfo create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     create_info.codeSize = spirv_bytes.size();
-    std::cout << spirv_bytes.size() << std::endl;
     create_info.pCode = reinterpret_cast<const uint32_t*>(spirv_bytes.data());
     
     VkShaderModule shader_module;
