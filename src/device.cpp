@@ -14,6 +14,10 @@
 #include "physical_device.hpp"
 #include "window.hpp"
 
+Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} {
+    APP_PRETTY_PRINT_CUSTOM("creating logical Device...", "☀️");
+}
+
 uint32_t Device::_get_suitable_queue_index(void) {
     if (auto ret = m_physical_device.get_suitable_queue_index(m_window)) {
         return ret.value();

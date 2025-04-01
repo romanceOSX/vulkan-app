@@ -33,7 +33,6 @@ int run_app() {
 
 void _physical_device_test() {
     /* create instance with required extensions */
-    APP_PRETTY_PRINT_CUSTOM("Creating instance...", "🏁");
     auto instance = Instance();
     instance.add_extension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
     instance.add_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
@@ -51,13 +50,11 @@ void _physical_device_test() {
     std::vector<PhysicalDevice> phy_devs;
 
     /* initialize physical device wrappers */
-    APP_PRETTY_PRINT_CUSTOM("Creating physical Devices...", "🏁");
     for (auto& dev: vk_phy_devs) {
         phy_devs.emplace_back(dev);
     }
 
     /* create glfw window */
-    APP_PRETTY_PRINT_CUSTOM("Creating glfw window...", "🏁");
     Window window{instance};
 
     /* get first available device */
@@ -71,18 +68,15 @@ void _physical_device_test() {
     }
 
     /* create logical device */
-    APP_PRETTY_PRINT_CUSTOM("Creating logical device...", "🏁");
     Device device{physical_device, window};
     device.addExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     device.init(1);
     
     /* create swapchain */
-    APP_PRETTY_PRINT_CUSTOM("Creating swapchain...", "🏁");
     SwapChain swapchain{device, window};
     swapchain.print_info();
 
     /* create pipeline */
-    APP_PRETTY_PRINT_CUSTOM("Creating pipeline...", "🏁");
     Pipeline pipeline{device, swapchain};
 }
 

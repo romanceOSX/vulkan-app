@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <vulkan/vulkan_core.h>
 
+#include "app_settings.hpp"
 #include "swapchain.hpp"
 #include "device.hpp"
 #include "window.hpp"
@@ -143,6 +144,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
     m_vk_phy_dev{dev.get_vk_physical_dev()}, 
     m_window{window} 
 {
+    APP_PRETTY_PRINT_CUSTOM("creating Swapchain...", "☀️");
     /* initialize swap chain */
     _query_swapchain_support();
 

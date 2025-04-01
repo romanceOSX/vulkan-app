@@ -9,7 +9,9 @@
 #include "instance.hpp"
 #include "host.hpp"
 
-Instance::Instance() { }
+Instance::Instance() {
+    APP_PRETTY_PRINT_CUSTOM("creating Instance...", "☀️");
+}
 
 AppResult Instance::add_extension(const char* ext) {
     AppResult res = AppResult::APP_SUCCESS;

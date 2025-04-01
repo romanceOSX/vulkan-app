@@ -32,7 +32,7 @@ class Device {
     public:
         Device() = delete;
         Device(Device& other) = delete;
-        Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} { }
+        Device(PhysicalDevice& dev, Window& window);
         ~Device();
         void wait(void);
         void addExtension(const char*);
