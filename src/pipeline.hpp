@@ -9,6 +9,7 @@ class RenderPass {
     public:
         RenderPass(Device& device, SwapChain& swapchain);
         VkRenderPass get_vk_render_pass();
+
     private:
         VkRenderPass            m_vk_render_pass;
         Device&                 m_device;
