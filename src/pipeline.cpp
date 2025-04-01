@@ -82,7 +82,8 @@ VkRenderPass RenderPass::get_vk_render_pass() {
  */
 Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     m_device{dev},
-    m_swapchain{swapchain}
+    m_swapchain{swapchain},
+    m_render_pass{dev, swapchain}
 {
     auto vert_file_bytes_v = read_file("shaders/glsl/triangle/triangle.vert.spv");
     auto frag_file_bytes_v = read_file("shaders/glsl/triangle/triangle.frag.spv");
@@ -225,9 +226,6 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
         throw std::runtime_error("Failed to create Pipeline layout 😵");
     }
 
-    /* create render pass */
-    RenderPass render_pass{m_device, m_swapchain};
-
     /* create graphic pipeline */
     VkGraphicsPipelineCreateInfo pipeline_info;
     pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -246,7 +244,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
 
     pipeline_info.layout = m_pipeline_layout;
 
-    pipeline_info.renderPass = render_pass.get_vk_render_pass();
+    pipeline_info.renderPass = m_render_pass.get_vk_render_pass();
     pipeline_info.subpass = 0;
 
     pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
