@@ -8,3 +8,8 @@ Dev TODO list
 [ ] Evaluate if creating a wsi.cpp module should be proper
 [ ] Check most convenient way to raise exceptions
 
+2025-03-30
+    - TODO: add proper dependency warnings
+        - glsl
+        - glm
+
