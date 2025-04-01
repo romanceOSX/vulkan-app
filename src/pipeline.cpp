@@ -98,11 +98,11 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
 
     /* assign fragment shader module to pipeline stage */
     VkPipelineShaderStageCreateInfo frag_shader_stage_info{};
-    vert_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    vert_shader_stage_info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-    vert_shader_stage_info.module = frag_shader_module;
+    frag_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    frag_shader_stage_info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    frag_shader_stage_info.module = frag_shader_module;
     /* entrypoint function name */
-    vert_shader_stage_info.pName = "main";
+    frag_shader_stage_info.pName = "main";
 
     std::vector<VkPipelineShaderStageCreateInfo> shader_stages = {
         frag_shader_stage_info,
