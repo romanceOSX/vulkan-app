@@ -1,6 +1,7 @@
 /* Vulkan sample application */
 
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 #include "app_settings.hpp"
@@ -31,6 +32,8 @@ int run_app() {
 }
 
 void _physical_device_test() {
+    /* create instance with required extensions */
+    APP_PRETTY_PRINT_CUSTOM("Creating instance...", "🏁");
     auto instance = Instance();
     instance.add_extension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
     instance.add_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
@@ -41,43 +44,46 @@ void _physical_device_test() {
 
     auto vk_phy_devs = instance.get_vk_devices();
 
-    /* Create glfw window */
-    auto window = Window(instance);
-
-    /* Run window? */
+    /* run window? */
     //window.wait_to_close_window();
 
-    /* Physical devices not VkPhysicalDevice */
+    /* physical devices not VkPhysicalDevice */
     std::vector<PhysicalDevice> phy_devs;
 
+    /* initialize physical device wrappers */
+    APP_PRETTY_PRINT_CUSTOM("Creating physical Devices...", "🏁");
     for (auto& dev: vk_phy_devs) {
         phy_devs.emplace_back(dev);
     }
-    
-    /* find suitable device */
-    for (auto& dev: phy_devs) {
-        std::cout << "Printing physical device info:" << std::endl;
-        dev.print_info();
-        std::cout << "-- Is device suitable?: "  << std::endl;
-        if (auto queue_family_index = dev.get_suitable_queue_index(window)) {
-            std::cout << "true! at queue index: " 
-                << std::boolalpha
-                << queue_family_index.value() 
-                << std::endl;
 
-            APP_PRETTY_PRINT("Creating logical device");
-            Device device{dev, window};
-            device.addExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-            device.init(1);
+    /* create glfw window */
+    APP_PRETTY_PRINT_CUSTOM("Creating glfw window...", "🏁");
+    Window window{instance};
 
-            /* query swapchain properties */
-            SwapChain swapchain{device, window};
-            swapchain.print_info();
+    /* get first available device */
+    auto physical_device = phy_devs.front();
+    physical_device.print_info();
 
-            /* create pipeline */
-            Pipeline pipeline{device, swapchain};
-        }
+    /* get suitable queue family index */
+    auto queue_family_index = physical_device.get_suitable_queue_index(window);
+    if (!queue_family_index) {
+        throw std::runtime_error("Device does not have a suitable queue capabilities");
     }
+
+    /* create logical device */
+    APP_PRETTY_PRINT_CUSTOM("Creating logical device...", "🏁");
+    Device device{physical_device, window};
+    device.addExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    device.init(1);
+    
+    /* create swapchain */
+    APP_PRETTY_PRINT_CUSTOM("Creating swapchain...", "🏁");
+    SwapChain swapchain{device, window};
+    swapchain.print_info();
+
+    /* create pipeline */
+    APP_PRETTY_PRINT_CUSTOM("Creating pipeline...", "🏁");
+    Pipeline pipeline{device, swapchain};
 }
 
 void _test_glfw() {
