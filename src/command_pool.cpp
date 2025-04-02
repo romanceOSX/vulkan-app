@@ -53,6 +53,11 @@ Device& CommandPool::getDevice() {
     return m_device;
 }
 
+CommandBuffer& CommandPool::create_command_buffer() {
+    m_command_buffers.emplace_back(*this, 1, VK_COMMAND_BUFFER_LEVEL_PRIMARY); 
+    return m_command_buffers.back();
+}
+
 /*
  * TODO: Find a better way to pass the Device around 
  *  all classes in some way related to device, should have a reference to it

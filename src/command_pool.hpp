@@ -15,6 +15,7 @@ class CommandPool {
         void trim();
         void reset();
         void destroy();
+        CommandBuffer& create_command_buffer();
         VkCommandPool getVkCmdPool();
         Device& getDevice();
 
