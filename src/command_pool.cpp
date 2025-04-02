@@ -1,10 +1,14 @@
+#include <stdexcept>
+#include <tuple>
+
+#include <vulkan/vulkan_core.h>
 
 #include "app_settings.hpp"
 #include "command_pool.hpp"
-#include "host.hpp"
 #include "device.hpp"
-
-#include <vulkan/vulkan_core.h>
+#include "pipeline.hpp"
+#include "swapchain.hpp"
+#include "framebuffers.hpp"
 
 /*
  * Command Pool class
@@ -59,10 +63,13 @@ Device& CommandPool::getDevice() {
  * Command Buffer class
  */
 CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
-    :m_command_pool{cmdPool}, m_count{count}, m_device{cmdPool.getDevice()} {
+    :m_command_pool{cmdPool},
+    m_count{count},
+    m_device{cmdPool.getDevice()}
+{
     /* TODO: This vector could be initialized at the initializer list instead */
     m_command_buffers.resize(m_count);
-    
+
     VkCommandBufferAllocateInfo allocate_info = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
         .pNext = nullptr,
@@ -107,7 +114,6 @@ void CommandBuffer::begin(uint32_t buf, Usage usage) {
     vkBeginCommandBuffer(m_command_buffers.at(buf), &beginInfo);
 }
 
-#include <tuple>
 /*
  * Command Buffer submission
  */
