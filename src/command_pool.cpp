@@ -9,13 +9,13 @@
 /*
  * Command Pool class
  */
-CommandPool::CommandPool(Device& dev): _m_dev{dev} {
+CommandPool::CommandPool(Device& dev): m_device{dev} {
     VkCommandPool commandPool;
     VkCommandPoolCreateInfo command_pool_create = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .pNext = nullptr,
         .flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
-        .queueFamilyIndex = _m_dev.get_queue_family_index(),
+        .queueFamilyIndex = m_device.get_queue_family_index(),
     };
 
     if (VK_SUCCESS != vkCreateCommandPool(
@@ -27,25 +27,25 @@ CommandPool::CommandPool(Device& dev): _m_dev{dev} {
 
 void CommandPool::reset() {
     vkResetCommandPool(
-            _m_dev.get_vk_device(),
-            _m_command_pool,
+            m_device.get_vk_device(),
+            m_command_pool,
             VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
     );
 }
 
 void CommandPool::destroy() {
-    vkDestroyCommandPool(_m_dev.get_vk_device(),
-            _m_command_pool,
+    vkDestroyCommandPool( m_device.get_vk_device(),
+            m_command_pool,
             nullptr
     );
 }
 
 VkCommandPool CommandPool::getVkCmdPool() {
-    return _m_command_pool;
+    return m_command_pool;
 }
 
 Device& CommandPool::getDevice() {
-    return _m_dev;
+    return m_device;
 }
 
 /*
@@ -58,41 +58,41 @@ Device& CommandPool::getDevice() {
  * Command Buffer class
  */
 CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
-    :_m_cmdPool{cmdPool}, _m_count{count}, _m_dev{cmdPool.getDevice()} {
+    :m_command_pool{cmdPool}, m_count{count}, m_device{cmdPool.getDevice()} {
     /* TODO: This vector could be initialized at the initializer list instead */
-    _m_cmdBuffs.resize(_m_count);
+    m_command_buffers.resize(m_count);
     
     VkCommandBufferAllocateInfo allocate_info = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
         .pNext = nullptr,
-        .commandPool = _m_cmdPool.getVkCmdPool(),
+        .commandPool = m_command_pool.getVkCmdPool(),
         .level = type,
-        .commandBufferCount = _m_count,
+        .commandBufferCount = m_count,
     };
 
     vkAllocateCommandBuffers(
-            _m_dev.get_vk_device(),
+            m_device.get_vk_device(),
             &allocate_info,
-            _m_cmdBuffs.data()
+            m_command_buffers.data()
     );  
 }
 
 /* Resets all, edit class upon solid use-case */
 void CommandBuffer::reset() {
-    for (auto& buf: _m_cmdBuffs) {
+    for (auto& buf: m_command_buffers) {
         vkResetCommandBuffer(buf, VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
     }
 }
 
 std::vector<VkCommandBuffer>& CommandBuffer::getCmdBuffs() {
-    return _m_cmdBuffs;
+    return m_command_buffers;
 }
 
 void CommandBuffer::free() {
-    vkFreeCommandBuffers(_m_dev.get_vk_device(),
-            _m_cmdPool.getVkCmdPool(),
-            _m_cmdBuffs.size(),
-            _m_cmdBuffs.data()
+    vkFreeCommandBuffers(m_device.get_vk_device(),
+            m_command_pool.getVkCmdPool(),
+            m_command_buffers.size(),
+            m_command_buffers.data()
     );
 }
 
@@ -103,7 +103,7 @@ void CommandBuffer::begin(uint32_t buf, Usage usage) {
         .flags = usage,
         .pInheritanceInfo = nullptr,
     };
-    vkBeginCommandBuffer(_m_cmdBuffs.at(buf), &beginInfo);
+    vkBeginCommandBuffer(m_command_buffers.at(buf), &beginInfo);
 }
 
 #include <tuple>

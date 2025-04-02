@@ -21,8 +21,8 @@ class CommandPool {
     private:
         void _allocate_cmd_buffer();
 
-        Device&                 _m_dev;
-        VkCommandPool           _m_command_pool;
+        Device&                 m_device;
+        VkCommandPool           m_command_pool;
 };
 
 /* TODO: Rename this to CommandBuffers plural! */
@@ -40,9 +40,9 @@ class CommandBuffer {
         void submit();
 
     private:
-        Device&                         _m_dev;
-        CommandPool&                    _m_cmdPool;
-        std::vector<VkCommandBuffer>    _m_cmdBuffs;
-        uint32_t                        _m_count;
+        Device&                         m_device;
+        CommandPool&                    m_command_pool;
+        std::vector<VkCommandBuffer>    m_command_buffers;
+        uint32_t                        m_count;
 };
 
