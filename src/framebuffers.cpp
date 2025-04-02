@@ -46,6 +46,7 @@ void Framebuffers::_create_framebuffers() {
     }
 }
 
+/* TODO: add destroy function */
 
 std::vector<VkFramebuffer>& Framebuffers::get_swapchain_frame_buffers() {
     return m_swapchain_frame_buffers;

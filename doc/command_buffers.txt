@@ -1,0 +1,17 @@
+Command buffers
+    --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/03_Drawing/01_Command_buffers.html
+
+    Commands in vulkan:
+        - drawing operations
+        - memory transfers
+    they are not excecuted directly by doing function calls
+    you have to record these operations in a command buffer
+    the recording of these commands can be multithreaded, this is an advantage
+
+command pool
+    they manage the memory that is used to store the buffers
+    command buffers are allocated from them
+
+Recording commands
+    Once we have a command buffer, we begin recording commands into it
+pl
