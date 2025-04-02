@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.29)
 
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS Y)
@@ -37,6 +38,7 @@ set(APP_SOURCES
     ${APP_SRC_DIR}/window.cpp
     ${APP_SRC_DIR}/swapchain.cpp
     ${APP_SRC_DIR}/pipeline.cpp
+    ${APP_SRC_DIR}/framebuffers.cpp
 )
 
 add_subdirectory(${GLFW_PATH} glfw)
