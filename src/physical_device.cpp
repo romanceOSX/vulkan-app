@@ -10,6 +10,7 @@
 #include "window.hpp"
 
 PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): m_vk_physical_device(dev) {
+    APP_PRETTY_PRINT_CUSTOM("creating physical device wrapper...", "☀️");
     /* Get device properties */
     _queryDeviceProperties();
     _queryQueueProperties();

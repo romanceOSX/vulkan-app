@@ -10,6 +10,7 @@
  * Command Pool class
  */
 CommandPool::CommandPool(Device& dev): m_device{dev} {
+    APP_PRETTY_PRINT_CUSTOM("creating command pool...", "☀️");
     VkCommandPool commandPool;
     VkCommandPoolCreateInfo command_pool_create = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
