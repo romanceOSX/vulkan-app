@@ -20,6 +20,7 @@ class Pipeline {
     public:
         Pipeline(Device& dev, SwapChain& swapchain);
         VkShaderModule create_shader_module(std::vector<char>& bytes);
+        RenderPass& get_render_pass();
 
     private:
         RenderPass              m_render_pass;

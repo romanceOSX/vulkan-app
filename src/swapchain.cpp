@@ -154,6 +154,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
     m_vk_swapchain_images.resize(image_count);
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, m_vk_swapchain_images.data());
 
+    /* initialize image views */
     size_t i = 0;
     for (auto& image: m_vk_swapchain_image_views) {
         VkImageViewCreateInfo image_view_create_info {
@@ -210,5 +211,13 @@ SwapChain::~SwapChain() {
 
 VkSwapchainKHR SwapChain::get_vk_swapchain() {
     return m_vk_swapchain;
+}
+
+size_t SwapChain::size() {
+    return m_vk_swapchain_image_views.size();
+}
+
+std::vector<VkImageView>& SwapChain::get_vk_image_views() {
+    return m_vk_swapchain_image_views;
 }
 

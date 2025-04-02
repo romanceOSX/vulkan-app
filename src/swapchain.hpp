@@ -19,7 +19,9 @@ class SwapChain {
         VkFormat get_vk_format();
         VkExtent2D get_vk_extent_2d();
         std::vector<VkImage>& get_vk_images();
+        std::vector<VkImageView>& get_vk_image_views();
         VkSwapchainKHR  get_vk_swapchain();
+        size_t size();
 
     private:
         void _query_swapchain_support();

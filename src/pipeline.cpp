@@ -298,3 +298,7 @@ VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {
     return shader_module;
 }
 
+RenderPass& Pipeline::get_render_pass() {
+    return m_render_pass;
+}
+
