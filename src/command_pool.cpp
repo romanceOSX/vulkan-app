@@ -15,7 +15,6 @@
  */
 CommandPool::CommandPool(Device& dev): m_device{dev} {
     APP_PRETTY_PRINT_CUSTOM("creating command pool...", "☀️");
-    VkCommandPool commandPool;
     VkCommandPoolCreateInfo command_pool_create = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .pNext = nullptr,
@@ -25,7 +24,7 @@ CommandPool::CommandPool(Device& dev): m_device{dev} {
 
     if (VK_SUCCESS != vkCreateCommandPool(
                 dev.get_vk_device(), &command_pool_create,
-                nullptr, &commandPool)) {
+                nullptr, &m_command_pool)) {
         APP_DBG_ERR("Failed to create Command Pool");
     }
 }
