@@ -6,6 +6,7 @@
 
 #include "app_settings.hpp"
 #include "app.hpp"
+#include "framebuffers.hpp"
 #include "host.hpp"
 #include "instance.hpp"
 #include "physical_device.hpp"
@@ -78,6 +79,9 @@ void _physical_device_test() {
 
     /* create pipeline */
     Pipeline pipeline{device, swapchain};
+
+    /* create Framebuffers */
+    Framebuffers framebuffers{device, swapchain, pipeline};
 }
 
 void _test_glfw() {
