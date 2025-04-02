@@ -1,0 +1,11 @@
+Framebuffers
+    --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/03_Drawing/00_Framebuffers.html
+
+    - framebuffer is expected to be the same as the swapchain's image format
+    - the render pass bounds with a VkFramebuffer object, this in turn references
+      image views objects
+    - The VkFramebuffer object depends on the type of image retrieved from the
+      swapchain, meaning that we have to create a framebuffer depending on the
+      retreived image, we need to cover all cases
+    - jjjj
+      
