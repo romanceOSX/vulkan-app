@@ -7,6 +7,10 @@
  * Forward declarations
  */
 class Device;
+class CommandBuffer;
+class RenderPass;
+class SwapChain;
+class Framebuffers;
 
 class CommandPool {
     public:
@@ -22,8 +26,9 @@ class CommandPool {
     private:
         void _allocate_cmd_buffer();
 
-        Device&                 m_device;
-        VkCommandPool           m_command_pool;
+        std::vector<CommandBuffer>      m_command_buffers;
+        Device&                         m_device;
+        VkCommandPool                   m_command_pool;
 };
 
 /* TODO: Rename this to CommandBuffers plural! */
@@ -37,7 +42,7 @@ class CommandBuffer {
         void free();
         uint32_t count();
         std::vector<VkCommandBuffer>& getCmdBuffs();
-        void begin(uint32_t buf, Usage usage);
+        void begin(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);
         void submit();
 
     private:

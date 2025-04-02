@@ -108,14 +108,39 @@ void CommandBuffer::free() {
     );
 }
 
-void CommandBuffer::begin(uint32_t buf, Usage usage) {
+/* TODO: find a better interface for this */
+void CommandBuffer::begin(
+        uint32_t image_index,
+        SwapChain& swapchain,
+        RenderPass& render_pass,
+        Framebuffers& framebuffers
+        )
+{
     VkCommandBufferBeginInfo beginInfo = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
         .pNext = nullptr,
-        .flags = usage,
+        .flags = 0,     /* does not apply here */
         .pInheritanceInfo = nullptr,
     };
-    vkBeginCommandBuffer(m_command_buffers.at(buf), &beginInfo);
+    if (vkBeginCommandBuffer(m_command_buffers.at(0), &beginInfo)
+            != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to begin recording buffer 😵");
+    }
+
+    VkRenderPassBeginInfo render_pass_info{};
+    render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    render_pass_info.pNext = nullptr;
+    render_pass_info.renderPass = render_pass.get_vk_render_pass();
+    render_pass_info.framebuffer = framebuffers.get_swapchain_frame_buffers().at(image_index);
+    render_pass_info.renderArea.offset = {0, 0};
+    render_pass_info.renderArea.extent = swapchain.get_vk_extent_2d();
+
+    VkClearValue clear_color = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+    render_pass_info.clearValueCount = 1;
+    render_pass_info.pClearValues = &clear_color;
+
+    vkCmdBeginRenderPass(m_command_buffers.front(), &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 }
 
 /*

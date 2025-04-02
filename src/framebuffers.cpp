@@ -46,3 +46,8 @@ void Framebuffers::_create_framebuffers() {
     }
 }
 
+
+std::vector<VkFramebuffer>& Framebuffers::get_swapchain_frame_buffers() {
+    return m_swapchain_frame_buffers;
+}
+

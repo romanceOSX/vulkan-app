@@ -14,6 +14,7 @@
 #include "window.hpp"
 #include "swapchain.hpp"
 #include "pipeline.hpp"
+#include "command_pool.hpp"
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>
@@ -82,6 +83,10 @@ void _physical_device_test() {
 
     /* create Framebuffers */
     Framebuffers framebuffers{device, swapchain, pipeline};
+
+    /* create Command buffers */
+    CommandPool command_pool{device};
+    auto command_buffer = command_pool.create_command_buffer();
 }
 
 void _test_glfw() {

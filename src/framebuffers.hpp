@@ -15,6 +15,7 @@ class Device;
 class Framebuffers {
     public:
         Framebuffers(Device& dev, SwapChain& swap, Pipeline& pipeline);
+        std::vector<VkFramebuffer>& get_swapchain_frame_buffers();
 
     private:
         void _create_framebuffers();
