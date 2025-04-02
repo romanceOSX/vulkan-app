@@ -1,10 +1,8 @@
 #pragma once
 
-#include <string>
 #include <vector>
 
 #include "vulkan/vulkan_core.h"
-#include "vulkan/vulkan.h"
 
 /*
  * Forward Declarations
@@ -22,7 +20,7 @@ class Instance {
     public:
         Instance();
         ~Instance();
-        VkResult init(void);
+        void init(void);
         VkInstance get_vk_instance(void);
         std::vector<VkPhysicalDevice>& get_vk_devices(void);
         Instance(Instance& other) = delete;

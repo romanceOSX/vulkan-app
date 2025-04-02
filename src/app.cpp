@@ -38,7 +38,7 @@ void VulkanApp::run() {
     //vi->addExtension(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
     //vi->addLayer("VK_LAYER_LUNARG_api_dump");
 
-    assert((VK_SUCCESS == vi->init()));
+    vi->init();
 
     host->printHostInfo();
     //host->printPhysicalDevInfo();
@@ -91,7 +91,7 @@ void VulkanApp::_initVulkan() {
     vi->add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
 
     /* Initialize vulkan instance */
-    assert((VK_SUCCESS == vi->init()));
+    vi->init();
 
     host->printHostInfo(); 
 

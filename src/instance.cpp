@@ -1,5 +1,6 @@
+#include <stdexcept>
+
 #define VK_USE_PLATFORM_MACOS_MVK
-#include "vulkan/vulkan.h"
 #include <vulkan/vulkan_core.h>
 
 #include "app_settings.hpp"
@@ -26,7 +27,8 @@ AppResult Instance::add_layer(const char* ext) {
     return res;
 }
 
-VkResult Instance::init() {
+/* TODO: refactor initialization */
+void Instance::init() {
     VkInstanceCreateInfo instance_info = {
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .pNext = nullptr,
@@ -44,22 +46,19 @@ VkResult Instance::init() {
 
     VkResult result = vkCreateInstance(&instance_info, nullptr, &m_vk_instance);
 
-    if (result == VK_SUCCESS) {
-        _m_is_init = true;
-    }
-    if (result == VK_ERROR_INCOMPATIBLE_DRIVER) {
-        APP_DBG_ERR("Incompatible Driver!!!");
-            return result;
-    }
-    else if (result != VK_SUCCESS) {
-        APP_DBG_ERR("Unknown Error");
-            return result;
-    }
+    if (result != VK_SUCCESS) {
+        /* something failed */
+        if (result == VK_ERROR_INCOMPATIBLE_DRIVER) {
+            APP_DBG_ERR("Incompatible Driver!!!");
+        } else {
+            APP_DBG_ERR("Unknown Error");
+        }
+        throw std::runtime_error("Failed to create the vulkan instance 😵");
+    };
 
     /* Query physical devices available */
+    _m_is_init = true;
     _query_physical_devices();
-
-    return result;
 }
 
 VkInstance Instance::get_vk_instance() {
