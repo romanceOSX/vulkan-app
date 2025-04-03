@@ -19,3 +19,52 @@ Recording commands
     - begin render pass
     - bind to pipeline
 
+Rendering and presentation
+    drawing function
+        - wait for the previous frame to finish
+        - acquire an image from the swapchain
+        - record a command buffer which draws the scene onto that image
+        - submit the recorded command buffer
+        - present the swap chain image
+
+    synchronization
+        In vulkan, synchronization is explicit
+        We need to declare explicitly:
+            - acquire image from swapchain
+            - excecute commands that draw onto the acquired image
+            - present the image to the screen presetation, returning it to the swapchain
+
+    semaphore
+        it is used to add order between queue operations
+        queue operations are the work we sumbit to a queue either from:
+            - command buffers
+            - or from functions
+        this applies to graphic queues, and presentation queues
+
+        Types of semaphores:
+            - binary (we will use these)
+            - timeline
+
+        Mode of operation
+            Say we have a semaphore 'S', and operations 'A', and 'B'
+            A semaphore's state is either unsignaled or signaled
+
+            We tell operation A to signal semaphore S when it finishes
+            And we tell operation B to wait for S to be signaled
+            
+            Note that the waiting only happens at the GPU
+
+            To make the CPU wait we need something called 'fences'
+
+    Fences
+        Same thing as semaphore but at the host-side (CPU-side)
+        Fences are needed to be reset manually
+
+        The general good practice is not to block the host
+
+    Where to use them?
+        Semaphores will be used for swapchain operations since they happen at the GPU
+        We use fences to wait for the previous frame to finish, since we don't want
+        to use a frame that is being currently in use or draw multimple frames at
+        the same time
+
