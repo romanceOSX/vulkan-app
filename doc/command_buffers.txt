@@ -14,4 +14,8 @@ command pool
 
 Recording commands
     Once we have a command buffer, we begin recording commands into it
-pl
+
+    - begin recording
+    - begin render pass
+    - bind to pipeline
+

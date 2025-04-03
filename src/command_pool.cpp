@@ -108,6 +108,7 @@ void CommandBuffer::free() {
     );
 }
 
+/* This starts a render pass */
 /* TODO: find a better interface for this */
 void CommandBuffer::begin_recording()
 {
