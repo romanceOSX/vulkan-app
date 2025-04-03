@@ -167,6 +167,10 @@ void CommandBuffer::draw() {
 void CommandBuffer::set_viewport_and_scissor() {
 }
 
+void CommandBuffer::end_render_pass() {
+    vkCmdEndRenderPass(m_command_buffers.front());
+}
+
 /*
  * Command Buffer submission
  */

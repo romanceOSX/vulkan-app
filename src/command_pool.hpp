@@ -48,6 +48,7 @@ class CommandBuffer {
         void bind_pipeline(Pipeline& pipeline);
         void set_viewport_and_scissor();
         void draw();
+        void end_render_pass();
         void submit();
 
     private:
