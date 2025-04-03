@@ -124,6 +124,8 @@ void CommandBuffer::begin_recording()
     }
 }
 
+void CommandBuffer::begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers) {
+    /* begin render pass */
     VkRenderPassBeginInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     render_pass_info.pNext = nullptr;
@@ -137,6 +139,21 @@ void CommandBuffer::begin_recording()
     render_pass_info.pClearValues = &clear_color;
 
     vkCmdBeginRenderPass(m_command_buffers.front(), &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+
+    /* set scissor and viewport */
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(swapchain.get_vk_extent_2d().width);
+    viewport.height = static_cast<float>(swapchain.get_vk_extent_2d().height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(m_command_buffers.front(), 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.offset = {0, 0};
+    scissor.extent = swapchain.get_vk_extent_2d();
+    vkCmdSetScissor(m_command_buffers.front(), 0, 1, &scissor);
 }
 
 /*
