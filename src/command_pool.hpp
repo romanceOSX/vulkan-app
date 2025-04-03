@@ -42,7 +42,7 @@ class CommandBuffer {
         void reset();
         void free();
         uint32_t count();
-        std::vector<VkCommandBuffer>& getCmdBuffs();
+        std::vector<VkCommandBuffer>& get_command_buffers();
         /* TODO: add a prefix for command buffer related operations, this to distringuish between class management methods */
         void begin_recording();
         void begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);

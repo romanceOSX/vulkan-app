@@ -96,7 +96,7 @@ void CommandBuffer::reset() {
     }
 }
 
-std::vector<VkCommandBuffer>& CommandBuffer::getCmdBuffs() {
+std::vector<VkCommandBuffer>& CommandBuffer::get_command_buffers() {
     return m_command_buffers;
 }
 
