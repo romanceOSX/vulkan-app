@@ -302,3 +302,7 @@ RenderPass& Pipeline::get_render_pass() {
     return m_render_pass;
 }
 
+VkPipeline Pipeline::get_vk_pipeline() {
+    return m_vk_pipeline;
+}
+

@@ -23,6 +23,7 @@ class Pipeline {
         Pipeline(Device& dev, SwapChain& swapchain);
         VkShaderModule create_shader_module(std::vector<char>& bytes);
         RenderPass& get_render_pass();
+        VkPipeline get_vk_pipeline();
 
     private:
         RenderPass              m_render_pass;
