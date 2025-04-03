@@ -46,6 +46,7 @@ class CommandBuffer {
         void begin_recording();
         void begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);
         void bind_pipeline(Pipeline& pipeline);
+        void draw();
         void submit();
 
     private:

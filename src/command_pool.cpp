@@ -160,6 +160,10 @@ void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
     vkCmdBindPipeline(m_command_buffers.front(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_vk_pipeline());  
 }
 
+void CommandBuffer::draw() {
+    vkCmdDraw(m_command_buffers.front(), 3, 1, 0, 0);
+}
+
 /*
  * Command Buffer submission
  */
