@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <vulkan/vulkan_core.h>
 
 #include "app_settings.hpp"
 #include "app.hpp"
