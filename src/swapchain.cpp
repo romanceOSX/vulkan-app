@@ -151,12 +151,14 @@ SwapChain::SwapChain(Device& dev, Window& window):
     /* query swap chain images */
     uint32_t image_count;
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, nullptr);
+    /* We create an image view per each image available in the swapchain */
     m_vk_swapchain_images.resize(image_count);
+    m_vk_swapchain_image_views.resize(image_count);
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, m_vk_swapchain_images.data());
 
     /* initialize image views */
     size_t i = 0;
-    for (auto& image: m_vk_swapchain_image_views) {
+    for (auto& image_view: m_vk_swapchain_image_views) {
         VkImageViewCreateInfo image_view_create_info {
             .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
             .image = m_vk_swapchain_images.at(i),
@@ -174,7 +176,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
         image_view_create_info.subresourceRange.baseArrayLayer = 0;
         image_view_create_info.subresourceRange.layerCount = 1;
 
-        if (vkCreateImageView(m_device.get_vk_device(), &image_view_create_info, nullptr, &(image)) != VK_SUCCESS) {
+        if (vkCreateImageView(m_device.get_vk_device(), &image_view_create_info, nullptr, &(image_view)) != VK_SUCCESS) {
             throw std::runtime_error("Failed to create image views! 😵");
         }
         i++;
