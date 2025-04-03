@@ -75,9 +75,6 @@ void _physical_device_test() {
 
     auto vk_phy_devs = instance.get_vk_devices();
 
-    /* run window? */
-    //window.wait_to_close_window();
-
     /* physical devices not VkPhysicalDevice */
     std::vector<PhysicalDevice> phy_devs;
 
@@ -114,10 +111,57 @@ void _physical_device_test() {
     /* create Framebuffers */
     Framebuffers framebuffers{device, swapchain, pipeline};
 
+
     /* create Command buffers */
     CommandPool command_pool{device};
     auto command_buffer = command_pool.create_command_buffer();
     command_buffer.begin_recording();
+
+    /* draw frame */
+
+    /* run window? */
+    //window.wait_to_close_window();
+
+    /* Create synchronization primitives */
+    VkSemaphore image_available_semaphore = _create_semaphore(device);
+    VkSemaphore render_finished_semaphore = _create_semaphore(device);
+    VkFence in_flight_fence = _create_fence(device);
+
+
+    while (!glfwWindowShouldClose(window.get_glfw_window())) {
+        glfwPollEvents();
+        /* wait for previous frames */
+        vkWaitForFences(device.get_vk_device(), 1, &in_flight_fence, VK_TRUE, UINT64_MAX);
+        vkResetFences(device.get_vk_device(), 1, &in_flight_fence);
+
+        uint32_t image_index;
+        vkAcquireNextImageKHR(
+                device.get_vk_device(),
+                swapchain.get_vk_swapchain(),
+                UINT64_MAX,
+                image_available_semaphore,
+                VK_NULL_HANDLE,
+                &image_index
+        );
+
+        std::cout << "Image index => " << image_index << std::endl; /* 0 */
+
+        command_buffer.reset();
+        command_buffer.begin_recording();
+        command_buffer.begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
+        command_buffer.end_render_pass();
+        command_buffer.end_recording();
+
+        VkSubmitInfo submit_info{};
+        submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+        VkSemaphore wait_semaphores[] = {image_available_semaphore};
+        VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+        submit_info.pNext = nullptr;
+        submit_info.waitSemaphoreCount = 1;
+        submit_info.pWaitSemaphores = wait_semaphores;
+        submit_info.pWaitDstStageMask = wait_stages;
+    }
 }
 
 void _test_glfw() {
