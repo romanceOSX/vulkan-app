@@ -8,6 +8,7 @@
  */
 class Device;
 class CommandBuffer;
+class Pipeline;
 class RenderPass;
 class SwapChain;
 class Framebuffers;
@@ -49,6 +50,7 @@ class CommandBuffer {
         void set_viewport_and_scissor();
         void draw();
         void end_render_pass();
+        void end_recording();
         void submit();
 
     private:

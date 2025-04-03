@@ -171,6 +171,11 @@ void CommandBuffer::end_render_pass() {
     vkCmdEndRenderPass(m_command_buffers.front());
 }
 
+void CommandBuffer::end_recording() {
+    if (vkEndCommandBuffer(m_command_buffers.front()) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to record command buffer ❌📹");
+    }
+}
 /*
  * Command Buffer submission
  */
