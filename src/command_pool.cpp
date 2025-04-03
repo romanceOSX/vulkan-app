@@ -109,12 +109,7 @@ void CommandBuffer::free() {
 }
 
 /* TODO: find a better interface for this */
-void CommandBuffer::begin(
-        uint32_t image_index,
-        SwapChain& swapchain,
-        RenderPass& render_pass,
-        Framebuffers& framebuffers
-        )
+void CommandBuffer::begin_recording()
 {
     VkCommandBufferBeginInfo beginInfo = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -127,6 +122,7 @@ void CommandBuffer::begin(
     {
         throw std::runtime_error("Failed to begin recording buffer 😵");
     }
+}
 
     VkRenderPassBeginInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;

@@ -87,6 +87,7 @@ void _physical_device_test() {
     /* create Command buffers */
     CommandPool command_pool{device};
     auto command_buffer = command_pool.create_command_buffer();
+    command_buffer.begin_recording();
 }
 
 void _test_glfw() {
