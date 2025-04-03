@@ -156,6 +156,10 @@ void CommandBuffer::begin_render_pass(uint32_t image_index, SwapChain& swapchain
     vkCmdSetScissor(m_command_buffers.front(), 0, 1, &scissor);
 }
 
+void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
+    vkCmdBindPipeline(m_command_buffers.front(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_vk_pipeline());  
+}
+
 /*
  * Command Buffer submission
  */

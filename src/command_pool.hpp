@@ -45,6 +45,7 @@ class CommandBuffer {
         /* TODO: add a prefix for command buffer related operations, this to distringuish between class management methods */
         void begin_recording();
         void begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);
+        void bind_pipeline(Pipeline& pipeline);
         void submit();
 
     private:
