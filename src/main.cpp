@@ -33,6 +33,36 @@ int run_app() {
     return 0;
 }
 
+VkSemaphore _create_semaphore(Device& dev) {
+    VkSemaphore semaphore;
+    VkSemaphoreCreateInfo semaphore_info{};
+    semaphore_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    semaphore_info.pNext = nullptr;
+    semaphore_info.flags = 0;
+
+    if (vkCreateSemaphore(dev.get_vk_device(), &semaphore_info, nullptr, &semaphore)
+            != VK_SUCCESS) 
+    {
+        throw std::runtime_error("Semaphore creation failed! 😵");
+    }
+    return semaphore;
+}
+
+VkFence _create_fence(Device& dev) {
+    VkFence fence;
+    VkFenceCreateInfo fence_info{};
+    fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fence_info.pNext = nullptr;
+    fence_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    if (vkCreateFence(dev.get_vk_device(), &fence_info, nullptr, &fence)
+            != VK_SUCCESS) 
+    {
+        throw std::runtime_error("Fence creation failed! 😵");
+    }
+    return fence;
+}
+
 void _physical_device_test() {
     /* create instance with required extensions */
     auto instance = Instance();
