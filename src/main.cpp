@@ -72,6 +72,7 @@ void _physical_device_test() {
     instance.add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
     instance.add_extension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
     //instance.add_layer("VK_LAYER_LUNARG_api_dump");
+    instance.add_layer("VK_LAYER_KHRONOS_validation");
     instance.init();
 
     auto vk_phy_devs = instance.get_vk_devices();
@@ -100,6 +101,7 @@ void _physical_device_test() {
     /* create logical device */
     Device device{physical_device, window};
     device.add_extension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    device.add_extension("VK_KHR_portability_subset"); /* Check vulkan spec for this */
     device.init(1);
     device.print_info();
     
