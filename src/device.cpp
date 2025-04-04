@@ -22,10 +22,11 @@ Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_w
 }
 
 uint32_t Device::_get_suitable_queue_index(void) {
+    /* TODO: add a cleaner way to query suitable indexes */
     if (auto ret = m_physical_device.get_suitable_queue_index(m_window)) {
         return ret.value();
     }
-    throw;
+    throw std::runtime_error("Physical Device not compatible with window 😵");
 }
 
 void Device::add_extension(const char *ext) {
