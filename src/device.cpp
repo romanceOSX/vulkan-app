@@ -25,7 +25,7 @@ uint32_t Device::_get_suitable_queue_index(void) {
     throw;
 }
 
-void Device::addExtension(const char *ext) {
+void Device::add_extension(const char *ext) {
     m_extensions.push_back(ext); 
 }
 

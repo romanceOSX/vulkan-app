@@ -99,7 +99,7 @@ void _physical_device_test() {
 
     /* create logical device */
     Device device{physical_device, window};
-    device.addExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    device.add_extension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     device.init(1);
     
     /* create swapchain */

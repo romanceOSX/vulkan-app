@@ -35,8 +35,8 @@ class Device {
         Device(PhysicalDevice& dev, Window& window);
         ~Device();
         void wait(void);
-        void addExtension(const char*);
         AppResult init(uint32_t count);
+        void add_extension(const char*);
         VkQueue get_vk_queue();
         uint32_t get_queue_family_index();
         VkDevice get_vk_device();
