@@ -106,12 +106,12 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& 
 /*
  * Wrapper class for QueueFamily
  */
-QueueFamily::QueueFamily(VkQueueFamilyProperties& queue_family, uint32_t family_index, PhysicalDevice& phy_dev, Window& window):
-    m_vk_queue_family(queue_family),
-    m_queue_family_index(family_index),
-    m_physical_device(phy_dev),
-    m_window(window) 
-{
+QueueFamily::QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties& queue_family, uint32_t index):
+    m_vk_queue_family_properties{queue_family},
+    m_vk_physical_device{physical_device},
+    m_queue_family_index{index}
+{ }
+
     /* check if queue has graphic bit */
     if (m_vk_queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
         m_is_graphics = true;

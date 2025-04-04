@@ -59,10 +59,7 @@ class PhysicalDevice {
 /* TODO: make print functions const */
 class QueueFamily {
     public:
-        QueueFamily(VkQueueFamilyProperties& queue_family,
-                uint32_t family_index,
-                PhysicalDevice& phy_dev,
-                Window& window);
+        QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties& queue_family, uint32_t index);
         bool is_graphics();
         bool is_presentation();
         uint32_t get_index();
