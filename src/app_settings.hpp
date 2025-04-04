@@ -17,6 +17,7 @@
 #define APP_PRETTY_PRINT_CUSTOM(msg, symbol) std::cout << symbol << " ~~~ " << msg << " ~~~ " << symbol << std::endl
 #define CHECK() (std::cout << "✅ ✅ ✅" << std::endl)
 #define APP_CHECK() (std::cout << "✅ ✅ ✅" << std::endl)
+#define APP_PRINT_INFO(msg) std::cout << "ℹ️ " << msg << std::endl
 
 template <typename T, typename... Args>
 void app_dbg_print(T arg, Args... args) {
