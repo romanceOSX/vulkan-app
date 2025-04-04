@@ -40,6 +40,7 @@ class Device {
         VkQueue get_vk_queue();
         uint32_t get_queue_family_index();
         VkDevice get_vk_device();
+        PhysicalDevice& get_physical_device();
         VkPhysicalDevice get_vk_physical_dev();
         void print_info();
 
