@@ -60,6 +60,7 @@ class PhysicalDevice {
 class QueueFamily {
     public:
         QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties& queue_family, uint32_t index);
+        void query_surface_support(Window& window);
         bool is_graphics();
         bool is_presentation();
         uint32_t get_index();
@@ -68,11 +69,9 @@ class QueueFamily {
     private:
         VkQueueFamilyProperties&        m_vk_queue_family;
         uint32_t                        m_queue_family_index;
-        Window&                         m_window;
-        PhysicalDevice&                 m_physical_device;
         bool                            m_is_graphics       = false;
         bool                            m_is_presentation   = false;
+        bool                            m_is_presentation_queried = false;
         std::optional<uint32_t>         m_suitable_queue_family_index;
 };
-
 

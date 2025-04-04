@@ -112,8 +112,9 @@ QueueFamily::QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperti
     m_queue_family_index{index}
 { }
 
+void QueueFamily::query_surface_support(Window& window) {
     /* check if queue has graphic bit */
-    if (m_vk_queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+    if (m_vk_queue_family_properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
         m_is_graphics = true;
     }
 
