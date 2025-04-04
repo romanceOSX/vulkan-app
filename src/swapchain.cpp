@@ -53,8 +53,7 @@ VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabi
     }
 }
 
-/* TODO: rename this function */
-void SwapChain::_query_swapchain_support() {
+void SwapChain::_create_swapchain() {
     auto& swapchain_support_details = m_physical_device.get_swapchain_support_details();
 
     /* create swap chain */
@@ -115,7 +114,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
 {
     APP_PRETTY_PRINT_CUSTOM("creating Swapchain...", "☀️");
     /* initialize swap chain */
-    _query_swapchain_support();
+    _create_swapchain();
 
     /* query swap chain images */
     uint32_t image_count;
