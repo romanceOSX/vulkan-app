@@ -101,6 +101,7 @@ void _physical_device_test() {
     Device device{physical_device, window};
     device.add_extension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     device.init(1);
+    device.print_info();
     
     /* create swapchain */
     SwapChain swapchain{device, window};

@@ -3,6 +3,7 @@
 #include <limits>
 #include <algorithm>
 #include <exception>
+#include <stdexcept>
 #include <utility>
 
 #include "GLFW/glfw3.h"
@@ -32,6 +33,7 @@ void Device::add_extension(const char *ext) {
 void Device::init(uint32_t count) {
     /* calculate family index */
     m_queue_family_index = _get_suitable_queue_index();
+    m_queue_family_count = count;
 
     float queue_priority = 1.0f;
 
@@ -41,26 +43,29 @@ void Device::init(uint32_t count) {
         .pNext = nullptr,
         .flags = 0,
         .queueFamilyIndex = m_queue_family_index,
-        .queueCount = count,
+        .queueCount = m_queue_family_count,
         .pQueuePriorities = &queue_priority,
     };
+
     /* TODO: VkDeviceQueueCreateInfo could be an array of desired queue creations */
-    VkDeviceCreateInfo devCreateInfo {
+    VkDeviceCreateInfo device_create_info {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         .pNext = nullptr,
         .flags = 0,
         .queueCreateInfoCount = 1,
         .pQueueCreateInfos = &queue_create_info,
+        .pEnabledFeatures = VK_FALSE,
     };
 
-    devCreateInfo.ppEnabledExtensionNames = m_extensions.data();
-    devCreateInfo.enabledExtensionCount = m_extensions.size();
+    device_create_info.ppEnabledExtensionNames = m_extensions.data();
+    device_create_info.enabledExtensionCount = m_extensions.size();
 
-    if (VK_SUCCESS != vkCreateDevice(m_physical_device.get_vk_physical_device(), &devCreateInfo, nullptr, &m_vk_device)) {
+    if (VK_SUCCESS != vkCreateDevice(m_physical_device.get_vk_physical_device(), &device_create_info, nullptr, &m_vk_device)) {
         APP_DBG_ERR("NOT SUCCESS!!");
     }
 
     vkGetDeviceQueue(m_vk_device, m_queue_family_index, 0, &m_vk_queue);
+    m_is_init = true;
     
     APP_PRETTY_PRINT("Logical device created succesfully");
 }
@@ -88,6 +93,21 @@ VkPhysicalDevice Device::get_vk_physical_dev() {
 }
 
 Device::~Device() {
+    APP_PRETTY_PRINT_CUSTOM("Destroying logical device and queue...", "🌙");
     vkDestroyDevice(m_vk_device, nullptr);
+}
+
+void Device::print_info() {
+    if (!m_is_init) {
+        throw std::runtime_error("Tried to print info of un-initialized logical device 😵");
+    }
+
+    APP_PRINT_INFO("Logical device info:");
+    std::cout << "Choosen queue family index: " << m_queue_family_index << std::endl;
+    std::cout << "Enabled device extensions: " << std::endl;
+    for (const auto& extension: m_extensions) {
+        std::cout << "- " << extension << std::endl;
+    }
+    std::cout << "Number of queue families spawned: " << m_queue_family_count << std::endl;
 }
 
