@@ -15,6 +15,12 @@
 #include "physical_device.hpp"
 #include "window.hpp"
 
+/*
+ * A physical device contains queue families,
+ * Queue families contain an specified number of available queues
+ * We create the required queues from an specific queue family while creating logical devices
+ */
+
 Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} {
     APP_PRETTY_PRINT_CUSTOM("creating logical Device...", "☀️");
 }
