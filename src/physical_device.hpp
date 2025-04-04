@@ -67,7 +67,8 @@ class QueueFamily {
         void print_info();
 
     private:
-        VkQueueFamilyProperties&        m_vk_queue_family;
+        VkPhysicalDevice                m_vk_physical_device;
+        VkQueueFamilyProperties&        m_vk_queue_family_properties;
         uint32_t                        m_queue_family_index;
         bool                            m_is_graphics       = false;
         bool                            m_is_presentation   = false;

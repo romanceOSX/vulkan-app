@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iterator>
+#include <stdexcept>
 #include <string>
 #include <set>
 
@@ -25,8 +26,12 @@ void PhysicalDevice::_query_queue_families() {
     vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_families_count, nullptr);
     m_vk_queue_families.resize(m_queue_families_count);
     vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_families_count, m_vk_queue_families.data());
-    
-    /* create queuefamily wrappers */
+
+    /* create queue family wrappers */
+    uint32_t index = 0;
+    for (auto& vk_queue_family: m_vk_queue_families) {
+        m_queue_families.emplace_back(m_vk_physical_device, vk_queue_family, index++);   
+    }
 }
 
 void PhysicalDevice::_query_physical_device_extensions() {
@@ -89,16 +94,16 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& 
         return {};
     }
 
-    for (size_t i = 0; i < std::size(m_vk_queue_families); i++) {
-        m_queue_families.emplace_back(m_vk_queue_families.at(i), i, *this, window);
-    }
+    /* TODO: evaluate swapchain support here */
 
-    /* We need a device that has both the graphics, and presnetation bit */
+    /* We need a device that has both the graphics, and presentation bit */
     for (auto queue_family: m_queue_families) {
+        queue_family.query_surface_support(window);
         if ((true == queue_family.is_presentation()) && (true == queue_family.is_graphics())) {
             return queue_family.get_index();
         }
     }
+
 
     return {};
 }
@@ -121,19 +126,24 @@ void QueueFamily::query_surface_support(Window& window) {
     /* check for presentation */
     VkBool32 is_suitable;
     vkGetPhysicalDeviceSurfaceSupportKHR(
-            m_physical_device.get_vk_physical_device(),
+            m_vk_physical_device,
             m_queue_family_index,
-            m_window.get_vk_surface(),
+            window.get_vk_surface(),
             &is_suitable
     );
+
     m_is_presentation = static_cast<bool>(is_suitable);
+
+    m_is_presentation_queried = true;
 }
 
 bool QueueFamily::is_graphics() {
+    if (!m_is_presentation_queried) { throw std::runtime_error("Window surface support was not queried 😵"); }
     return m_is_graphics;
 }
 
 bool QueueFamily::is_presentation() {
+    if (!m_is_presentation_queried) { throw std::runtime_error("Window surface support was not queried 😵"); }
     return m_is_presentation;
 }
 
@@ -142,6 +152,16 @@ uint32_t QueueFamily::get_index() {
 }
 
 void QueueFamily::print_info() {
-    std::cout << "etesech" << std::endl;
+    APP_PRINT_INFO("Queue Family info:");
+    std::cout << "Queue index: " << m_queue_family_index << std::endl;;
+    std::cout << "Queue family flags: " << m_vk_queue_family_properties.queueFlags << std::endl;
+    std::cout << "Number of queues: " << m_vk_queue_family_properties.queueCount << std::endl;
+
+    /*
+     * 7 equals:
+     *  VK_QUEUE_GRAPHICS_BIT = 0x00000001,
+     *  VK_QUEUE_COMPUTE_BIT = 0x00000002,
+     *  VK_QUEUE_TRANSFER_BIT = 0x00000004,
+     */
 }
 
