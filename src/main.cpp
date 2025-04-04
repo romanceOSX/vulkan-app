@@ -133,7 +133,6 @@ void _physical_device_test() {
         glfwPollEvents();
         /* wait for previous frames */
         vkWaitForFences(device.get_vk_device(), 1, &in_flight_fence, VK_TRUE, UINT64_MAX);
-        vkResetFences(device.get_vk_device(), 1, &in_flight_fence);
 
         uint32_t image_index;
         vkAcquireNextImageKHR(
@@ -145,24 +144,56 @@ void _physical_device_test() {
                 &image_index
         );
 
-        std::cout << "Image index => " << image_index << std::endl; /* 0 */
+        vkResetFences(device.get_vk_device(), 1, &in_flight_fence);
 
+        /* record command buffer */
         command_buffer.reset();
         command_buffer.begin_recording();
         command_buffer.begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
         command_buffer.end_render_pass();
         command_buffer.end_recording();
 
+        /* prepare submit */
         VkSubmitInfo submit_info{};
         submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit_info.pNext = nullptr;
 
         VkSemaphore wait_semaphores[] = {image_available_semaphore};
         VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-        submit_info.pNext = nullptr;
         submit_info.waitSemaphoreCount = 1;
         submit_info.pWaitSemaphores = wait_semaphores;
         submit_info.pWaitDstStageMask = wait_stages;
+
+        submit_info.commandBufferCount = 1;
+        submit_info.pCommandBuffers = &command_buffer.get_command_buffers().front();
+
+        VkSemaphore signal_semaphores[] = {render_finished_semaphore};
+        submit_info.signalSemaphoreCount = 1;
+        submit_info.pSignalSemaphores = signal_semaphores;
+
+        /* submit the command buffer to the queue */
+        if (vkQueueSubmit(device.get_vk_queue(), 1, &submit_info, in_flight_fence) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to submit draw command buffer 😵");
+        }
+
+        /* prepare to present frame */
+        VkPresentInfoKHR present_info{};
+        present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+        present_info.pNext = nullptr;
+
+        present_info.waitSemaphoreCount = 1;
+        present_info.pWaitSemaphores = signal_semaphores;
+
+        VkSwapchainKHR swapchains[] = {swapchain.get_vk_swapchain()};
+        present_info.swapchainCount = 1;
+        present_info.pSwapchains = swapchains;
+
+        present_info.pImageIndices = &image_index;
+
+        vkQueuePresentKHR(device.get_vk_queue(), &present_info);
     }
+
+    device.wait();
 }
 
 void _test_glfw() {
