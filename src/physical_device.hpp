@@ -8,6 +8,7 @@
 
 class Window;
 class QueueFamily;
+class SwapchainSupportDetails;
 
 /*
  * Note that to query physical properties of devices you don't actually need
@@ -16,6 +17,13 @@ class QueueFamily;
 
 // TODO: make constructor private and only accessible to internal classes
 // TODO: query layer-specific extensions?
+
+/* Swapchain details helper structure */
+struct SwapchainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> preset_modes;
+};
 
 /* 
  * Representation of a single Physical Device
@@ -36,6 +44,7 @@ class PhysicalDevice {
         uint32_t get_queue_families_count(void);
         std::vector<VkQueueFamilyProperties>& get_vk_device_queue_families_properties(void);
         std::vector<VkExtensionProperties>& get_vk_physical_device_extensions(void);
+        SwapchainSupportDetails& get_swapchain_support_details();
         void print_info();
 
     private:
@@ -49,6 +58,7 @@ class PhysicalDevice {
         std::vector<VkQueueFamilyProperties>        m_vk_queue_families;
         std::vector<QueueFamily>                    m_queue_families;
         uint32_t                                    m_queue_families_count;
+        SwapchainSupportDetails                     m_swapchain_support_details;
 };
 
 /*

@@ -82,9 +82,11 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& 
         VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
     };
 
-    /* Check if device has VK_KHR_DISPLAY_SWAPCHAIN_EXTENSION_NAME ext */
+    /* 
+     *  check if device even supports the swapchain extension
+     *  "VK_KHR_DISPLAY_SWAPCHAIN_EXTENSION_NAME"
+     */ 
     bool is_swapchain_supported = false;
-
     std::set<std::string> required_set{std::begin(required_extensions), std::end(required_extensions)};
     for (const auto& ext: m_vk_physical_device_extensions) {
         required_set.erase(ext.extensionName);
@@ -94,9 +96,64 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& 
         return {};
     }
 
-    /* TODO: evaluate swapchain support here */
+    /* 
+     * query swapchain details
+     * (needed at the swapchain creation stage)
+     * TODO: add note here on intersection between window, surface, and device
+     */
 
-    /* We need a device that has both the graphics, and presentation bit */
+    /* query surface capabilities */
+    VkSurfaceCapabilitiesKHR vk_surface_capabilities;
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+            m_vk_physical_device,
+            window.get_vk_surface(),
+            &m_swapchain_support_details.capabilities
+    );
+
+    /* query surface formats */
+    uint32_t format_count;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(m_vk_physical_device, window.get_vk_surface(), &format_count, nullptr);
+    if (0 != format_count) {
+        m_swapchain_support_details.formats.resize(format_count);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(
+                m_vk_physical_device,
+                window.get_vk_surface(),
+                &format_count,
+                m_swapchain_support_details.formats.data()
+        );
+    }
+
+    /* query present modes */
+    uint32_t mode_count;
+   vkGetPhysicalDeviceSurfacePresentModesKHR(m_vk_physical_device, window.get_vk_surface(), &mode_count, nullptr); 
+    if (0 != mode_count) {
+        m_swapchain_support_details.preset_modes.resize(mode_count);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(
+                m_vk_physical_device,
+                window.get_vk_surface(),
+                &mode_count,
+                m_swapchain_support_details.preset_modes.data()
+        );
+    }
+
+    /*
+     * for this application, support is valid if there is at least 
+     * one supported image format and one supported presentation mode
+     */
+    bool is_swap_chain_adequate = false;
+    is_swap_chain_adequate = !m_swapchain_support_details.formats.empty() 
+        && !m_swapchain_support_details.preset_modes.empty();
+
+    if (!is_swap_chain_adequate) {
+        throw std::invalid_argument("Physical device not supported by surface");
+    }
+
+    /*
+     * check if the physical device has the required queue families
+     * We need the device to have a queue family with both:
+     *  - graphics bit
+     *  - presentation bit
+     */
     for (auto queue_family: m_queue_families) {
         queue_family.query_surface_support(window);
         if ((true == queue_family.is_presentation()) && (true == queue_family.is_graphics())) {
@@ -104,8 +161,11 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& 
         }
     }
 
-
     return {};
+}
+
+SwapchainSupportDetails& PhysicalDevice::get_swapchain_support_details() {
+    return m_swapchain_support_details;
 }
 
 /*
