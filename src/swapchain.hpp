@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
 
 #include "vulkan/vulkan.h"
@@ -10,6 +9,7 @@
  */
 class Device;
 class Window;
+class PhysicalDevice;
 
 class SwapChain {
     public:
@@ -30,11 +30,10 @@ class SwapChain {
         VkExtent2D _choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabilities);
         void _create_image_views();
 
-        VkPhysicalDevice                m_vk_phy_dev;
-        Window&                         m_window;
-        VkSurfaceCapabilitiesKHR        m_vk_surface_capabilities;
-        VkSwapchainKHR                  m_vk_swapchain;
+        PhysicalDevice&                 m_physical_device;
         Device&                         m_device;
+        Window&                         m_window;
+        VkSwapchainKHR                  m_vk_swapchain;
         std::vector<VkImage>            m_vk_swapchain_images;
         VkFormat                        m_vk_format;
         VkExtent2D                      m_vk_extent_2d;

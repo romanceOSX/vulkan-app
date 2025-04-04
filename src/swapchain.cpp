@@ -7,6 +7,7 @@
 #include "swapchain.hpp"
 #include "device.hpp"
 #include "window.hpp"
+#include "physical_device.hpp"
 
 /*
  * Swapchain class implementations
@@ -52,55 +53,22 @@ VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabi
     }
 }
 
-/* function that checks the swapchain support given a physical device */
-/* TODO: this should be queried when choosing physical device */
+/* TODO: rename this function */
 void SwapChain::_query_swapchain_support() {
-    /* query surface capabilities */
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
-            m_vk_phy_dev,
-            m_window.get_vk_surface(),
-            &m_vk_surface_capabilities
-    );
-
-    std::vector<VkSurfaceFormatKHR> surface_formats;
-    uint32_t format_count;
-    std::vector<VkPresentModeKHR> present_modes;
-    uint32_t mode_count;
-
-    /* query supported formats */
-    vkGetPhysicalDeviceSurfaceFormatsKHR(m_vk_phy_dev, m_window.get_vk_surface(), &format_count, nullptr);
-    if (0 != format_count) {
-        surface_formats.resize(format_count);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(m_vk_phy_dev, m_window.get_vk_surface(), &format_count, surface_formats.data());
-    }
-
-    /* query present modes */
-   vkGetPhysicalDeviceSurfacePresentModesKHR(m_vk_phy_dev, m_window.get_vk_surface(), &mode_count, nullptr); 
-    if (0 != mode_count) {
-        present_modes.resize(mode_count);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(m_vk_phy_dev, m_window.get_vk_surface(), &mode_count, present_modes.data());
-    }
-
-    /* check for adequate swapchain */
-    bool is_swap_chain_adequate = false;
-    is_swap_chain_adequate = !surface_formats.empty() && !present_modes.empty();
-
-    if (!is_swap_chain_adequate) {
-        throw std::invalid_argument("Physical device not supported by surface");
-    }
+    auto& swapchain_support_details = m_physical_device.get_swapchain_support_details();
 
     /* create swap chain */
-    VkSurfaceFormatKHR surface_format = _choose_swap_surface_format(surface_formats);
-    VkPresentModeKHR present_mode = _choose_swap_present_mode(present_modes);
-    VkExtent2D extent = _choose_swap_extent(m_vk_surface_capabilities);
+    VkSurfaceFormatKHR surface_format = _choose_swap_surface_format(swapchain_support_details.formats);
+    VkPresentModeKHR present_mode = _choose_swap_present_mode(swapchain_support_details.preset_modes);
+    VkExtent2D extent = _choose_swap_extent(swapchain_support_details.capabilities);
 
     /* It is recommended to choose at least more than the minimum */
-    uint32_t image_count = m_vk_surface_capabilities.minImageCount + 1;
+    uint32_t image_count = swapchain_support_details.capabilities.minImageCount + 1;
     
-    if ((m_vk_surface_capabilities.maxImageCount > 0) &&
-            (image_count > m_vk_surface_capabilities.maxImageCount))
+    if ((swapchain_support_details.capabilities.maxImageCount > 0) &&
+            (image_count > swapchain_support_details.capabilities.maxImageCount))
     {
-        image_count = m_vk_surface_capabilities.maxImageCount;
+        image_count = swapchain_support_details.capabilities.maxImageCount;
     }
 
     VkSwapchainCreateInfoKHR swap_create_info {
@@ -119,7 +87,7 @@ void SwapChain::_query_swapchain_support() {
     swap_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     swap_create_info.queueFamilyIndexCount = 0;
     swap_create_info.pQueueFamilyIndices = nullptr;
-    swap_create_info.preTransform = m_vk_surface_capabilities.currentTransform;
+    swap_create_info.preTransform = swapchain_support_details.capabilities.currentTransform;
     swap_create_info.presentMode = present_mode;
     swap_create_info.clipped = VK_TRUE;
     swap_create_info.oldSwapchain = VK_NULL_HANDLE;
@@ -139,9 +107,10 @@ void SwapChain::_query_swapchain_support() {
 }
 
 /* We assume that phy_dev does support the swapchain, previously determined */
+/* TODO: add an assertion for device supporting swapchain */
 SwapChain::SwapChain(Device& dev, Window& window):
     m_device{dev},
-    m_vk_phy_dev{dev.get_vk_physical_dev()}, 
+    m_physical_device{dev.get_physical_device()},
     m_window{window} 
 {
     APP_PRETTY_PRINT_CUSTOM("creating Swapchain...", "☀️");
@@ -163,6 +132,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
             .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
             .image = m_vk_swapchain_images.at(i),
             .viewType = VK_IMAGE_VIEW_TYPE_2D,
+            /* WARN: Formate is not initialized here */
             .format = m_vk_format,
         };
         image_view_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
