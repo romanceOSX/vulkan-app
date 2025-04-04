@@ -67,21 +67,21 @@ void Host::printHostInfo() {
 
         for (auto& dev: _m_physical_devs) {
             APP_PRETTY_PRINT_CUSTOM("Physical Device", "🥫");
-            auto devProps = dev.getDeviceProperties();
+            auto devProps = dev.get_vk_physical_device_properties();
             std::cout << "Device Name: " << devProps.deviceName << std::endl
                 << "Device Type: " << devProps.deviceType << std::endl;
 
             APP_PRETTY_PRINT_CUSTOM("Device Available Extensions", "🐝");
-            auto extensions = dev.getDeviceExtensions();
+            auto extensions = dev.get_vk_physical_device_extensions();
             for (auto& ext: extensions) {
                 std::cout << "--> " << ext.extensionName 
                     << " (v" << ext.specVersion << ")" << std::endl;
             }
 
             APP_PRETTY_PRINT_CUSTOM("Queue Information", "💧");
-            std::cout << "Available Queues: " << dev.getQueueCount() << std::endl;
+            std::cout << "Available Queues: " << dev.get_queue_families_count() << std::endl;
 
-            for (auto& queue: dev.getDeviceQueueProperties()) {
+            for (auto& queue: dev.get_vk_device_queue_families_properties()) {
                 std::cout << "|---- Queue Flags: " << queue.queueFlags << std::endl
                     << "      Queue Count: " << queue.queueCount << std::endl;
             }

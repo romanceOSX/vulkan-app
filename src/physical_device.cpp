@@ -12,42 +12,42 @@
 PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): m_vk_physical_device(dev) {
     APP_PRETTY_PRINT_CUSTOM("creating physical device wrapper...", "☀️");
     /* Get device properties */
-    _queryDeviceProperties();
-    _queryQueueProperties();
-    _queryDeviceExtensions();
+    _query_physical_device_properties();
+    _query_queue_families();
+    _query_physical_device_extensions();
 }
 
-void PhysicalDevice::_queryDeviceProperties() {
-    vkGetPhysicalDeviceProperties(m_vk_physical_device, &m_vk_physical_device_props);
+void PhysicalDevice::_query_physical_device_properties() {
+    vkGetPhysicalDeviceProperties(m_vk_physical_device, &m_vk_physical_device_properties);
 }
 
-void PhysicalDevice::_queryQueueProperties() {
-    vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_family_count, nullptr);
-    m_vk_queue_families.resize(m_queue_family_count);
-    vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_family_count, m_vk_queue_families.data());
+void PhysicalDevice::_query_queue_families() {
+    vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_families_count, nullptr);
+    m_vk_queue_families.resize(m_queue_families_count);
+    vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_families_count, m_vk_queue_families.data());
 }
 
-void PhysicalDevice::_queryDeviceExtensions() {
+void PhysicalDevice::_query_physical_device_extensions() {
     uint32_t prop_count;
     vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, nullptr);
-    m_available_extensions.resize(prop_count);
-    vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, m_available_extensions.data());
+    m_vk_physical_device_extensions.resize(prop_count);
+    vkEnumerateDeviceExtensionProperties(m_vk_physical_device, nullptr, &prop_count, m_vk_physical_device_extensions.data());
 }
 
-std::vector<VkQueueFamilyProperties>& PhysicalDevice::getDeviceQueueProperties() {
+std::vector<VkQueueFamilyProperties>& PhysicalDevice::get_vk_device_queue_families_properties() {
     return m_vk_queue_families;
 }
 
-std::vector<VkExtensionProperties>& PhysicalDevice::getDeviceExtensions() {
-    return m_available_extensions;
+std::vector<VkExtensionProperties>& PhysicalDevice::get_vk_physical_device_extensions() {
+    return m_vk_physical_device_extensions;
 }
 
-uint32_t PhysicalDevice::getQueueCount(void) {
-    return m_queue_family_count;
+uint32_t PhysicalDevice::get_queue_families_count(void) {
+    return m_queue_families_count;
 }
 
-VkPhysicalDeviceProperties& PhysicalDevice::getDeviceProperties(void) {
-    return m_vk_physical_device_props;  
+VkPhysicalDeviceProperties& PhysicalDevice::get_vk_physical_device_properties(void) {
+    return m_vk_physical_device_properties;  
 }
 
 VkPhysicalDevice PhysicalDevice::get_vk_physical_device(void) {
@@ -68,7 +68,7 @@ void PhysicalDevice::print_info() {
  * graphics capabilities, add support for choosing a different queue or the same one
  */
 /* TODO: check copy constructor of std::optional */
-std::optional<uint32_t> PhysicalDevice::get_suitable_queue_index(Window& window) {
+std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& window) {
     std::vector<QueueFamily> queue_families;
 
     std::vector<const char*> required_extensions = {
@@ -79,7 +79,7 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_index(Window& window)
     bool is_swapchain_supported = false;
 
     std::set<std::string> required_set{std::begin(required_extensions), std::end(required_extensions)};
-    for (const auto& ext: m_available_extensions) {
+    for (const auto& ext: m_vk_physical_device_extensions) {
         required_set.erase(ext.extensionName);
     }
 

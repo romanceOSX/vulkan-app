@@ -92,7 +92,7 @@ void _physical_device_test() {
     physical_device.print_info();
 
     /* get suitable queue family index */
-    auto queue_family_index = physical_device.get_suitable_queue_index(window);
+    auto queue_family_index = physical_device.get_suitable_queue_family_index(window);
     if (!queue_family_index) {
         throw std::runtime_error("Device does not have a suitable queue capabilities");
     }
