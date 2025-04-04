@@ -26,6 +26,7 @@ struct SwapchainSupportDetails {
 };
 
 /* 
+ * TODO: update documentation of this class
  * Representation of a single Physical Device
  * Gets physical device properties:
  *  - queues
@@ -38,7 +39,7 @@ class PhysicalDevice {
     public:
         PhysicalDevice() = delete;
         PhysicalDevice(VkPhysicalDevice dev);
-        std::optional<uint32_t> get_suitable_queue_family_index(Window& window);
+        std::optional<uint32_t> check_window_surface_compatibility(Window& window);
         VkPhysicalDeviceProperties& get_vk_physical_device_properties(void);
         VkPhysicalDevice get_vk_physical_device(void);
         uint32_t get_queue_families_count(void);

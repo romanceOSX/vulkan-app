@@ -75,9 +75,10 @@ void PhysicalDevice::print_info() {
 /*
  * TODO: This function will look only for the queue supporting both presentation and
  * graphics capabilities, add support for choosing a different queue or the same one
+ * returns the index of the queue family that supports such operations 
  */
 /* TODO: check copy constructor of std::optional */
-std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& window) {
+std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Window& window) {
     std::vector<const char*> required_extensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
     };

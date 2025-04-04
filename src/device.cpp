@@ -22,7 +22,7 @@ Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_w
 
 uint32_t Device::_get_suitable_queue_index(void) {
     /* TODO: add a cleaner way to query suitable indexes */
-    if (auto ret = m_physical_device.get_suitable_queue_family_index(m_window)) {
+    if (auto ret = m_physical_device.check_window_surface_compatibility(m_window)) {
         return ret.value();
     }
     throw std::runtime_error("Physical Device not compatible with window 😵");
