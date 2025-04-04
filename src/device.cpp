@@ -1,10 +1,6 @@
 #include <iostream>
 #include <cassert>
-#include <limits>
-#include <algorithm>
-#include <exception>
 #include <stdexcept>
-#include <utility>
 
 #include "GLFW/glfw3.h"
 #include "vulkan/vulkan_core.h"
