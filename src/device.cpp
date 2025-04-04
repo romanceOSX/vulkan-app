@@ -116,5 +116,9 @@ void Device::print_info() {
         std::cout << "- " << extension << std::endl;
     }
     std::cout << "Number of queue families spawned: " << m_queue_family_count << std::endl;
+
+Device::~Device() {
+    APP_PRETTY_PRINT_CUSTOM("Destroying logical device and queue...", "🌙");
+    vkDestroyDevice(m_vk_device, nullptr);
 }
 
