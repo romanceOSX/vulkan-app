@@ -55,7 +55,7 @@ class Device {
         std::vector<const char*>                m_extensions;
         std::vector<VkQueueFamilyProperties>    m_queue_family_props;
         uint32_t                                m_graphics_queue_family_index;
-        uint32_t                                m_queue_family_count;
+        uint32_t                                m_queue_count;
         uint32_t                                m_queue_family_index;
         bool                                    m_is_init = false;
 };

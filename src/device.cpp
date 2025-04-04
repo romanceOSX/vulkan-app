@@ -36,7 +36,7 @@ void Device::init(uint32_t count) {
     /* calculate family index */
     /* TODO: we can pass the queuefamily wrapper instead of the index */
     m_queue_family_index = _get_suitable_queue_index();
-    m_queue_family_count = count;
+    m_queue_count = count;
 
     if (count > m_physical_device.get_vk_device_queue_families_properties().at(m_queue_family_index).queueCount) {
         throw std::runtime_error("Requesting more queues than available 😵");
@@ -47,11 +47,11 @@ void Device::init(uint32_t count) {
     /* queue Creation */
     VkDeviceQueueCreateInfo queue_create_info {
         .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-        .pNext = nullptr,
-        .flags = 0,
-        .queueFamilyIndex = m_queue_family_index,
-        .queueCount = m_queue_family_count,
-        .pQueuePriorities = &queue_priority,
+            .pNext = nullptr,
+            .flags = 0,
+            .queueFamilyIndex = m_queue_family_index,
+            .queueCount = m_queue_count,
+            .pQueuePriorities = &queue_priority,
     };
 
     /* TODO: VkDeviceQueueCreateInfo could be an array of desired queue creations */
@@ -73,8 +73,6 @@ void Device::init(uint32_t count) {
 
     vkGetDeviceQueue(m_vk_device, m_queue_family_index, 0, &m_vk_queue);
     m_is_init = true;
-    
-    APP_PRETTY_PRINT("Logical device created succesfully");
 }
 
 void Device::wait() {
@@ -99,11 +97,6 @@ VkPhysicalDevice Device::get_vk_physical_dev() {
     return m_physical_device.get_vk_physical_device();
 }
 
-Device::~Device() {
-    APP_PRETTY_PRINT_CUSTOM("Destroying logical device and queue...", "🌙");
-    vkDestroyDevice(m_vk_device, nullptr);
-}
-
 void Device::print_info() {
     if (!m_is_init) {
         throw std::runtime_error("Tried to print info of un-initialized logical device 😵");
@@ -115,7 +108,8 @@ void Device::print_info() {
     for (const auto& extension: m_extensions) {
         std::cout << "- " << extension << std::endl;
     }
-    std::cout << "Number of queue families spawned: " << m_queue_family_count << std::endl;
+    std::cout << "Number of queue families spawned: " << m_queue_count << std::endl;
+}
 
 Device::~Device() {
     APP_PRETTY_PRINT_CUSTOM("Destroying logical device and queue...", "🌙");
