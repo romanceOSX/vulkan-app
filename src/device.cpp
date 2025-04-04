@@ -29,7 +29,7 @@ void Device::add_extension(const char *ext) {
     m_extensions.push_back(ext); 
 }
 
-AppResult Device::init(uint32_t count) {
+void Device::init(uint32_t count) {
     /* calculate family index */
     m_queue_family_index = _get_suitable_queue_index();
 
