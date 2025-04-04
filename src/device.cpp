@@ -2,7 +2,6 @@
 #include <cassert>
 #include <stdexcept>
 
-#include "GLFW/glfw3.h"
 #include "vulkan/vulkan_core.h"
 
 #include "app_settings.hpp"
@@ -35,8 +34,13 @@ void Device::add_extension(const char *ext) {
 
 void Device::init(uint32_t count) {
     /* calculate family index */
+    /* TODO: we can pass the queuefamily wrapper instead of the index */
     m_queue_family_index = _get_suitable_queue_index();
     m_queue_family_count = count;
+
+    if (count > m_physical_device.get_vk_device_queue_families_properties().at(m_queue_family_index).queueCount) {
+        throw std::runtime_error("Requesting more queues than available 😵");
+    }
 
     float queue_priority = 1.0f;
 
