@@ -47,6 +47,7 @@ class PhysicalDevice {
         VkPhysicalDevice                            m_vk_physical_device;
         std::vector<VkExtensionProperties>          m_vk_physical_device_extensions;
         std::vector<VkQueueFamilyProperties>        m_vk_queue_families;
+        std::vector<QueueFamily>                    m_queue_families;
         uint32_t                                    m_queue_families_count;
 };
 
@@ -54,6 +55,8 @@ class PhysicalDevice {
  * Class that represents a single queue family, mainly used for determining
  * correct requirements for graphic and computing capabilities
  */
+/* TODO: make the print_info a class trait */
+/* TODO: make print functions const */
 class QueueFamily {
     public:
         QueueFamily(VkQueueFamilyProperties& queue_family,
@@ -63,6 +66,7 @@ class QueueFamily {
         bool is_graphics();
         bool is_presentation();
         uint32_t get_index();
+        void print_info();
 
     private:
         VkQueueFamilyProperties&        m_vk_queue_family;

@@ -13,8 +13,8 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): m_vk_physical_device(dev) 
     APP_PRETTY_PRINT_CUSTOM("creating physical device wrapper...", "☀️");
     /* Get device properties */
     _query_physical_device_properties();
-    _query_queue_families();
     _query_physical_device_extensions();
+    _query_queue_families();
 }
 
 void PhysicalDevice::_query_physical_device_properties() {
@@ -25,6 +25,8 @@ void PhysicalDevice::_query_queue_families() {
     vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_families_count, nullptr);
     m_vk_queue_families.resize(m_queue_families_count);
     vkGetPhysicalDeviceQueueFamilyProperties(m_vk_physical_device, &m_queue_families_count, m_vk_queue_families.data());
+    
+    /* create queuefamily wrappers */
 }
 
 void PhysicalDevice::_query_physical_device_extensions() {
@@ -55,11 +57,13 @@ VkPhysicalDevice PhysicalDevice::get_vk_physical_device(void) {
 }
 
 void PhysicalDevice::print_info() {
-    std::cout << "Available queue families: " << std::size(m_vk_queue_families) << std::endl;
+    APP_PRINT_INFO("Physical Device info:");
+    std::cout << "Available queue families: " << m_queue_families_count << std::endl;
+    /* TODO: print available extensions, but too cluttered */
     /* print device name and info */
-    for (auto& queue: m_vk_queue_families) {
-        std::cout << "--Number of queues: " << queue.queueCount << std::endl;
-        std::cout << "  Queue flags: " << queue.queueFlags << std::endl;
+    std::cout << "Queue families:" << std::endl;
+    for (auto& queue_family: m_queue_families) {
+        queue_family.print_info();
     }
 }
 
@@ -69,8 +73,6 @@ void PhysicalDevice::print_info() {
  */
 /* TODO: check copy constructor of std::optional */
 std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& window) {
-    std::vector<QueueFamily> queue_families;
-
     std::vector<const char*> required_extensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
     };
@@ -88,11 +90,11 @@ std::optional<uint32_t> PhysicalDevice::get_suitable_queue_family_index(Window& 
     }
 
     for (size_t i = 0; i < std::size(m_vk_queue_families); i++) {
-        queue_families.emplace_back(m_vk_queue_families.at(i), i, *this, window);
+        m_queue_families.emplace_back(m_vk_queue_families.at(i), i, *this, window);
     }
 
     /* We need a device that has both the graphics, and presnetation bit */
-    for (auto queue_family: queue_families) {
+    for (auto queue_family: m_queue_families) {
         if ((true == queue_family.is_presentation()) && (true == queue_family.is_graphics())) {
             return queue_family.get_index();
         }
@@ -136,5 +138,9 @@ bool QueueFamily::is_presentation() {
 
 uint32_t QueueFamily::get_index() {
     return m_queue_family_index;
+}
+
+void QueueFamily::print_info() {
+    std::cout << "etesech" << std::endl;
 }
 
