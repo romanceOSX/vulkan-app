@@ -14,6 +14,7 @@
 #define APP_PRETTY_PRINT(str) std::cout << "🎆 ~~~ " << str << " ~~~ 🎆" << std::endl
 #define DBG_ERR(msg) std::cout << "❌❌ " msg << std::endl
 #define APP_DBG_ERR(msg) std::cout << "❌❌ " msg << std::endl
+#define APP_DBG_WARN(msg) std::cout << "⚠️ " << msg << std::endl
 #define APP_PRETTY_PRINT_CUSTOM(msg, symbol) std::cout << symbol << " ~~~ " << msg << " ~~~ " << symbol << std::endl
 #define CHECK() (std::cout << "✅ ✅ ✅" << std::endl)
 #define APP_CHECK() (std::cout << "✅ ✅ ✅" << std::endl)
