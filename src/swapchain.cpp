@@ -154,8 +154,9 @@ SwapChain::SwapChain(Device& dev, Window& window):
 }
 
 void SwapChain::print_info() {
-    std::cout << "⛓️‍💥 Printing swapchain info" << std::endl
-        << "Max Image Count: " << m_vk_surface_capabilities.maxImageCount << std::endl;
+    APP_PRINT_INFO("Swapchain Info:");
+    auto& swapchain_support_details = m_physical_device.get_swapchain_support_details();
+    std::cout << "Max image count: " << swapchain_support_details.capabilities.maxImageCount << std::endl;
 }
 
 VkFormat SwapChain::get_vk_format() {
