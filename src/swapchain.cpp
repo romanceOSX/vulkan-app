@@ -175,13 +175,6 @@ void SwapChain::_create_image_views() {
     m_vk_swapchain_image_views.resize(m_vk_swapchain_images.size());
 }
 
-/* TODO: add a logging facility on this */
-SwapChain::~SwapChain() {
-    for (auto& image_view: m_vk_swapchain_image_views) {
-        vkDestroyImageView(m_device.get_vk_device(), image_view, nullptr);
-    }
-}
-
 VkSwapchainKHR SwapChain::get_vk_swapchain() {
     return m_vk_swapchain;
 }
@@ -192,5 +185,16 @@ size_t SwapChain::size() {
 
 std::vector<VkImageView>& SwapChain::get_vk_image_views() {
     return m_vk_swapchain_image_views;
+}
+
+/* TODO: add a logging facility on this */
+SwapChain::~SwapChain() {
+    APP_PRETTY_PRINT_CUSTOM("Destroying image views...", "🌙");
+    for (auto& image_view: m_vk_swapchain_image_views) {
+        vkDestroyImageView(m_device.get_vk_device(), image_view, nullptr);
+    }
+
+    APP_PRETTY_PRINT_CUSTOM("Destroying swapchain...", "🌙");
+    vkDestroySwapchainKHR(m_device.get_vk_device(), m_vk_swapchain, nullptr);
 }
 
