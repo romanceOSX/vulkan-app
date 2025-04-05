@@ -38,6 +38,11 @@ VkPresentModeKHR SwapChain::_choose_swap_present_mode(std::vector<VkPresentModeK
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
+/*
+ * refers to the resolution of the swap chain images
+ * we can either match the image resolution with the window's resolution if the window system allows us to
+ * or we need to determine the correct pixel resolution instead (aka. extent/VkExtent2D)
+ */
 VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabilities) {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()){
         return capabilities.currentExtent;
@@ -61,19 +66,27 @@ VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabi
 void SwapChain::_create_swapchain() {
     auto& swapchain_support_details = m_physical_device.get_swapchain_support_details();
 
+    /*
+     * We need to test if the swapchain contains the minimal characteristics we are looking for
+     *  - Surface format (color depth)
+     *  - Presentation mode (conditions for swapping images to the screen)
+     *  - swap extent
+     */
+
     /* create swap chain */
     VkSurfaceFormatKHR surface_format = _choose_swap_surface_format(swapchain_support_details.formats);
     VkPresentModeKHR present_mode = _choose_swap_present_mode(swapchain_support_details.preset_modes);
     VkExtent2D extent = _choose_swap_extent(swapchain_support_details.capabilities);
 
-    /* It is recommended to choose at least more than the minimum */
     /* populate data members */
     m_swapchain_vk_format = surface_format.format;
     m_swapchain_vk_extent_2d = extent;
 
+    /* we would like to use more than the minimum */
     uint32_t image_count = swapchain_support_details.capabilities.minImageCount + 1;
     
-    if ((swapchain_support_details.capabilities.maxImageCount > 0) &&
+    /* but also check if we are not going out of bounds */
+    if ((swapchain_support_details.capabilities.maxImageCount > 0) && /* 0 means there is no maximum */
             (image_count > swapchain_support_details.capabilities.maxImageCount))
     {
         image_count = swapchain_support_details.capabilities.maxImageCount;
@@ -83,25 +96,32 @@ void SwapChain::_create_swapchain() {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         .pNext = nullptr,
         .surface = m_window.get_vk_surface(),
+        /* we only specify a minimum, not a maximum */
         .minImageCount = image_count,
         .imageFormat = m_swapchain_vk_format,
         .imageColorSpace = surface_format.colorSpace,
-        .imageArrayLayers = 1,
         .imageExtent = m_swapchain_vk_extent_2d,
+        .imageArrayLayers = 1, /* amount of layers used */
         .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
     };
 
-    /* get graphics and presentation queue indexes of phy_dev */
-    /* we assume they are the same for the time being */
+    /* TODO: handle the case where graphic and presentation queues live in different queue families */
+    /* we assume presentation and graphic bits live in the same queue family */
+    /* the image sharing mode defines the queue/image ownership relationship */
     swap_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     swap_create_info.queueFamilyIndexCount = 0;
     swap_create_info.pQueueFamilyIndices = nullptr;
+
+    /* current transformation means that we don't want to aply any transformation */
     swap_create_info.preTransform = swapchain_support_details.capabilities.currentTransform;
+    
     /* ignore alpha channel */
     swap_create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 
+    /* ignore obscured pixels */
     swap_create_info.presentMode = present_mode;
     swap_create_info.clipped = VK_TRUE;
+
     swap_create_info.oldSwapchain = VK_NULL_HANDLE;
 
     /* create swap chain */
@@ -128,7 +148,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
     /* query swap chain images */
     uint32_t image_count;
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, nullptr);
-    /* We create an image view per each image available in the swapchain */
+    /* we create an image view per each image available in the swapchain */
     m_vk_swapchain_images.resize(image_count);
     m_vk_swapchain_image_views.resize(image_count);
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, m_vk_swapchain_images.data());
