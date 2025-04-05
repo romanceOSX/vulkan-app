@@ -21,7 +21,8 @@ VkSurfaceFormatKHR SwapChain::_choose_swap_surface_format(std::vector<VkSurfaceF
         }
     }
     /* Fallback case */
-    return available_formats.front();
+    APP_DBG_WARN("Specific format/colorspace surface format not found, using the first available...");
+    return available_formats.front(); /* should be enough to settle with the first one */
 }
 
 VkPresentModeKHR SwapChain::_choose_swap_present_mode(std::vector<VkPresentModeKHR>& available_modes) {
@@ -31,6 +32,9 @@ VkPresentModeKHR SwapChain::_choose_swap_present_mode(std::vector<VkPresentModeK
         }
     }
     /* guaranteed to be always available */
+    APP_DBG_WARN("Present mode: VK_PRESENT_MODE_MAILBOX_KHR not found, fallbacking to VK_PRESENT_MODE_FIFO_KHR");
+    /* BUG: if we go with immediate, we get a different behaviour on screen */
+    //return VK_PRESENT_MODE_IMMEDIATE_KHR;
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
@@ -38,6 +42,7 @@ VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabi
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()){
         return capabilities.currentExtent;
     } else {
+        APP_DBG_WARN("Window surface does not support mismatching the window resolution and image resolution, matching resolusionts instead...");
         int width;
         int height;
         glfwGetFramebufferSize(m_window.get_glfw_window(), &width, &height);
@@ -103,10 +108,6 @@ void SwapChain::_create_swapchain() {
     {
         throw std::runtime_error("Failed to create swap chain 😵");
     }
-
-    /* populate data members */
-    m_vk_format = surface_format.format;
-    m_vk_extent_2d = extent;
 }
 
 /* We assume that phy_dev does support the swapchain, previously determined */
