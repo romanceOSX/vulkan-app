@@ -21,8 +21,8 @@ class CommandPool {
         void reset();
         void destroy();
         CommandBuffer& create_command_buffer();
-        VkCommandPool getVkCmdPool();
-        Device& getDevice();
+        VkCommandPool get_vk_command_pool();
+        Device& get_device();
 
     private:
         void _allocate_cmd_buffer();

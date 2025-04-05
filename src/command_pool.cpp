@@ -44,15 +44,16 @@ void CommandPool::destroy() {
     );
 }
 
-VkCommandPool CommandPool::getVkCmdPool() {
+VkCommandPool CommandPool::get_vk_command_pool() {
     return m_command_pool;
 }
 
-Device& CommandPool::getDevice() {
+Device& CommandPool::get_device() {
     return m_device;
 }
 
 CommandBuffer& CommandPool::create_command_buffer() {
+    /* for the time being we should always create one */
     m_command_buffers.emplace_back(*this, 1, VK_COMMAND_BUFFER_LEVEL_PRIMARY); 
     return m_command_buffers.back();
 }
@@ -69,7 +70,7 @@ CommandBuffer& CommandPool::create_command_buffer() {
 CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
     :m_command_pool{cmdPool},
     m_count{count},
-    m_device{cmdPool.getDevice()}
+    m_device{cmdPool.get_device()}
 {
     /* TODO: This vector could be initialized at the initializer list instead */
     m_command_buffers.resize(m_count);
@@ -77,7 +78,7 @@ CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
     VkCommandBufferAllocateInfo allocate_info = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
         .pNext = nullptr,
-        .commandPool = m_command_pool.getVkCmdPool(),
+        .commandPool = m_command_pool.get_vk_command_pool(),
         .level = type,
         .commandBufferCount = m_count,
     };
@@ -102,7 +103,7 @@ std::vector<VkCommandBuffer>& CommandBuffer::get_command_buffers() {
 
 void CommandBuffer::free() {
     vkFreeCommandBuffers(m_device.get_vk_device(),
-            m_command_pool.getVkCmdPool(),
+            m_command_pool.get_vk_command_pool(),
             m_command_buffers.size(),
             m_command_buffers.data()
     );
