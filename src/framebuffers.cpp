@@ -18,7 +18,7 @@ Framebuffers::Framebuffers(Device& dev, SwapChain& swap, Pipeline& pipeline):
 }
 
 void Framebuffers::_create_framebuffers() {
-    APP_PRETTY_PRINT_CUSTOM("creating Pipeline...", "☀️");
+    APP_PRETTY_PRINT_CUSTOM("Creating framebuffers...", "☀️");
     /* WARN: check the sizing operation */
     auto image_views = m_swapchain.get_vk_image_views();
     m_swapchain_frame_buffers.resize(image_views.size());
@@ -31,14 +31,15 @@ void Framebuffers::_create_framebuffers() {
         VkFramebufferCreateInfo frame_buffer_info{};
         frame_buffer_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         frame_buffer_info.pNext = nullptr;
+        frame_buffer_info.flags = 0;
         frame_buffer_info.renderPass = m_pipeline.get_render_pass().get_vk_render_pass();
         frame_buffer_info.attachmentCount = 1;
         frame_buffer_info.pAttachments = attachments;
         frame_buffer_info.width = m_swapchain.get_vk_extent_2d().width;
-        frame_buffer_info.width = m_swapchain.get_vk_extent_2d().height;
+        frame_buffer_info.height = m_swapchain.get_vk_extent_2d().height;
         frame_buffer_info.layers = 1;
 
-        if (vkCreateFramebuffer(m_device.get_vk_device(), &frame_buffer_info, nullptr, &m_swapchain_frame_buffers[i])
+        if (vkCreateFramebuffer(m_device.get_vk_device(), &frame_buffer_info, nullptr, &m_swapchain_frame_buffers.at(i))
                 != VK_SUCCESS) 
         {
             throw std::runtime_error("Failed to create framebuffer 😵");
