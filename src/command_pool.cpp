@@ -18,13 +18,17 @@ CommandPool::CommandPool(Device& dev): m_device{dev} {
     VkCommandPoolCreateInfo command_pool_create = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .pNext = nullptr,
-        .flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
+        .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
         .queueFamilyIndex = m_device.get_queue_family_index(),
     };
 
     if (VK_SUCCESS != vkCreateCommandPool(
-                dev.get_vk_device(), &command_pool_create,
-                nullptr, &m_command_pool)) {
+                dev.get_vk_device(), 
+                &command_pool_create,
+                nullptr,
+                &m_command_pool)
+       )
+    {
         APP_DBG_ERR("Failed to create Command Pool");
     }
 }
@@ -83,11 +87,15 @@ CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
         .commandBufferCount = m_count,
     };
 
-    vkAllocateCommandBuffers(
+    if ((vkAllocateCommandBuffers(
             m_device.get_vk_device(),
             &allocate_info,
             m_command_buffers.data()
-    );  
+            ))
+            != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create command buffer 😵");
+    }
 }
 
 /* Resets all, edit class upon solid use-case */
@@ -136,11 +144,21 @@ void CommandBuffer::begin_render_pass(uint32_t image_index, SwapChain& swapchain
     render_pass_info.renderArea.offset = {0, 0};
     render_pass_info.renderArea.extent = swapchain.get_vk_extent_2d();
 
+    /* this is the clear (empty) color */
     VkClearValue clear_color = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
     render_pass_info.clearValueCount = 1;
     render_pass_info.pClearValues = &clear_color;
 
     vkCmdBeginRenderPass(m_command_buffers.front(), &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+}
+
+void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
+    vkCmdBindPipeline(m_command_buffers.front(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_vk_pipeline());  
+}
+
+void CommandBuffer::draw() {
+    vkCmdDraw(m_command_buffers.front(), 3, 1, 0, 0);
+}
 
 void CommandBuffer::set_viewport_and_scissor(SwapChain& swapchain) {
     /* set scissor and viewport */
@@ -159,13 +177,6 @@ void CommandBuffer::set_viewport_and_scissor(SwapChain& swapchain) {
     vkCmdSetScissor(m_command_buffers.front(), 0, 1, &scissor);
 }
 
-void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
-    vkCmdBindPipeline(m_command_buffers.front(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_vk_pipeline());  
-}
-
-void CommandBuffer::draw() {
-    vkCmdDraw(m_command_buffers.front(), 3, 1, 0, 0);
-}
 void CommandBuffer::end_render_pass() {
     vkCmdEndRenderPass(m_command_buffers.front());
 }
