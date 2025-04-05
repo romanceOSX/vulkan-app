@@ -39,15 +39,19 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     m_swapchain{swapchain}
 {
     VkAttachmentDescription color_attachment{};
+    color_attachment.flags = 0;
     color_attachment.format = m_swapchain.get_vk_format();
     color_attachment.samples = VK_SAMPLE_COUNT_1_BIT;
+
     color_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     color_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
     color_attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     color_attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+
     color_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     color_attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    color_attachment.flags = 0;
+
 
     /* subpasses */
     VkAttachmentReference color_attachment_ref{};
@@ -58,7 +62,6 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &color_attachment_ref;
-    
 
     VkSubpassDependency dependency{};
     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -71,6 +74,8 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     /* render pass */
     VkRenderPassCreateInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    render_pass_info.pNext = nullptr;
+    render_pass_info.flags = 0;
     render_pass_info.attachmentCount = 1;
     render_pass_info.pAttachments = &color_attachment;
     render_pass_info.subpassCount = 1;
@@ -115,6 +120,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* assign fragment shader module to pipeline stage */
     VkPipelineShaderStageCreateInfo frag_shader_stage_info{};
     frag_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+
     frag_shader_stage_info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
     frag_shader_stage_info.module = frag_shader_module;
     /* entrypoint function name */
@@ -125,18 +131,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
         vert_shader_stage_info,
     };
 
-    /* dynamic state */
-    std::vector<VkDynamicState> dynamic_states = {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR
-    };
-
-    VkPipelineDynamicStateCreateInfo dynamic_state{};
-    dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
-    dynamic_state.pDynamicStates = dynamic_states.data();
-    
     /* vertex input */
+    /* no vertex data to load now, will be using vertex buffers instead */
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vertex_input_info.pNext = nullptr;
@@ -155,13 +151,14 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     input_assembly.primitiveRestartEnable = VK_FALSE;
     
     /* viewports and scissors */
+    /* A viewport describes the region of the framebuffer that will be rendered to */
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
     viewport.width = static_cast<float>(m_swapchain.get_vk_extent_2d().width);
-    viewport.width = static_cast<float>(m_swapchain.get_vk_extent_2d().height);
+    viewport.height = static_cast<float>(m_swapchain.get_vk_extent_2d().height);
     viewport.minDepth = 0.0f;
-    viewport.minDepth = 1.0f;
+    viewport.maxDepth = 1.0f;
 
     VkRect2D scissor{};
     scissor.offset = {0, 0};
@@ -199,6 +196,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /* multisampling */
     VkPipelineMultisampleStateCreateInfo multisampling{};
     multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.pNext = nullptr;
+    multisampling.flags = 0;
     multisampling.sampleShadingEnable = VK_FALSE;
     multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
     multisampling.minSampleShading = 1.0f;
@@ -212,12 +211,12 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
         VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     color_blend_attachment.blendEnable = VK_FALSE;
 
-    //color_blend_attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-    //color_blend_attachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
-    //color_blend_attachment.colorBlendOp = VK_BLEND_OP_ADD;
-    //color_blend_attachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-    //color_blend_attachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-    //color_blend_attachment.alphaBlendOp = VK_BLEND_OP_ADD;
+    color_blend_attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    color_blend_attachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+    color_blend_attachment.colorBlendOp = VK_BLEND_OP_ADD;
+    color_blend_attachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    color_blend_attachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    color_blend_attachment.alphaBlendOp = VK_BLEND_OP_ADD;
 
     VkPipelineColorBlendStateCreateInfo color_blending{};
     color_blending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -232,6 +231,19 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     color_blending.blendConstants[2] = 0.0f;
     color_blending.blendConstants[3] = 0.0f;
 
+    /* dynamic state */
+    std::vector<VkDynamicState> dynamic_states = {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    };
+
+    VkPipelineDynamicStateCreateInfo dynamic_state{};
+    dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamic_state.pNext = nullptr;
+    dynamic_state.flags = 0;
+    dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
+    dynamic_state.pDynamicStates = dynamic_states.data();
+    
     /* Pipeline Layout */
     VkPipelineLayoutCreateInfo pipeline_layout_info{};
     pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
