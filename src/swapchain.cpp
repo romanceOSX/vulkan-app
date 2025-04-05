@@ -181,10 +181,16 @@ SwapChain::SwapChain(Device& dev, Window& window):
     }
 }
 
+/* TODO: add printing method for vk2dextents */
 void SwapChain::print_info() {
     APP_PRINT_INFO("Swapchain Info:");
+
     auto& swapchain_support_details = m_physical_device.get_swapchain_support_details();
+
+    std::cout << "Physical device/ swapchain support details: " << std::endl;
+    std::cout << "-- Capabilities: " << std::endl;
     std::cout << "Max image count: " << swapchain_support_details.capabilities.maxImageCount << std::endl;
+    std::cout << "Min image count: " << swapchain_support_details.capabilities.minImageCount << std::endl;
 }
 
 VkFormat SwapChain::get_vk_format() {
