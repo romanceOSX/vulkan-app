@@ -45,6 +45,7 @@ class PhysicalDevice {
         uint32_t get_queue_families_count(void);
         std::vector<VkQueueFamilyProperties>& get_vk_device_queue_families_properties(void);
         std::vector<VkExtensionProperties>& get_vk_physical_device_extensions(void);
+        /* TODO: rename this to 'surface_support_details' */
         SwapchainSupportDetails& get_swapchain_support_details();
         void print_info();
 

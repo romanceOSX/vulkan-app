@@ -84,8 +84,9 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
     };
 
     /* 
-     *  check if device even supports the swapchain extension
-     *  "VK_KHR_DISPLAY_SWAPCHAIN_EXTENSION_NAME"
+     *  We check if the physical device is capable of presenting stuff to the screen
+     *      Check if device even supports the swapchain extension
+     *      "VK_KHR_DISPLAY_SWAPCHAIN_EXTENSION_NAME"
      */ 
     bool is_swapchain_supported = false;
     std::set<std::string> required_set{std::begin(required_extensions), std::end(required_extensions)};
@@ -98,9 +99,15 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
     }
 
     /* 
-     * query swapchain details
+     * query surface details and capabilities
      * (needed at the swapchain creation stage)
-     * TODO: add note here on intersection between window, surface, and device
+     *  - basic surface capabilities:
+     *      - min/max number of images in swapchain
+     *      - min/max width/height of images
+     *  - surface formats
+     *      - pixel formats
+     *      - color space
+     *  - presentation modes
      */
 
     /* query surface capabilities */
