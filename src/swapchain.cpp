@@ -62,6 +62,10 @@ void SwapChain::_create_swapchain() {
     VkExtent2D extent = _choose_swap_extent(swapchain_support_details.capabilities);
 
     /* It is recommended to choose at least more than the minimum */
+    /* populate data members */
+    m_swapchain_vk_format = surface_format.format;
+    m_swapchain_vk_extent_2d = extent;
+
     uint32_t image_count = swapchain_support_details.capabilities.minImageCount + 1;
     
     if ((swapchain_support_details.capabilities.maxImageCount > 0) &&
@@ -74,10 +78,10 @@ void SwapChain::_create_swapchain() {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         .surface = m_window.get_vk_surface(),
         .minImageCount = image_count,
-        .imageFormat = surface_format.format,
+        .imageFormat = m_swapchain_vk_format,
         .imageColorSpace = surface_format.colorSpace,
-        .imageExtent = extent,
         .imageArrayLayers = 1,
+        .imageExtent = m_swapchain_vk_extent_2d,
         .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
     };
 
@@ -131,8 +135,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
             .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
             .image = m_vk_swapchain_images.at(i),
             .viewType = VK_IMAGE_VIEW_TYPE_2D,
-            /* WARN: Formate is not initialized here */
-            .format = m_vk_format,
+            .format = m_swapchain_vk_format,
         };
         image_view_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
         image_view_create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -159,11 +162,11 @@ void SwapChain::print_info() {
 }
 
 VkFormat SwapChain::get_vk_format() {
-    return m_vk_format;
+    return m_swapchain_vk_format;
 }
 
 VkExtent2D SwapChain::get_vk_extent_2d() {
-    return m_vk_extent_2d;
+    return m_swapchain_vk_extent_2d;
 }
 
 std::vector<VkImage>& SwapChain::get_vk_images() {

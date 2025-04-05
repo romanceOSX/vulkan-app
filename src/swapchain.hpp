@@ -15,13 +15,13 @@ class SwapChain {
     public:
         SwapChain(Device& dev, Window& window);
         ~SwapChain();
-        void print_info();
         VkFormat get_vk_format();
         VkExtent2D get_vk_extent_2d();
         std::vector<VkImage>& get_vk_images();
         std::vector<VkImageView>& get_vk_image_views();
         VkSwapchainKHR  get_vk_swapchain();
         size_t size();
+        void print_info();
 
     private:
         void _create_swapchain();
@@ -35,8 +35,8 @@ class SwapChain {
         Window&                         m_window;
         VkSwapchainKHR                  m_vk_swapchain;
         std::vector<VkImage>            m_vk_swapchain_images;
-        VkFormat                        m_vk_format;
-        VkExtent2D                      m_vk_extent_2d;
+        VkFormat                        m_swapchain_vk_format;
+        VkExtent2D                      m_swapchain_vk_extent_2d;
         std::vector<VkImageView>        m_vk_swapchain_image_views;
 };
 
