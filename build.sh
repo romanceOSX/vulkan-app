@@ -9,13 +9,13 @@ VULKAN_SDK=~/VulkanSDK/1.4.309.0
 
 SRC_DIR=$(dirname "$(realpath "$0")")
 BUILD_DIR=$SRC_DIR/build
-SHADER_DIR=$SRC_DIR/shaders/glsl/triangle
 TARGET=$BUILD_DIR/$APP_NAME
+SHADER_DIR=$SRC_DIR/shaders/glsl/triangle
 
-# build shaders
+# compile shaders
 . $SHADER_DIR/compile.sh
 
-if ! [ -d "$BUILD_DIR" ]; then
+if  [ ! -d "$BUILD_DIR" ]; then
     mkdir build
     cmake -B build
 fi
