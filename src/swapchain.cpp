@@ -14,10 +14,10 @@
  */
 VkSurfaceFormatKHR SwapChain::_choose_swap_surface_format(std::vector<VkSurfaceFormatKHR>& available_formats) {
     /* (Format, Colorspace) => */
-    for (const auto& available_format: available_formats) {
-        if ((available_format.format == VK_FORMAT_B8G8R8A8_SRGB) &&
-            (available_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)) {
-            return available_format;           
+    for (const auto& format: available_formats) {
+        if ((format.format == VK_FORMAT_B8G8R8A8_SRGB) &&
+            (format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)) {
+            return format;           
         }
     }
     /* Fallback case */
@@ -52,7 +52,7 @@ VkExtent2D SwapChain::_choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabi
             static_cast<uint32_t>(height)
         };
         actual_extent.width = std::clamp(actual_extent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
-        actual_extent.width = std::clamp(actual_extent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+        actual_extent.height = std::clamp(actual_extent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
         return actual_extent;
     }
@@ -81,6 +81,7 @@ void SwapChain::_create_swapchain() {
 
     VkSwapchainCreateInfoKHR swap_create_info {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+        .pNext = nullptr,
         .surface = m_window.get_vk_surface(),
         .minImageCount = image_count,
         .imageFormat = m_swapchain_vk_format,
@@ -96,6 +97,9 @@ void SwapChain::_create_swapchain() {
     swap_create_info.queueFamilyIndexCount = 0;
     swap_create_info.pQueueFamilyIndices = nullptr;
     swap_create_info.preTransform = swapchain_support_details.capabilities.currentTransform;
+    /* ignore alpha channel */
+    swap_create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+
     swap_create_info.presentMode = present_mode;
     swap_create_info.clipped = VK_TRUE;
     swap_create_info.oldSwapchain = VK_NULL_HANDLE;
@@ -134,6 +138,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
     for (auto& image_view: m_vk_swapchain_image_views) {
         VkImageViewCreateInfo image_view_create_info {
             .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+            .pNext = nullptr,
             .image = m_vk_swapchain_images.at(i),
             .viewType = VK_IMAGE_VIEW_TYPE_2D,
             .format = m_swapchain_vk_format,
