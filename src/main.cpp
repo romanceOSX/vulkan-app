@@ -115,7 +115,6 @@ void _physical_device_test() {
     /* create Framebuffers */
     Framebuffers framebuffers{device, swapchain, pipeline};
 
-
     /* create Command buffers */
     CommandPool command_pool{device};
     auto command_buffer = command_pool.create_command_buffer();
@@ -153,6 +152,9 @@ void _physical_device_test() {
         command_buffer.reset();
         command_buffer.begin_recording();
         command_buffer.begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
+        command_buffer.bind_pipeline(pipeline);
+        command_buffer.set_viewport_and_scissor(swapchain);
+        command_buffer.draw();
         command_buffer.end_render_pass();
         command_buffer.end_recording();
 
