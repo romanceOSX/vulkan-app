@@ -142,6 +142,7 @@ void CommandBuffer::begin_render_pass(uint32_t image_index, SwapChain& swapchain
 
     vkCmdBeginRenderPass(m_command_buffers.front(), &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 
+void CommandBuffer::set_viewport_and_scissor(SwapChain& swapchain) {
     /* set scissor and viewport */
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -165,10 +166,6 @@ void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
 void CommandBuffer::draw() {
     vkCmdDraw(m_command_buffers.front(), 3, 1, 0, 0);
 }
-
-void CommandBuffer::set_viewport_and_scissor() {
-}
-
 void CommandBuffer::end_render_pass() {
     vkCmdEndRenderPass(m_command_buffers.front());
 }

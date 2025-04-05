@@ -47,7 +47,7 @@ class CommandBuffer {
         void begin_recording();
         void begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);
         void bind_pipeline(Pipeline& pipeline);
-        void set_viewport_and_scissor();
+        void set_viewport_and_scissor(SwapChain& swapchain);
         void draw();
         void end_render_pass();
         void end_recording();
