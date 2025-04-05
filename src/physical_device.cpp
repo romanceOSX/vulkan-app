@@ -105,11 +105,14 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
 
     /* query surface capabilities */
     VkSurfaceCapabilitiesKHR vk_surface_capabilities;
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+    if (VK_SUCCESS != vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
             m_vk_physical_device,
             window.get_vk_surface(),
             &m_swapchain_support_details.capabilities
-    );
+    ))
+    {
+        throw std::runtime_error("Couldn't query the surface capabilities 😵");
+    };
 
     /* query surface formats */
     uint32_t format_count;
@@ -146,7 +149,7 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
         && !m_swapchain_support_details.preset_modes.empty();
 
     if (!is_swap_chain_adequate) {
-        throw std::invalid_argument("Physical device not supported by surface");
+        throw std::runtime_error("Physical device not supported by surface");
     }
 
     /*
