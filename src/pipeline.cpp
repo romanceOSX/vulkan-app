@@ -315,3 +315,9 @@ VkPipeline Pipeline::get_vk_pipeline() {
     return m_vk_pipeline;
 }
 
+Pipeline::~Pipeline() {
+    /* TODO: add pretty prints */
+    vkDestroyPipeline(m_device.get_vk_device(), m_vk_pipeline, nullptr);
+    vkDestroyPipelineLayout(m_device.get_vk_device(), m_pipeline_layout, nullptr);
+}
+

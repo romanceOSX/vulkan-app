@@ -21,6 +21,7 @@ class RenderPass {
 class Pipeline {
     public:
         Pipeline(Device& dev, SwapChain& swapchain);
+        ~Pipeline();
         VkShaderModule create_shader_module(std::vector<char>& bytes);
         RenderPass& get_render_pass();
         VkPipeline get_vk_pipeline();
