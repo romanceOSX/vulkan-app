@@ -3,13 +3,20 @@ Dev TODO list
 [ ] Fix the cleanup(singletons), use smart pointers for everything
 
 2025-03-17
-[ ] Review proper place to put these notes
+[X] Review proper place to put these notes
 [ ] Add a front README.md
 [ ] Evaluate if creating a wsi.cpp module should be proper
-[ ] Check most convenient way to raise exceptions
+[X] Check most convenient way to raise exceptions
 
 2025-03-30
     - TODO: add proper dependency warnings
         - glsl
         - glm
+
+2025-04-06
+    - TODO: framebuffer destructor
+    - TODO: fix the allocation mess in command_pool.cpp
+    - TODO: fix the main loop mess
+
+    - TODO: migrate build pipeline to python
 
