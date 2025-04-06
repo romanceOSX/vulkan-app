@@ -141,7 +141,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
     m_physical_device{dev.get_physical_device()},
     m_window{window} 
 {
-    APP_PRETTY_PRINT_CUSTOM("creating Swapchain...", "☀️");
+    APP_PRETTY_PRINT_CREATE("creating Swapchain...");
     /* initialize swap chain */
     _create_swapchain();
 
@@ -223,12 +223,12 @@ std::vector<VkImageView>& SwapChain::get_vk_image_views() {
 
 /* TODO: add a logging facility on this */
 SwapChain::~SwapChain() {
-    APP_PRETTY_PRINT_CUSTOM("Destroying image views...", "🌙");
+    APP_PRETTY_PRINT_DESTROY("Destroying image views...");
     for (auto& image_view: m_vk_swapchain_image_views) {
         vkDestroyImageView(m_device.get_vk_device(), image_view, nullptr);
     }
 
-    APP_PRETTY_PRINT_CUSTOM("Destroying swapchain...", "🌙");
+    APP_PRETTY_PRINT_DESTROY("Destroying swapchain...");
     vkDestroySwapchainKHR(m_device.get_vk_device(), m_vk_swapchain, nullptr);
 }
 

@@ -102,7 +102,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     m_swapchain{swapchain},
     m_render_pass{dev, swapchain}
 {
-    APP_PRETTY_PRINT_CUSTOM("creating Pipeline...", "☀️");
+    APP_PRETTY_PRINT_CREATE("creating Pipeline...");
     auto vert_file_bytes_v = read_file("shaders/glsl/triangle/triangle.vert.spv");
     auto frag_file_bytes_v = read_file("shaders/glsl/triangle/triangle.frag.spv");
 
@@ -297,7 +297,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     {
         throw std::runtime_error("Failed to create Graphics Pipeline 😵");
     }
-    APP_PRETTY_PRINT_CUSTOM("Pipeline created succesfull!", "🐦‍🔥");
+    APP_PRETTY_PRINT_CREATE("Created graphics pipeline!!!");
 }
 
 VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {

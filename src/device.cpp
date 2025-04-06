@@ -17,7 +17,7 @@
  */
 
 Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} {
-    APP_PRETTY_PRINT_CUSTOM("creating logical Device...", "☀️");
+    APP_PRETTY_PRINT_CREATE("creating logical Device...");
 }
 
 uint32_t Device::_get_suitable_queue_index(void) {
@@ -116,7 +116,7 @@ PhysicalDevice& Device::get_physical_device() {
 }
 
 Device::~Device() {
-    APP_PRETTY_PRINT_CUSTOM("Destroying logical device and queue...", "🌙");
+    APP_PRETTY_PRINT_DESTROY("Destroying logical device and queue...");
     vkDestroyDevice(m_vk_device, nullptr);
 }
 

@@ -6,7 +6,7 @@
 #include "window.hpp"
 
 Window::Window(Instance& i): m_instance{i} {
-    APP_PRETTY_PRINT_CUSTOM("creating Instance...", "☀️");
+    APP_PRETTY_PRINT_CREATE("creating Instance...");
     /* Initialize glfw */
     glfwInit();
 
