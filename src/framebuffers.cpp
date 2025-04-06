@@ -53,3 +53,13 @@ std::vector<VkFramebuffer>& Framebuffers::get_swapchain_frame_buffers() {
     return m_swapchain_frame_buffers;
 }
 
+Framebuffers::~Framebuffers() {
+    for (const auto& framebuffer: m_swapchain_frame_buffers) {
+        vkDestroyFramebuffer(m_device.get_vk_device(),
+                framebuffer,
+                nullptr
+        );
+        APP_PRETTY_PRINT_DESTROY("destroyed framebuffer");
+    }
+}
+
