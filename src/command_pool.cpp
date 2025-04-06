@@ -41,13 +41,6 @@ void CommandPool::reset() {
     );
 }
 
-void CommandPool::destroy() {
-    vkDestroyCommandPool( m_device.get_vk_device(),
-            m_command_pool,
-            nullptr
-    );
-}
-
 VkCommandPool CommandPool::get_vk_command_pool() {
     return m_command_pool;
 }
@@ -60,6 +53,15 @@ CommandBuffer& CommandPool::create_command_buffer() {
     /* for the time being we should always create one */
     m_command_buffers.emplace_back(*this, 1, VK_COMMAND_BUFFER_LEVEL_PRIMARY); 
     return m_command_buffers.back();
+}
+
+CommandPool::~CommandPool() {
+    vkDestroyCommandPool(
+            m_device.get_vk_device(),
+            m_command_pool,
+            nullptr
+    );
+    APP_PRETTY_PRINT_DESTROY("destroyed command pool");
 }
 
 /*
@@ -96,7 +98,7 @@ CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
     {
         throw std::runtime_error("Failed to create command buffer 😵");
     }
-    APP_PRETTY_PRINT_ALLOC("created command pool");
+    APP_PRETTY_PRINT_ALLOC("allocated command buffer");
 }
 
 /* Resets all, edit class upon solid use-case */

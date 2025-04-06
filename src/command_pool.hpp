@@ -17,9 +17,9 @@ class CommandPool {
     public:
         CommandPool() = delete;
         CommandPool(Device& dev);
+        ~CommandPool();
         void trim();
         void reset();
-        void destroy();
         CommandBuffer& create_command_buffer();
         VkCommandPool get_vk_command_pool();
         Device& get_device();
