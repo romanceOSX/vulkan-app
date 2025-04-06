@@ -45,11 +45,11 @@ class CommandBuffer {
         std::vector<VkCommandBuffer>& get_command_buffers();
         /* TODO: add a prefix for command buffer related operations, this to distringuish between class management methods */
         void begin_recording();
-        void begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);
-        void bind_pipeline(Pipeline& pipeline);
-        void set_viewport_and_scissor(SwapChain& swapchain);
-        void draw();
-        void end_render_pass();
+        void cmd_begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);
+        void cmd_bind_pipeline(Pipeline& pipeline);
+        void cmd_set_viewport_and_scissor(SwapChain& swapchain);
+        void cmd_draw();
+        void cmd_end_render_pass();
         void end_recording();
         void submit();
 

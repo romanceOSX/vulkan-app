@@ -151,11 +151,11 @@ void _physical_device_test() {
         /* record command buffer */
         command_buffer.reset();
         command_buffer.begin_recording();
-        command_buffer.begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
-        command_buffer.bind_pipeline(pipeline);
-        command_buffer.set_viewport_and_scissor(swapchain);
-        command_buffer.draw();
-        command_buffer.end_render_pass();
+        command_buffer.cmd_begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
+        command_buffer.cmd_bind_pipeline(pipeline);
+        command_buffer.cmd_set_viewport_and_scissor(swapchain);
+        command_buffer.cmd_draw();
+        command_buffer.cmd_end_render_pass();
         command_buffer.end_recording();
 
         /* prepare submit */

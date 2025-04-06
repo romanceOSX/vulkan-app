@@ -137,7 +137,7 @@ void CommandBuffer::begin_recording()
     }
 }
 
-void CommandBuffer::begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers) {
+void CommandBuffer::cmd_begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers) {
     /* begin render pass */
     VkRenderPassBeginInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -155,15 +155,15 @@ void CommandBuffer::begin_render_pass(uint32_t image_index, SwapChain& swapchain
     vkCmdBeginRenderPass(m_command_buffers.front(), &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 }
 
-void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
+void CommandBuffer::cmd_bind_pipeline(Pipeline& pipeline) {
     vkCmdBindPipeline(m_command_buffers.front(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_vk_pipeline());  
 }
 
-void CommandBuffer::draw() {
+void CommandBuffer::cmd_draw() {
     vkCmdDraw(m_command_buffers.front(), 3, 1, 0, 0);
 }
 
-void CommandBuffer::set_viewport_and_scissor(SwapChain& swapchain) {
+void CommandBuffer::cmd_set_viewport_and_scissor(SwapChain& swapchain) {
     /* set scissor and viewport */
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -180,10 +180,11 @@ void CommandBuffer::set_viewport_and_scissor(SwapChain& swapchain) {
     vkCmdSetScissor(m_command_buffers.front(), 0, 1, &scissor);
 }
 
-void CommandBuffer::end_render_pass() {
+void CommandBuffer::cmd_end_render_pass() {
     vkCmdEndRenderPass(m_command_buffers.front());
 }
 
+/* TODO: should I RAII the begin and end recordings? */
 void CommandBuffer::end_recording() {
     if (vkEndCommandBuffer(m_command_buffers.front()) != VK_SUCCESS) {
         throw std::runtime_error("Failed to record command buffer ❌📹");
