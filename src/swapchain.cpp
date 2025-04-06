@@ -132,6 +132,7 @@ void SwapChain::_create_swapchain() {
     {
         throw std::runtime_error("Failed to create swap chain 😵");
     }
+    APP_PRETTY_PRINT_CREATE("created swapchain");
 }
 
 /* We assume that phy_dev does support the swapchain, previously determined */
@@ -141,7 +142,6 @@ SwapChain::SwapChain(Device& dev, Window& window):
     m_physical_device{dev.get_physical_device()},
     m_window{window} 
 {
-    APP_PRETTY_PRINT_CREATE("creating Swapchain...");
     /* initialize swap chain */
     _create_swapchain();
 
@@ -178,6 +178,7 @@ SwapChain::SwapChain(Device& dev, Window& window):
             throw std::runtime_error("Failed to create image views! 😵");
         }
         i++;
+        APP_PRETTY_PRINT_CREATE("created image view");
     }
 }
 
@@ -223,12 +224,12 @@ std::vector<VkImageView>& SwapChain::get_vk_image_views() {
 
 /* TODO: add a logging facility on this */
 SwapChain::~SwapChain() {
-    APP_PRETTY_PRINT_DESTROY("Destroying image views...");
     for (auto& image_view: m_vk_swapchain_image_views) {
         vkDestroyImageView(m_device.get_vk_device(), image_view, nullptr);
+        APP_PRETTY_PRINT_DESTROY("destroyed image view");
     }
 
-    APP_PRETTY_PRINT_DESTROY("Destroying swapchain...");
     vkDestroySwapchainKHR(m_device.get_vk_device(), m_vk_swapchain, nullptr);
+    APP_PRETTY_PRINT_DESTROY("destroyed swapchain");
 }
 

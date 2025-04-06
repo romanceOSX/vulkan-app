@@ -6,7 +6,6 @@
 #include "window.hpp"
 
 Window::Window(Instance& i): m_instance{i} {
-    APP_PRETTY_PRINT_CREATE("creating Instance...");
     /* Initialize glfw */
     glfwInit();
 
@@ -22,6 +21,7 @@ Window::Window(Instance& i): m_instance{i} {
     if (VK_SUCCESS != res) {
         throw std::runtime_error("Failed to create window surface ❌");
     }
+    APP_PRETTY_PRINT_CREATE("created glfw window surface");
 }
 
 /* Stub constructor */
@@ -36,6 +36,7 @@ Window::~Window() {
     vkDestroySurfaceKHR(m_instance.get_vk_instance(), m_vk_surface, nullptr);
     /* TODO: should I destroy vkInstance here? */
     //vkDestroyInstance(VkInstance instance, const VkAllocationCallbacks *pAllocator)
+    APP_PRETTY_PRINT_DESTROY("destroyed window surface");
 }
 
 bool Window::is_device_suitable(Device &dev) {

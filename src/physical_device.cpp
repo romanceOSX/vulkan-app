@@ -11,7 +11,6 @@
 #include "window.hpp"
 
 PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): m_vk_physical_device(dev) {
-    APP_PRETTY_PRINT_CREATE("creating physical device wrapper...");
     /* Get device properties */
     _query_physical_device_properties();
     _query_physical_device_extensions();

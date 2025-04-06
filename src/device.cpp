@@ -16,9 +16,7 @@
  * We create the required queues from an specific queue family while creating logical devices
  */
 
-Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} {
-    APP_PRETTY_PRINT_CREATE("creating logical Device...");
-}
+Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} { }
 
 uint32_t Device::_get_suitable_queue_index(void) {
     /* TODO: add a cleaner way to query suitable indexes */
@@ -68,11 +66,12 @@ void Device::init(uint32_t count) {
     device_create_info.enabledExtensionCount = m_extensions.size();
 
     if (VK_SUCCESS != vkCreateDevice(m_physical_device.get_vk_physical_device(), &device_create_info, nullptr, &m_vk_device)) {
-        APP_DBG_ERR("NOT SUCCESS!!");
+        APP_DBG_ERR("Failed to create device");
     }
 
     vkGetDeviceQueue(m_vk_device, m_queue_family_index, 0, &m_vk_queue);
     m_is_init = true;
+    APP_PRETTY_PRINT_CREATE("created logical device and requested queue");
 }
 
 void Device::wait() {
@@ -116,7 +115,7 @@ PhysicalDevice& Device::get_physical_device() {
 }
 
 Device::~Device() {
-    APP_PRETTY_PRINT_DESTROY("Destroying logical device and queue...");
     vkDestroyDevice(m_vk_device, nullptr);
+    APP_PRETTY_PRINT_DESTROY("destroyed logical device and queue...");
 }
 

@@ -102,7 +102,6 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     m_swapchain{swapchain},
     m_render_pass{dev, swapchain}
 {
-    APP_PRETTY_PRINT_CREATE("creating Pipeline...");
     auto vert_file_bytes_v = read_file("shaders/glsl/triangle/triangle.vert.spv");
     auto frag_file_bytes_v = read_file("shaders/glsl/triangle/triangle.frag.spv");
 

@@ -18,7 +18,6 @@ Framebuffers::Framebuffers(Device& dev, SwapChain& swap, Pipeline& pipeline):
 }
 
 void Framebuffers::_create_framebuffers() {
-    APP_PRETTY_PRINT_CREATE("Creating framebuffers...");
     /* WARN: check the sizing operation */
     auto image_views = m_swapchain.get_vk_image_views();
     m_swapchain_frame_buffers.resize(image_views.size());
@@ -44,6 +43,7 @@ void Framebuffers::_create_framebuffers() {
         {
             throw std::runtime_error("Failed to create framebuffer 😵");
         }
+        APP_PRETTY_PRINT_CREATE("created framebuffer");
     }
 }
 

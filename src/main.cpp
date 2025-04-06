@@ -72,7 +72,7 @@ void _physical_device_test() {
     instance.add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
     instance.add_extension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
     //instance.add_layer("VK_LAYER_LUNARG_api_dump");
-    instance.add_layer("VK_LAYER_KHRONOS_validation");
+    //instance.add_layer("VK_LAYER_KHRONOS_validation");
     instance.init();
 
     auto vk_phy_devs = instance.get_vk_devices();

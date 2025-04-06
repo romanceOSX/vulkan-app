@@ -8,7 +8,6 @@
 #include "host.hpp"
 
 Instance::Instance() {
-    APP_PRETTY_PRINT_CREATE("creating Instance...");
 }
 
 AppResult Instance::add_extension(const char* ext) {
@@ -59,6 +58,7 @@ void Instance::init() {
     /* Query physical devices available */
     _m_is_init = true;
     _query_physical_devices();
+    APP_PRETTY_PRINT_CREATE("created Vulkan instance");
 }
 
 VkInstance Instance::get_vk_instance() {
@@ -92,5 +92,6 @@ std::vector<VkPhysicalDevice>& Instance::get_vk_devices() {
 
 Instance::~Instance() {
     vkDestroyInstance(m_vk_instance, nullptr);
+    APP_PRETTY_PRINT_DESTROY("destroyed Vulkan instance");
 }
 

@@ -14,7 +14,6 @@
  * Command Pool class
  */
 CommandPool::CommandPool(Device& dev): m_device{dev} {
-    APP_PRETTY_PRINT_CREATE("creating command pool...");
     VkCommandPoolCreateInfo command_pool_create = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .pNext = nullptr,
@@ -31,6 +30,7 @@ CommandPool::CommandPool(Device& dev): m_device{dev} {
     {
         APP_DBG_ERR("Failed to create Command Pool");
     }
+    APP_PRETTY_PRINT_CREATE("created command pool");
 }
 
 void CommandPool::reset() {
@@ -96,6 +96,7 @@ CommandBuffer::CommandBuffer(CommandPool& cmdPool, uint32_t count, Type type)
     {
         throw std::runtime_error("Failed to create command buffer 😵");
     }
+    APP_PRETTY_PRINT_ALLOC("created command pool");
 }
 
 /* Resets all, edit class upon solid use-case */
