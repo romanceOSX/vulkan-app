@@ -16,6 +16,7 @@
 #include "swapchain.hpp"
 #include "pipeline.hpp"
 #include "command_pool.hpp"
+#include "synchronization.hpp"
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>
@@ -32,36 +33,6 @@ int run_app() {
         return EXIT_FAILURE;
     }
     return 0;
-}
-
-VkSemaphore _create_semaphore(Device& dev) {
-    VkSemaphore semaphore;
-    VkSemaphoreCreateInfo semaphore_info{};
-    semaphore_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    semaphore_info.pNext = nullptr;
-    semaphore_info.flags = 0;
-
-    if (vkCreateSemaphore(dev.get_vk_device(), &semaphore_info, nullptr, &semaphore)
-            != VK_SUCCESS) 
-    {
-        throw std::runtime_error("Semaphore creation failed! 😵");
-    }
-    return semaphore;
-}
-
-VkFence _create_fence(Device& dev) {
-    VkFence fence;
-    VkFenceCreateInfo fence_info{};
-    fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    fence_info.pNext = nullptr;
-    fence_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-    if (vkCreateFence(dev.get_vk_device(), &fence_info, nullptr, &fence)
-            != VK_SUCCESS) 
-    {
-        throw std::runtime_error("Fence creation failed! 😵");
-    }
-    return fence;
 }
 
 void _physical_device_test() {
@@ -126,14 +97,14 @@ void _physical_device_test() {
     //window.wait_to_close_window();
 
     /* Create synchronization primitives */
-    VkSemaphore image_available_semaphore = _create_semaphore(device);
-    VkSemaphore render_finished_semaphore = _create_semaphore(device);
-    VkFence in_flight_fence = _create_fence(device);
+    VkSemaphore image_available_semaphore = Semaphore::create(device);
+    VkSemaphore render_finished_semaphore = Semaphore::create(device);
+    VkFence in_flight_fence = Fence::create(device);
 
 
     while (!glfwWindowShouldClose(window.get_glfw_window())) {
         glfwPollEvents();
-        /* wait for previous frames */
+        /* wait for previous frames, first fence is initialized as ready */
         vkWaitForFences(device.get_vk_device(), 1, &in_flight_fence, VK_TRUE, UINT64_MAX);
 
         uint32_t image_index;
