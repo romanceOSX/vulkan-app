@@ -17,3 +17,18 @@ VkSemaphore Semaphore::create(Device& dev) {
     return semaphore;
 }
 
+VkFence Fence::create(Device& dev) {
+    VkFence fence;
+    VkFenceCreateInfo fence_info{};
+    fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fence_info.pNext = nullptr;
+    fence_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    if (vkCreateFence(dev.get_vk_device(), &fence_info, nullptr, &fence)
+            != VK_SUCCESS) 
+    {
+        throw std::runtime_error("Fence creation failed! 😵");
+    }
+    return fence;
+}
+

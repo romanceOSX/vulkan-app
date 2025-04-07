@@ -7,3 +7,8 @@ class Semaphore {
         static VkSemaphore create(Device& dev);
 };
 
+class Fence {
+    public:
+        static VkFence create(Device& dev);
+};
+
