@@ -1,0 +1,4 @@
+We create fences and semaphores
+Fences are created with the 'signaled' state triggered
+
+

@@ -1,3 +1,18 @@
+render pass
+    A render pass consists of two types of componenets
+        - attachments
+            - color attachment
+            - depth attachment
+            - resolve attachment
+            - input attachment
+            - preserve attachment
+        - subpasses
+
+    command buffer
+        -> vkcmd, begin render pass
+        -> pass in the framebuffer
+
+
 Framebuffers
     --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/03_Drawing/00_Framebuffers.html
 

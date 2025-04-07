@@ -17,6 +17,7 @@ Dev TODO list
     - TODO: framebuffer destructor
     - TODO: fix the allocation mess in command_pool.cpp
     - TODO: fix the main loop mess
+    - TODO: add README
 
     - TODO: migrate build pipeline to python
 
