@@ -13,6 +13,14 @@ class RenderPass;
 class SwapChain;
 class Framebuffers;
 
+/*
+ * This class is in charge of allocating a command pool for an specific device
+ * at an specific queue family index
+ * (command pool) <=> (device, queue family)
+ *
+ * After allocation it is able to allocate Command Buffers from within its internal
+ * Command Pool
+ */
 class CommandPool {
     public:
         CommandPool() = delete;

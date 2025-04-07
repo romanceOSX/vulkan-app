@@ -8,7 +8,7 @@
 #include "pipeline.hpp"
 #include "swapchain.hpp"
 
-
+/* TODO: make this class more flexible, first determine use-cases */
 Framebuffers::Framebuffers(Device& dev, SwapChain& swap, Pipeline& pipeline):
     m_device{dev},
     m_swapchain{swap},
