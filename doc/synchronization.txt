@@ -1,4 +1,26 @@
+/* image acquire */
 We create fences and semaphores
 Fences are created with the 'signaled' state triggered
 
+Wait for 'in_flight' fence to be singaled (it is)
+
+Aquire next image and fire the 'image_semaphore' when ready
+
+Set the fence to unsignaled
+
+/* command buffer submission */
+record command buffer
+
+wait for 'image_semaphore'
+signal 'render semaphore' when done
+signal 'in_flight' fence when done
+submit info
+
+/* present to surface */
+wait for 'render semaphore' to be signaled
+
+
+VkQueueSubmit
+    once this operation finishes, it resets the signaled state of the waiting synchronization
+    primitives
 
