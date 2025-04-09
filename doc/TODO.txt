@@ -14,10 +14,11 @@ Dev TODO list
         - glm
 
 2025-04-06
-    - TODO: framebuffer destructor
     - TODO: fix the allocation mess in command_pool.cpp
     - TODO: fix the main loop mess
     - TODO: add README
 
     - TODO: migrate build pipeline to python
+
+    - TODO: attend todos in pipeline
 

@@ -232,7 +232,6 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     pipeline_layout_info.pushConstantRangeCount = 0;
     pipeline_layout_info.pPushConstantRanges = nullptr;
 
-    /* TODO: add cleanup for this creation */
     if (vkCreatePipelineLayout(m_device.get_vk_device(), &pipeline_layout_info, nullptr, &m_pipeline_layout)
             != VK_SUCCESS)
     {
@@ -269,7 +268,6 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
     pipeline_info.basePipelineIndex = -1;
                                                                                                                  
-    /* TODO: do cleanup of pipeline object */
     if (vkCreateGraphicsPipelines(m_device.get_vk_device(), VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &m_vk_pipeline)
             != VK_SUCCESS)
     {
@@ -287,7 +285,6 @@ VkPipeline Pipeline::get_vk_pipeline() {
 }
 
 Pipeline::~Pipeline() {
-    /* TODO: add pretty prints */
     vkDestroyPipeline(m_device.get_vk_device(), m_vk_pipeline, nullptr);
     vkDestroyPipelineLayout(m_device.get_vk_device(), m_pipeline_layout, nullptr);
     APP_PRETTY_PRINT_DESTROY("destroyed pipeline and pipeline layout");
@@ -295,6 +292,7 @@ Pipeline::~Pipeline() {
 
 /*
  * Shader module class
+ * TODO: move this to its own module
  */
 ShaderModule::ShaderModule(Device& dev, const std::string& filepath): m_device{dev} {
     _read_file(filepath);
@@ -332,7 +330,7 @@ void ShaderModule::_read_file(const std::string& filepath) {
     file.close();
 }
 
-/* WARN: are user-defined conversion functions good practive? */
+/* WARN: are user-defined conversion functions good practice? */
 ShaderModule::operator VkShaderModule() {
     return m_vk_shader_module;
 }
