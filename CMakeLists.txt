@@ -14,6 +14,9 @@ else()
     set(APP_OUT_NAME vulkan_app)
 endif()
 
+# create project
+project(${APP_OUT_NAME})
+
 # Where did I get this?
 # https://www.glfw.org
 set(GLFW_PATH $ENV{HOME}/git/glfw)
@@ -23,9 +26,6 @@ set(APP_SRC_DIR src)
 # https://github.com/g-truc/glm
 find_package(glm REQUIRED)
 find_package(Vulkan REQUIRED)
-
-# Project setup
-project(${APP_OUT_NAME})
 
 set(APP_SOURCES
     ${APP_SRC_DIR}/main.cpp
