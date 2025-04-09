@@ -65,7 +65,6 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     render_pass_info.dependencyCount = 1;
     render_pass_info.pDependencies = &dependency;
 
-    /* TODO: destroy this thing */
     if (vkCreateRenderPass(m_device.get_vk_device(), &render_pass_info, nullptr, &m_vk_render_pass)
             != VK_SUCCESS) {
         throw std::runtime_error("Failed to create render pass! 😵");
@@ -274,6 +273,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
         throw std::runtime_error("Failed to create Graphics Pipeline 😵");
     }
     APP_PRETTY_PRINT_CREATE("created graphics pipeline");
+    APP_PRETTY_PRINT_CREATE("created pipeline layout");
+    APP_PRETTY_PRINT_CREATE("created render pass");
 }
 
 RenderPass& Pipeline::get_render_pass() {
@@ -287,7 +288,10 @@ VkPipeline Pipeline::get_vk_pipeline() {
 Pipeline::~Pipeline() {
     vkDestroyPipeline(m_device.get_vk_device(), m_vk_pipeline, nullptr);
     vkDestroyPipelineLayout(m_device.get_vk_device(), m_pipeline_layout, nullptr);
-    APP_PRETTY_PRINT_DESTROY("destroyed pipeline and pipeline layout");
+    vkDestroyRenderPass(m_device.get_vk_device(), m_render_pass.get_vk_render_pass(), nullptr);
+    APP_PRETTY_PRINT_DESTROY("destroyed pipeline");
+    APP_PRETTY_PRINT_DESTROY("destroyed pipeline layout");
+    APP_PRETTY_PRINT_DESTROY("destroyed render pass");
 }
 
 /*
