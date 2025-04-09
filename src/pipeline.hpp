@@ -34,3 +34,19 @@ class Pipeline {
         VkPipeline              m_vk_pipeline;
 };
 
+/*
+ * Type that encapsulates everything needed to consume a shader module
+ */
+class ShaderModule {
+    public:
+        ShaderModule(Device& dev, const std::string& filepath);
+        ~ShaderModule();
+        operator VkShaderModule(); /* returns the internal m_vk_shader_module */
+
+    private:
+        void  _read_file(const std::string& filename);
+        std::vector<char>   m_spirv_bytes;
+        Device&             m_device;
+        VkShaderModule      m_vk_shader_module;
+};
+

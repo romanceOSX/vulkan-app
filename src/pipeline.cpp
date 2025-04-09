@@ -332,3 +332,52 @@ Pipeline::~Pipeline() {
     vkDestroyPipelineLayout(m_device.get_vk_device(), m_pipeline_layout, nullptr);
 }
 
+/*
+ * Shader module class
+ */
+ShaderModule::ShaderModule(Device& dev, const std::string& filepath): m_device{dev} {
+    _read_file(filepath);
+
+    /* create shader module */
+    assert((m_spirv_bytes.size() % 4) == 0);
+    
+    VkShaderModuleCreateInfo create_info{};
+    create_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    create_info.codeSize = m_spirv_bytes.size();
+    create_info.pCode = reinterpret_cast<const uint32_t*>(m_spirv_bytes.data());
+    
+    if (vkCreateShaderModule(m_device.get_vk_device(), &create_info, nullptr, &m_vk_shader_module)
+            != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create shader module 😵");
+    }
+    APP_PRETTY_PRINT_CREATE("Created shader module");
+}
+
+void ShaderModule::_read_file(const std::string& filepath) {
+    std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+    
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open shader file");
+    }
+
+    size_t file_size = static_cast<size_t>(file.tellg());
+
+    m_spirv_bytes.resize(file_size);
+
+    file.seekg(0);
+    file.read(m_spirv_bytes.data(), file_size);
+
+    file.close();
+}
+
+/* WARN: are user-defined conversion functions good practive? */
+ShaderModule::operator VkShaderModule() {
+    return m_vk_shader_module;
+}
+
+ShaderModule::~ShaderModule() {
+    vkDestroyShaderModule(m_device.get_vk_device(), m_vk_shader_module, nullptr);
+    APP_PRETTY_PRINT_DESTROY("destroyed shader module");
+}
+
