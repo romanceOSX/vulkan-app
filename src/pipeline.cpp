@@ -13,24 +13,6 @@
 #include "swapchain.hpp"
 #include "pipeline.hpp"
 
-static std::vector<char> read_file(const std::string& filename) {
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
-    
-    if (!file.is_open()) {
-        throw std::runtime_error("Failed to open shader file");
-    }
-
-    size_t file_size = static_cast<size_t>(file.tellg());
-    std::vector<char> buffer(file_size);
-
-    file.seekg(0);
-    file.read(buffer.data(), file_size);
-
-    file.close();
-
-    return buffer;
-}
-
 /*
  * RenderPass class
  */
@@ -293,26 +275,6 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     {
         throw std::runtime_error("Failed to create Graphics Pipeline 😵");
     }
-    APP_PRETTY_PRINT_CREATE("Created graphics pipeline!!!");
-}
-
-VkShaderModule Pipeline::create_shader_module(std::vector<char>& spirv_bytes) {
-    /* create shader module */
-    assert((spirv_bytes.size() % 4) == 0);
-    
-    VkShaderModuleCreateInfo create_info{};
-    create_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    create_info.codeSize = spirv_bytes.size();
-    create_info.pCode = reinterpret_cast<const uint32_t*>(spirv_bytes.data());
-    
-    VkShaderModule shader_module;
-    if (vkCreateShaderModule(m_device.get_vk_device(), &create_info, nullptr, &shader_module)
-            != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create shader module 😵");
-    }
-
-    return shader_module;
 }
 
 RenderPass& Pipeline::get_render_pass() {
