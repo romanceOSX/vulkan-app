@@ -102,11 +102,8 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     m_swapchain{swapchain},
     m_render_pass{dev, swapchain}
 {
-    auto vert_file_bytes_v = read_file("shaders/glsl/triangle/triangle.vert.spv");
-    auto frag_file_bytes_v = read_file("shaders/glsl/triangle/triangle.frag.spv");
-
-    auto vert_shader_module = this->create_shader_module(vert_file_bytes_v);
-    auto frag_shader_module = this->create_shader_module(frag_file_bytes_v);
+    auto vert_shader_module = ShaderModule(m_device, "shaders/glsl/triangle/triangle.vert.spv");
+    auto frag_shader_module = ShaderModule(m_device, "shaders/glsl/triangle/triangle.frag.spv");
 
     /* assign vert shader module to pipeline stage */
     VkPipelineShaderStageCreateInfo vert_shader_stage_info{};
