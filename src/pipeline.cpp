@@ -275,6 +275,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     {
         throw std::runtime_error("Failed to create Graphics Pipeline 😵");
     }
+    APP_PRETTY_PRINT_CREATE("created graphics pipeline");
 }
 
 RenderPass& Pipeline::get_render_pass() {
@@ -289,6 +290,7 @@ Pipeline::~Pipeline() {
     /* TODO: add pretty prints */
     vkDestroyPipeline(m_device.get_vk_device(), m_vk_pipeline, nullptr);
     vkDestroyPipelineLayout(m_device.get_vk_device(), m_pipeline_layout, nullptr);
+    APP_PRETTY_PRINT_DESTROY("destroyed pipeline and pipeline layout");
 }
 
 /*
