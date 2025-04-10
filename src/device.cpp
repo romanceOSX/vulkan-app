@@ -114,6 +114,11 @@ PhysicalDevice& Device::get_physical_device() {
     return m_physical_device;
 }
 
+/* user-defined conversion function */
+Device::operator VkDevice() {
+    return m_vk_device;
+}
+
 Device::~Device() {
     vkDestroyDevice(m_vk_device, nullptr);
     APP_PRETTY_PRINT_DESTROY("destroyed logical device and queue...");

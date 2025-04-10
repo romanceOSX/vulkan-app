@@ -34,6 +34,7 @@ class Device {
         Device(Device& other) = delete;
         Device(PhysicalDevice& dev, Window& window);
         ~Device();
+        operator VkDevice();
         void wait(void);
         void add_extension(const char*);
         void init(uint32_t count);
