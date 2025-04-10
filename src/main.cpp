@@ -88,67 +88,70 @@ void _physical_device_test() {
 
     /* create Command buffers */
     CommandPool command_pool{device};
-    auto command_buffer = command_pool.create_command_buffer();
-    command_buffer.begin_recording();
+    std::vector<VkSemaphore> image_available_semaphores;
+    std::vector<VkSemaphore> render_finished_semaphores;
+    std::vector<VkFence> in_flight_fences;
 
-    /* draw frame */
+    /* create objects needed per frame */
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        /* command buffers */
+        command_pool.create_command_buffer();
+        /* synchronization primitives */
+        image_available_semaphores.push_back(Semaphore::create(device));
+        render_finished_semaphores.push_back(Semaphore::create(device));
+        in_flight_fences.push_back(Fence::create(device));
+    }
 
-    /* run window? */
-    //window.wait_to_close_window();
-
-    /* Create synchronization primitives */
-    VkSemaphore image_available_semaphore = Semaphore::create(device);
-    VkSemaphore render_finished_semaphore = Semaphore::create(device);
-    VkFence in_flight_fence = Fence::create(device);
-
+    uint32_t current_frame = 0;
+    auto command_buffers = command_pool.get_command_buffers();
 
     while (!glfwWindowShouldClose(window.get_glfw_window())) {
         glfwPollEvents();
         /* wait for previous frames, first fence is initialized as ready */
-        vkWaitForFences(device.get_vk_device(), 1, &in_flight_fence, VK_TRUE, UINT64_MAX);
+        vkWaitForFences(device.get_vk_device(), 1, &in_flight_fences.at(current_frame), VK_TRUE, UINT64_MAX);
 
         uint32_t image_index;
         vkAcquireNextImageKHR(
                 device.get_vk_device(),
                 swapchain.get_vk_swapchain(),
                 UINT64_MAX,
-                image_available_semaphore,
+                image_available_semaphores.at(current_frame),
                 VK_NULL_HANDLE,
                 &image_index
         );
 
-        vkResetFences(device.get_vk_device(), 1, &in_flight_fence);
+        vkResetFences(device.get_vk_device(), 1, &in_flight_fences[current_frame]);
 
         /* record command buffer */
-        command_buffer.reset();
-        command_buffer.begin_recording();
-        command_buffer.cmd_begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
-        command_buffer.cmd_bind_pipeline(pipeline);
-        command_buffer.cmd_set_viewport_and_scissor(swapchain);
-        command_buffer.cmd_draw();
-        command_buffer.cmd_end_render_pass();
-        command_buffer.end_recording();
+        command_buffers.at(current_frame).reset();
+        command_buffers.at(current_frame).begin_recording();
+        command_buffers.at(current_frame).cmd_begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
+        command_buffers.at(current_frame).cmd_bind_pipeline(pipeline);
+        command_buffers.at(current_frame).cmd_set_viewport_and_scissor(swapchain);
+        command_buffers.at(current_frame).cmd_draw();
+        command_buffers.at(current_frame).cmd_end_render_pass();
+        command_buffers.at(current_frame).end_recording();
 
         /* prepare submit */
         VkSubmitInfo submit_info{};
         submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         submit_info.pNext = nullptr;
 
-        VkSemaphore wait_semaphores[] = {image_available_semaphore};
+        VkSemaphore wait_semaphores[] = {image_available_semaphores.at(current_frame)};
         VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
         submit_info.waitSemaphoreCount = 1;
         submit_info.pWaitSemaphores = wait_semaphores;
         submit_info.pWaitDstStageMask = wait_stages;
 
         submit_info.commandBufferCount = 1;
-        submit_info.pCommandBuffers = &command_buffer.get_command_buffers().front();
+        submit_info.pCommandBuffers = &(command_buffers.at(current_frame).get_command_buffers().front());
 
-        VkSemaphore signal_semaphores[] = {render_finished_semaphore};
+        VkSemaphore signal_semaphores[] = {render_finished_semaphores.at(current_frame)};
         submit_info.signalSemaphoreCount = 1;
         submit_info.pSignalSemaphores = signal_semaphores;
 
         /* submit the command buffer to the queue */
-        if (vkQueueSubmit(device.get_vk_queue(), 1, &submit_info, in_flight_fence) != VK_SUCCESS) {
+        if (vkQueueSubmit(device.get_vk_queue(), 1, &submit_info, in_flight_fences.at(current_frame)) != VK_SUCCESS) {
             throw std::runtime_error("Failed to submit draw command buffer 😵");
         }
 
@@ -167,8 +170,11 @@ void _physical_device_test() {
         present_info.pImageIndices = &image_index;
 
         vkQueuePresentKHR(device.get_vk_queue(), &present_info);
+
+        current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
 
+    /* wait for asynch operations to finish */
     device.wait();
 }
 
