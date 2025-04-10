@@ -1,26 +1,39 @@
-/* image acquire */
-We create fences and semaphores
-Fences are created with the 'signaled' state triggered
+Naive approach: wait for each frame to be finished presented by the gpu to the surface
+                then start recording and submitting the next frame
 
-Wait for 'in_flight' fence to be singaled (it is)
+    /* image acquire */
+    We create fences and semaphores
+    Fences are created with the 'signaled' state triggered
 
-Aquire next image and fire the 'image_semaphore' when ready
+    host Wait for 'in_flight' fence to be singaled (it is)
 
-Set the fence to unsignaled
+    gpu Aquire next image and fire the 'image_semaphore' when ready
 
-/* command buffer submission */
-record command buffer
+    Set the fence to unsignaled
 
-wait for 'image_semaphore'
-signal 'render semaphore' when done
-signal 'in_flight' fence when done
-submit info
+    /* command buffer submission */
+    host record command buffer
 
-/* present to surface */
-wait for 'render semaphore' to be signaled
+    gpu wait for 'image_semaphore'
+    gpu signal 'render semaphore' when done
+    gpu signal 'in_flight' fence when done
+    host submit info
 
+    /* present to surface */
+    gpu wait for 'render semaphore' to be signaled
 
-VkQueueSubmit
-    once this operation finishes, it resets the signaled state of the waiting synchronization
-    primitives
+    VkQueueSubmit
+        once this operation finishes, it resets the signaled state of the waiting synchronization
+        primitives
 
+Better approach: dont wait for each frame to be finished rendering, begin recording while the other
+                 frame is being rendered instead
+                 Note that this can be thought of as an advantage of vulkan, since we can let the
+                 application define the number of concurrent processed frames.
+                 
+    Each frame should have its own
+        - command buffer
+        - set of semaphores
+        - fence
+
+    

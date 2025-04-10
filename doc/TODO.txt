@@ -21,4 +21,5 @@ Dev TODO list
     - TODO: migrate build pipeline to python
 
     - TODO: attend todos in pipeline
+    - TODO: build conversoin sequence from Device to VkDevice
 
