@@ -30,6 +30,7 @@ class CommandPool {
         void reset();
         CommandBuffer& create_command_buffer();
         VkCommandPool get_vk_command_pool();
+        std::vector<CommandBuffer>& get_command_buffers();
         Device& get_device();
 
     private:

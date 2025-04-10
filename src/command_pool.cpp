@@ -55,6 +55,10 @@ CommandBuffer& CommandPool::create_command_buffer() {
     return m_command_buffers.back();
 }
 
+std::vector<CommandBuffer>& CommandPool::get_command_buffers() {
+    return m_command_buffers;
+}
+
 CommandPool::~CommandPool() {
     vkDestroyCommandPool(
             m_device.get_vk_device(),
