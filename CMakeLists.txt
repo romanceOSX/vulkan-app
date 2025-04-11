@@ -40,6 +40,7 @@ set(APP_SOURCES
     ${APP_SRC_DIR}/pipeline.cpp
     ${APP_SRC_DIR}/framebuffers.cpp
     ${APP_SRC_DIR}/synchronization.cpp
+    ${APP_SRC_DIR}/vertex.cpp
 )
 
 add_subdirectory(${GLFW_PATH} glfw)
