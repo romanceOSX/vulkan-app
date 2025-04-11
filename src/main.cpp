@@ -86,6 +86,10 @@ void _physical_device_test() {
     /* create Framebuffers */
     Framebuffers framebuffers{device, swapchain, pipeline};
 
+    /* create Vertex buffers */
+    // TODO: create vertex buffers
+    VertexBuffer vertex_buffer{device};
+
     /* create Command buffers */
     CommandPool command_pool{device};
     std::vector<VkSemaphore> image_available_semaphores;
