@@ -37,3 +37,6 @@ Better approach: dont wait for each frame to be finished rendering, begin record
         - fence
 
     
+Vulkan has some examples on this
+    --> https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples#swapchain-image-acquire-and-present
+
