@@ -1,8 +1,10 @@
 #include <cstddef>
+#include <stdexcept>
 #include <vulkan/vulkan_core.h>
 #include <glm/glm.hpp>
 
 #include "vertex.hpp"
+#include "device.hpp"
 
 const std::vector<Vertex> vertices = {
     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
@@ -36,5 +38,23 @@ std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_desc
     attribute_descriptions[1].offset = offsetof(Vertex, color);
 
     return attribute_descriptions;
+}
+
+VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
+    VkBufferCreateInfo buffer_info{};
+    buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buffer_info.pNext = nullptr;
+    buffer_info.flags = 0;
+
+    buffer_info.size = sizeof(vertices[0]) * vertices.size();
+
+    buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(m_device, &buffer_info, nullptr, &m_vk_buffer)
+            != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create vertex buffer 😵");
+    }
 }
 
