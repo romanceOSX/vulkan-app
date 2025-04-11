@@ -3,6 +3,8 @@
 #include <vulkan/vulkan_core.h>
 #include <glm/glm.hpp>
 
+#include "app_settings.hpp"
+
 #include "vertex.hpp"
 #include "device.hpp"
 
@@ -56,5 +58,11 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
     {
         throw std::runtime_error("Failed to create vertex buffer 😵");
     }
+    APP_PRETTY_PRINT_CREATE("created vertex buffer");
+}
+
+VertexBuffer::~VertexBuffer() {
+    vkDestroyBuffer(m_device, m_vk_buffer, nullptr);
+    APP_PRETTY_PRINT_DESTROY("destroyed vertex buffer");
 }
 

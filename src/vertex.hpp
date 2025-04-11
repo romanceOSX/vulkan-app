@@ -24,6 +24,7 @@ class VertexInput {
 class VertexBuffer {
     public:
         VertexBuffer(Device& dev);
+        ~VertexBuffer();
 
     private:
         Device&     m_device;
