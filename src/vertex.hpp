@@ -14,9 +14,6 @@ class VertexInput {
     public:
         static VkVertexInputBindingDescription get_binding_description();
         static std::array<VkVertexInputAttributeDescription, 2> get_attribute_descriptions(); 
-
-    private:
-        Vertex&      m_vector;
 };
 
 /*
