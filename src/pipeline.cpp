@@ -12,6 +12,7 @@
 #include "device.hpp"
 #include "swapchain.hpp"
 #include "pipeline.hpp"
+#include "vertex.hpp"
 
 /*
  * RenderPass class
@@ -114,10 +115,14 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vertex_input_info.pNext = nullptr;
     vertex_input_info.flags = 0;
-    vertex_input_info.vertexBindingDescriptionCount = 0;
-    vertex_input_info.pVertexBindingDescriptions = nullptr;
-    vertex_input_info.vertexAttributeDescriptionCount = 0;
-    vertex_input_info.pVertexAttributeDescriptions = nullptr;
+
+    /* vertex buffer info */
+    auto binding_description = VertexInput::get_binding_description();
+    auto attribute_descriptions = VertexInput::get_attribute_descriptions();
+    vertex_input_info.vertexBindingDescriptionCount = 1;
+    vertex_input_info.pVertexBindingDescriptions = &binding_description;
+    vertex_input_info.vertexAttributeDescriptionCount = static_cast<uint32_t>(attribute_descriptions.size());
+    vertex_input_info.pVertexAttributeDescriptions = attribute_descriptions.data();
 
     /* input assembly */
     VkPipelineInputAssemblyStateCreateInfo input_assembly{};
