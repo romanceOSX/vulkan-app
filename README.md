@@ -17,7 +17,7 @@ directly through CMake
 ## Triangle application
 
 The triangle application is an easy way to proove that your system fully supports
-vulkan and it is ready to use it in more complete projects/applications
+vulkan and it is ready for use in more complete projects/applications
 
 Currently this is the main and only project, more complete example applications will be added in the future
 
