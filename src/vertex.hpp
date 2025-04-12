@@ -27,7 +27,9 @@ class VertexBuffer {
         ~VertexBuffer();
 
     private:
-        Device&     m_device;
-        VkBuffer    m_vk_buffer;
+        uint32_t _find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties);
+        Device&             m_device;
+        VkBuffer            m_vk_buffer;
+        VkDeviceMemory      m_vk_device_memory;
 };
 

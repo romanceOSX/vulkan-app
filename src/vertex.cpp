@@ -59,6 +59,48 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
         throw std::runtime_error("Failed to create vertex buffer 😵");
     }
     APP_PRETTY_PRINT_CREATE("created vertex buffer");
+
+    /* query memory requirements */
+    VkMemoryRequirements mem_requirements;
+    vkGetBufferMemoryRequirements(m_device, m_vk_buffer, &mem_requirements);
+
+    /* allocate memory */
+    VkMemoryAllocateInfo alloc_info{};
+    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    alloc_info.allocationSize = mem_requirements.size;
+    alloc_info.memoryTypeIndex = _find_memory_type(mem_requirements.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_CACHED_BIT
+            | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+    );
+
+    if (vkAllocateMemory(m_device, &alloc_info, nullptr, &m_vk_device_memory) != VK_SUCCESS) {
+        throw std::runtime_error("failed to allocate vertex buffer memory");
+    }
+    APP_PRETTY_PRINT_CREATE("allocated vertex buffer memory");
+
+    /* associate allocated memory with the buffer */
+    vkBindBufferMemory(m_device, m_vk_buffer, m_vk_device_memory, 0);
+}
+
+/* query memory properties from device */
+// TODO: These properties can be queried before creating logical device, move it to Physical Dev instead?
+uint32_t VertexBuffer::_find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties) {
+    VkPhysicalDeviceMemoryProperties mem_properties;
+    vkGetPhysicalDeviceMemoryProperties(m_device.get_vk_physical_dev(), &mem_properties);
+
+    /* different memory types exist within the queried memory heaps */
+    /* (memoryTypes, memoryHeaps) */
+
+    for (uint32_t i = 0; i< mem_properties.memoryTypeCount; i++) {
+        if (
+                (type_filter & (1 << i))
+                && ((mem_properties.memoryTypes[i].propertyFlags & properties) == properties)
+           )
+        {
+            return i;
+        }
+    }
+    throw std::runtime_error("couldn't find suitable memory type 😵");
 }
 
 VertexBuffer::~VertexBuffer() {
