@@ -106,5 +106,7 @@ uint32_t VertexBuffer::_find_memory_type(uint32_t type_filter, VkMemoryPropertyF
 VertexBuffer::~VertexBuffer() {
     vkDestroyBuffer(m_device, m_vk_buffer, nullptr);
     APP_PRETTY_PRINT_DESTROY("destroyed vertex buffer");
+    vkFreeMemory(m_device, m_vk_device_memory, nullptr);
+    APP_PRETTY_PRINT_DESTROY("de-allocate vertex buffer memory");
 }
 
