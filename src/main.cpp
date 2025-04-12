@@ -36,6 +36,11 @@ int run_app() {
     return 0;
 }
 
+/* TODO: recreate the swapchain when necessary, find a way to fit this in */
+void recreate_swapchain(Device& dev) {
+    vkDeviceWaitIdle(dev);
+}
+
 void _physical_device_test() {
     /* create instance with required extensions */
     auto instance = Instance();

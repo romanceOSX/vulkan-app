@@ -23,3 +23,7 @@ Dev TODO list
     - TODO: attend todos in pipeline
     - TODO: build conversoin sequence from Device to VkDevice
 
+    - TODO: create str streams (to_string) methods on classes and ostream overrides for std::cout << device << std::endl;
+
+
+LEFT ON FILLING THE VERTEX BUFFER 
