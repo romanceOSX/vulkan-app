@@ -21,4 +21,4 @@ vulkan and it is ready to use it in more complete projects/applications
 
 Currently this is the main and only project, more complete example applications will be added in the future
 
-<img width="1512" alt="image" src="https://github.com/user-attachments/assets/264a07a6-8e7b-4317-8a6f-84b18e0f788b" />
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/2e73c079-d0c2-4963-90c8-e85523077aa5" />
