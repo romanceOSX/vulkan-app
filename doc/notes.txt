@@ -36,3 +36,22 @@ States
         Static are set during the pipeline creation
         Dynamics are through commands
 
+Workflow
+    Whenever we create an object, the driver turns this into GPU specific code and
+    makes the GPU create such device, fixed states are declared during this creation
+    The GPU then sends a reference back to the program, and that is the thing we
+    manipulate
+
+    Dynamic states in the other hand can be used through command buffer commands
+    Though you must tell vulkan that some states will be dynamic by the use of 
+    VkPipelineDynamicStateInfo
+    The VkCmdSet* family of commnads trigger these dynamic states
+
+Host side vs Device side commands
+    How do I know which API calls trigger a representation in the GPU?
+    vkCreate* commands do this
+    The commands that take a VkDevice as a paramter
+    The ones that return a handler
+    The ones that allocate memory for something GPU-specific
+
+
