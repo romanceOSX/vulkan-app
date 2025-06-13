@@ -1,0 +1,38 @@
+Render pass vs Pipeline
+
+Render pass
+    Defines the structure of rendering
+    How the rendering will interact with framebuffers
+    Rendering sesison
+    It can be thought of as the 'rendering infrastructure'
+
+    Defines the set of image resources
+
+Render pipeline
+    It uses the render pass (the infrastructure) to do the actual rendering
+    It describes how something is rendered
+
+Framebuffer
+    A collection of image views and a set of dimensions
+    In conjuction with a render pass, they define the inputs and outputs used
+    by drawing commands
+
+Render pass
+    An object that represents a set of framebuffer attachments and phases of rendering
+    using those targets
+
+
+States
+    These refer to the configuration settings that define how
+        - rendering
+        - computation
+        - resource usage
+    behave
+
+    Pipeline states
+        These define Fixed-function behaviour
+    
+    Static vs Dynamic states
+        Static are set during the pipeline creation
+        Dynamics are through commands
+
