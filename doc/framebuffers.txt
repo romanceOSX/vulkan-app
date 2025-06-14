@@ -36,9 +36,43 @@ Framebuffer vs Render pass
 
     This lets you use the same render pass with different attachments (framebuffers)
 
+Render pass
+    --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/02_Graphics_pipeline_basics/03_Render_passes.html
+    How many color and depth buffers
+    How many samples to use per each one
+    We should be matching the format of the swapchain
+    
+    Subpasses and attachment references
+    A single render pass consists of multiple subpasses
+    They are subsequent rendering operations that depend on the contents of the framebuffers
+    in previous stages
+    If we bundle a bunch of operations (subpasses) in a single render pass, vulkan is then
+    able to re-order them and optimize them
+
+    Elements
+        A render pass consists of the following
+            - multiple subpasses
+                - attachments
+
+
 
 framebuffers
     --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/03_Drawing/00_Framebuffers.html
+    It encapsules ALL image views that represent the attachments
+    We retrieve an image from the swapchain, we have to match the type of such image
+    with the type of the framebuffer used to wrap it
+
+    The render pass expects a single framebuffer with the same format as the swapchain's 
+
+    We first create the render pass then we create the framebuffer
+
+    compatiblity with a render pass
+        roughly this means that the framebuffer uses the same number of types and attachments
+
+    render pass compatibility with swapchain
+        If the render passes are compatible with the pipeline, then
+        we only need to start a render pass and bind it to the same pipeline to
+        trigger this mechanism
 
 Why render passes define scope of operations and not the Pipeline themselves
     Pipelines don't define when attachments (framebuffers) will start or finish being used
