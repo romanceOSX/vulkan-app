@@ -54,7 +54,14 @@ Render pass
             - multiple subpasses
                 - attachments
 
+        The main structure is the render pass object
+        This render pass object contains all the attachments that will
+        be used by the subpasses
 
+Beginning a render pass
+    To begin a render pass we need to specify the following:
+        - the framebuffer we are going to be working on
+        - the render pass we are going to be excecuting on
 
 framebuffers
     --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/03_Drawing/00_Framebuffers.html
