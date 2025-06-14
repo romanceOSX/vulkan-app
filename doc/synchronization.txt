@@ -1,3 +1,35 @@
+GPU asynch
+    The GPU is an asynchronous beast, functions will return right away so we must
+    manage the order of operations from the host side explicitely
+        - acquiring the image from the swapchain
+        - Commands that draw on that image
+        - Present the image by returning it to the swapchain
+
+    These are some of the common tasks we as devs have to manage explicitly
+        - order of commands within a command buffer
+        - order within command buffers
+        - between CPU and GPU
+        - swapchain operations (semaphores)
+        - waiting for a frame to finish (fence)
+
+    Semaphores
+        They are used for queue-related ordering
+        Binary
+            We will only be using these
+        Timeline
+        Semaphores can be signaled upon finishing an operation,
+        or waited on by an operation
+
+    Fence
+        It serves the same purpose as the semaphore but on the host-side
+        It guarantees an order within the context of the host
+    
+    Submitting the commands
+        When submitting the commands you must specify some semaphores, these semaphores
+        signify what signals to wait in order to begin the EXECUTION, not what signals
+        to wait in order to begin the submission, the latter is wrong, since the submission
+        alreadt took place
+
 Naive approach: wait for each frame to be finished presented by the gpu to the surface
                 then start recording and submitting the next frame
 
