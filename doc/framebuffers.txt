@@ -65,3 +65,8 @@ There is not an strict operation or function to bind a pipeline with a given ren
 When invoking 'drawing' commands, these invoke work on the previously binded graphics
 pipeline, at the same time, in order to invoke a draw command you must be within a render pass
 
+The responsible of defining the scope of work is the render pass becuase this actually
+manages the attachments (resources/image views) of the pipeline, the pipeline won't manage
+this because it only describes how the rendering is done, not when (render pass)
+or what (framebuffers) resources
+
