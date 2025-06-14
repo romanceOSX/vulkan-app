@@ -54,4 +54,18 @@ Host side vs Device side commands
     The ones that return a handler
     The ones that allocate memory for something GPU-specific
 
+Thoughts on Vulkan
+    The GPU harware (matrix) is structured like a pipeline, meaning
+    that it is built around the concept of pipeline stages and shaders, normally
+    these are implemented as their own functional units within the GPU SoC
+
+    Vulkan reflects the hardware realities
+
+    This is why we have some static stages or dynamic ones
+
+Dynamic State
+    Here are some examples of programmable dynamic state
+        - Size of the viewport
+        - Line width
+        - Blend constants
 
