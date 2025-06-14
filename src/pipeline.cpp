@@ -21,8 +21,13 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     m_device{device},
     m_swapchain{swapchain}
 {
+    /*
+     * Color attachment
+     */
+    /* if we had multiple attachments then this would be an arrayjk */
     VkAttachmentDescription color_attachment{};
     color_attachment.flags = 0;
+    /* We should be matching the format of the underlying swapchain */
     color_attachment.format = m_swapchain.get_vk_format();
     color_attachment.samples = VK_SAMPLE_COUNT_1_BIT;
 
@@ -35,9 +40,14 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     color_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     color_attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-
-    /* subpasses */
+    /*
+     * Subpasses
+     */
     VkAttachmentReference color_attachment_ref{};
+    /* 
+     * this ::attachment refers to the color_attachment, 
+     * since we only have one then the index is 0
+     */
     color_attachment_ref.attachment = 0;
     color_attachment_ref.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     
@@ -54,7 +64,9 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
     dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-    /* render pass */
+    /*
+     * Render Pass
+     */
     VkRenderPassCreateInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     render_pass_info.pNext = nullptr;
@@ -84,6 +96,9 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     m_swapchain{swapchain},
     m_render_pass{dev, swapchain}
 {
+    /*
+     * Shader Module creation
+     */
     auto vert_shader_module = ShaderModule(m_device, "shaders/glsl/triangle/triangle.vert.spv");
     auto frag_shader_module = ShaderModule(m_device, "shaders/glsl/triangle/triangle.frag.spv");
 
@@ -213,7 +228,9 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     color_blending.blendConstants[2] = 0.0f;
     color_blending.blendConstants[3] = 0.0f;
 
-    /* dynamic state */
+    /*
+     * Dynamic State
+     */
     std::vector<VkDynamicState> dynamic_states = {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR
@@ -226,7 +243,9 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
     dynamic_state.pDynamicStates = dynamic_states.data();
     
-    /* Pipeline Layout */
+    /*
+     * Pipeline Layout
+     */
     VkPipelineLayoutCreateInfo pipeline_layout_info{};
     pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipeline_layout_info.pNext = nullptr;
