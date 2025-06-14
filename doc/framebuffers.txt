@@ -24,3 +24,44 @@ Framebuffers
       retreived image, we need to cover all cases
     - jjjj
       
+
+Framebuffer vs Render pass
+    The Render pass is a blueprint or template
+    It defines how the attachments will be used during the render process
+    But it does this independent of the actual images, the structure that holds the
+    actual images (Image Views) is the Framebuffer
+
+    The render pass is the recipe
+    The framebuffer are the actual ingredients
+
+    This lets you use the same render pass with different attachments (framebuffers)
+
+
+framebuffers
+    --> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/03_Drawing/00_Framebuffers.html
+
+Why render passes define scope of operations and not the Pipeline themselves
+    Pipelines don't define when attachments (framebuffers) will start or finish being used
+    This is purely the render pass' responsability
+    So when we do a BeginRenderPass, we are effectively saying, Pipeline, you may begin using
+    the attachments
+
+    Beginning a render pass will allow you to bind the pipeline with the render pass
+
+To begin a renderpass we need:
+    - the render pass
+    - the framebuffer
+    - the command buffer
+    - (The swapchain indirectly)
+
+To bind a pipeline we need:
+    - the command buffer
+    - the pipeline
+
+Binding a pipeline means binding it to an specific command buffer
+Binding a pipeline makes subsequent commands interact with it, say drawing and so on...
+There is not an strict operation or function to bind a pipeline with a given renderpass per-se
+
+When invoking 'drawing' commands, these invoke work on the previously binded graphics
+pipeline, at the same time, in order to invoke a draw command you must be within a render pass
+
