@@ -1,0 +1,20 @@
+Vulkan shaders
+    Vulkan understands a bytecode SPIR-V format
+    Asking vendors to comply to a bytecode format is way easier than asking them to
+    build a whole language specification
+    Either way GLSL is normally used for this
+GLSL
+    Vulkan ships with a GLSL->SPIR-V compiler
+    GLSL relies a lot in global variables
+    It processes inputs and outputs as global variables
+    vertex shader
+        coorditanes look like this {x, y, z, w}
+        when divided by w, it turns framebuffer coordinates into clip coordinates
+        also known as homogeneus coordinates
+        gl_VertexIndex is the global variable that holds the index of the current vertex
+        gl_Position serves as an output variable for a point in clip coordinates
+                    this is the default output variable
+    fragment shader
+        
+    
+    
