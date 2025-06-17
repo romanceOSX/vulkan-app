@@ -3,6 +3,24 @@ Vulkan shaders
     Asking vendors to comply to a bytecode format is way easier than asking them to
     build a whole language specification
     Either way GLSL is normally used for this
+
+    Workflow
+        The vertex shader calls its main function on every incoming vertex
+        An incoming vertex contains the following:
+            - model space position
+            - color
+            - texture coordinates
+        'clip coordinates' have 4 components
+        these clip coordinates get turned into 'normalized device coordinates'
+        the homogeneous coordinates map the framebuffer to a cuadrean of [-1,-1] to [1, 1]
+
+        The coordinates are normally stored in a vertex buffer
+
+        The output of the vertex shader is a 'shape?' that gets filled with fragments
+        the fragment shader gets invoked per each of these fragments
+
+        The output of the fragment shader is a color and depth for the given framebuffer
+
 GLSL
     Vulkan ships with a GLSL->SPIR-V compiler
     GLSL relies a lot in global variables
@@ -15,6 +33,25 @@ GLSL
         gl_Position serves as an output variable for a point in clip coordinates
                     this is the default output variable
     fragment shader
-        
+        gets invoked per each of the fragments
+        it has no default output global variables, you have to define it
+        **it has no default input ones either?
+        the ' location=0 out ' declares the framebuffer's index
     
-    
+Vertex attributes
+    Data that is specified in the vertex buffer and passed into the shader
+
+Binding descriptions
+    Once we have the data to pass to the shader, we need to tell vulkan
+    how to do it
+
+A vertex
+    It has attributes:
+        - position
+        - color
+
+Vertex Buffers
+    Buffers in vulkan store arbitrary data that is accessible to the GPU
+    In this case we will use them to store vertex data
+    But they can be used to store much more
+    It is up to us to manage the allocation and specifics of such buffer
