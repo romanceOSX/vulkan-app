@@ -22,6 +22,7 @@ void Framebuffers::_create_framebuffers() {
     auto image_views = m_swapchain.get_vk_image_views();
     m_swapchain_frame_buffers.resize(image_views.size());
 
+    /* we create a framebuffer per each of the swapchain's image views */
     for (size_t i = 0; i < image_views.size(); i++) {
         VkImageView attachments[] = {
             image_views.at(i),

@@ -24,7 +24,7 @@ RenderPass::RenderPass(Device& device, SwapChain& swapchain):
     /*
      * Color attachment
      */
-    /* if we had multiple attachments then this would be an arrayjk */
+    /* if we had multiple attachments then this would be an array */
     VkAttachmentDescription color_attachment{};
     color_attachment.flags = 0;
     /* We should be matching the format of the underlying swapchain */
@@ -130,7 +130,6 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vertex_input_info.pNext = nullptr;
     vertex_input_info.flags = 0;
-
     /* vertex buffer info */
     auto binding_description = VertexInput::get_binding_description();
     auto attribute_descriptions = VertexInput::get_attribute_descriptions();

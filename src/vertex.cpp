@@ -8,13 +8,31 @@
 #include "vertex.hpp"
 #include "device.hpp"
 
+/*
+ * This whole module is in charge of describing vulkan how to pass in data to the shader
+ * this includes the following:
+ *  - the vertex data itself
+ *  - any attributes we expect at the vertex shader
+ *
+ * The overall workflow is the following:
+ *  - we tell vulkan how to pass the data from the vertex buffer to the shader
+ *    through vertex 'binding descriptions' (size information)
+ *  - if there is any vertex attributes we pass in into the shader, we need to
+ *    tell vulkan how to do so accordingly through 'attribute descriptions'
+ *  - 
+ */
+
+/* hello triangle */
 const std::vector<Vertex> vertices = {
     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
 };
 
-/* describes which rate to load data from memory througout the vertices */
+/* 
+ * A vertex binding describes which rate to load data 
+ * from memory througout the vertices
+ */
 VkVertexInputBindingDescription VertexInput::get_binding_description() {
     VkVertexInputBindingDescription binding_description{};
     binding_description.binding = 0;
@@ -25,15 +43,18 @@ VkVertexInputBindingDescription VertexInput::get_binding_description() {
 }
 
 /* position and color vertex attributes */
+/* 
+ * Tells vulkan how to pass the data format to the vertex shaderjk
+ */
 std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_descriptions() {
     std::array<VkVertexInputAttributeDescription, 2> attribute_descriptions{};
-    /* vertex data */
+    /* position data */
     attribute_descriptions[0].binding = 0;
     attribute_descriptions[0].location = 0;
     attribute_descriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
     attribute_descriptions[0].offset = offsetof(Vertex, pos);
 
-    /* fragment data */
+    /* colour data */
     attribute_descriptions[1].binding = 0;
     attribute_descriptions[1].location = 1;
     attribute_descriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
