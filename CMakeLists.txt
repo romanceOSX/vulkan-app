@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.29)
 
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS Y)
 set(CMAKE_FIND_DEBUG_MODE TRUE)
@@ -22,10 +22,21 @@ project(${APP_OUT_NAME})
 set(GLFW_PATH $ENV{HOME}/git/glfw)
 set(APP_SRC_DIR src)
 
+# vulkan path check
+if (NOT DEFINED ENV{VULKAN_SDK} OR "$ENV{VULKAN_SDK}" STREQUAL "")
+    # findVulkan expects VULKAN_SDK to be an environment variable
+    set(ENV{VULKAN_SDK} "~/VulkanSDK/1.4.309.0")
+endif()
+
 # GLM lib
 # https://github.com/g-truc/glm
 find_package(glm REQUIRED)
 find_package(Vulkan REQUIRED)
+
+if (Vulkan_FOUND)
+    message("Using vulkan SDK at path: ${Vulkan_LIBRARY}")
+    message("Vulkan include directory: ${Vulkan_INCLUDE_DIRS}")
+endif()
 
 set(APP_SOURCES
     ${APP_SRC_DIR}/main.cpp
