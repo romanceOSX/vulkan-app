@@ -22,10 +22,10 @@ project(${APP_OUT_NAME})
 set(GLFW_PATH $ENV{HOME}/git/glfw)
 set(APP_SRC_DIR src)
 
-# vulkan path check
+# Vulkan SDK path check
 if (NOT DEFINED ENV{VULKAN_SDK} OR "$ENV{VULKAN_SDK}" STREQUAL "")
     # findVulkan expects VULKAN_SDK to be an environment variable
-    set(ENV{VULKAN_SDK} "~/VulkanSDK/1.4.309.0")
+    set(ENV{VULKAN_SDK} "~/VulkanSDK/1.4.309.0/macOS")
 endif()
 
 # GLM lib
@@ -33,9 +33,11 @@ endif()
 find_package(glm REQUIRED)
 find_package(Vulkan REQUIRED)
 
+# Print current Vulkan SDK info if found
 if (Vulkan_FOUND)
-    message("Using vulkan SDK at path: ${Vulkan_LIBRARY}")
-    message("Vulkan include directory: ${Vulkan_INCLUDE_DIRS}")
+    message(STATUS "Vulkan VULKAN_SDK: $ENV{VULKAN_SDK}")
+    message(STATUS "Vulkan Library path: ${Vulkan_LIBRARY}")
+    message(STATUS "Vulkan Include directories: ${Vulkan_INCLUDE_DIRS}")
 endif()
 
 set(APP_SOURCES
