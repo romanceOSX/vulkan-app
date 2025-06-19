@@ -26,6 +26,7 @@ set(APP_SRC_DIR src)
 if (NOT DEFINED ENV{VULKAN_SDK} OR "$ENV{VULKAN_SDK}" STREQUAL "")
     # findVulkan expects VULKAN_SDK to be an environment variable
     set(ENV{VULKAN_SDK} "~/VulkanSDK/1.4.309.0/macOS")
+    message(WARNING "VULKAN_SDK environment variable not provided, defaulting to $ENV{VULKAN_SDK}")
 endif()
 
 # GLM lib
