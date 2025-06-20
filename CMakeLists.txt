@@ -41,23 +41,49 @@ if (Vulkan_FOUND)
     message(STATUS "Vulkan Include directories: ${Vulkan_INCLUDE_DIRS}")
 endif()
 
-# build shaders custom target
-# directory target
-set(shaders_out_dir ${CMAKE_BINARY_DIR}/shaders)
-add_custom_target(create_shader_out_dirs
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${shaders_out_dir}
+## build shaders custom target
+## directory target
+#set(shaders_out_dir ${CMAKE_BINARY_DIR}/shaders)
+#add_custom_target(create_shader_out_dirs
+#    COMMAND ${CMAKE_COMMAND} -E make_directory ${shaders_out_dir}
+#)
+#
+## compile vertex shaders
+#set(compile_vert_shader "${shaders_out_dir}/triangle.vert.spv")
+#add_custom_command(OUTPUT "${compile_vert_shader}"
+#    COMMAND Vulkan::glslc
+#            ${CMAKE_SOURCE_DIR}/shaders/glsl/triangle/triangle.vert
+#            -o ${compile_vert_shader}
+#    DEPENDS create_shader_out_dirs
+#)
+#add_custom_target(build_shaders DEPENDS ${compile_vert_shader})
+
+# create shader's output directory
+set(SHADER_OUT_DIR ${CMAKE_BINARY_DIR}/shaders)
+set(SHADER_OUT_DIR_MARKER ${SHADER_OUT_DIR}/.dir_mark)
+
+add_custom_command(
+    OUTPUT ${SHADER_OUT_DIR_MARKER}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${SHADER_OUT_DIR}
+    COMMAND ${CMAKE_COMMAND} -E touch ${SHADER_OUT_DIR_MARKER}
+    COMMENT "Creating output spirv shader directory at ${SHADER_OUT_DIR}"
 )
 
-# compile vertex shaders
-set(compile_vert_shader "${CMAKE_BINARY_DIR}/triangle.vert.spv")
-add_custom_command(OUTPUT "${compile_vert_shader}"
-    COMMAND Vulkan::glslc
-            ${CMAKE_SOURCE_DIR}/shaders/glsl/triangle/triangle.vert
-            -o ${compile_vert_shader}
-    DEPENDS create_shader_out_dirs
-)
+# compiles the shader
+function(compile_shader SHADER_PATH TARGET_NAME)
+    get_filename_component(shader_name ${SHADER_PATH} NAME)
+    set(shader_out_path ${SHADER_OUT_DIR}/${shader_name}.spirv)
+    add_custom_command(OUTPUT ${shader_out_path} 
+        COMMAND Vulkan::glslc
+                ${SHADER_PATH}
+                -o ${shader_out_path}
+        DEPENDS ${SHADER_OUT_DIR_MARKER}
+        COMMENT "Compiling shader ${SHADER_PATH} to ${shader_out_path}..."
+    )
+    add_custom_target(build_shader_${shader_name} DEPENDS ${shader_out_path})
+    add_dependencies(${TARGET_NAME} build_shader_${shader_name})
+endfunction()
 
-add_custom_target(build_shaders DEPENDS ${compile_vert_shader})
 
 set(APP_SOURCES
     ${APP_SRC_DIR}/main.cpp
@@ -77,13 +103,11 @@ set(APP_SOURCES
 
 add_subdirectory(${GLFW_PATH} glfw)
 add_executable(${APP_OUT_NAME} ${APP_SOURCES})
-add_dependencies(${APP_OUT_NAME} build_shaders)
+compile_shader(${CMAKE_SOURCE_DIR}/shaders/glsl/triangle/triangle.vert ${APP_OUT_NAME})
+compile_shader(${CMAKE_SOURCE_DIR}/shaders/glsl/triangle/triangle.frag ${APP_OUT_NAME})
 
 target_link_libraries(${APP_OUT_NAME} Vulkan::Vulkan) 
 target_link_libraries(${APP_OUT_NAME} glfw)
 # glm header-only library
 target_link_libraries(${APP_OUT_NAME} glm::glm-header-only)
-
-
-
 
