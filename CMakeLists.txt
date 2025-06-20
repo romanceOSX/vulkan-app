@@ -41,6 +41,24 @@ if (Vulkan_FOUND)
     message(STATUS "Vulkan Include directories: ${Vulkan_INCLUDE_DIRS}")
 endif()
 
+# build shaders custom target
+# directory target
+set(shaders_out_dir ${CMAKE_BINARY_DIR}/shaders)
+add_custom_target(create_shader_out_dirs
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${shaders_out_dir}
+)
+
+# compile vertex shaders
+set(compile_vert_shader "${CMAKE_BINARY_DIR}/triangle.vert.spv")
+add_custom_command(OUTPUT "${compile_vert_shader}"
+    COMMAND Vulkan::glslc
+            ${CMAKE_SOURCE_DIR}/shaders/glsl/triangle/triangle.vert
+            -o ${compile_vert_shader}
+    DEPENDS create_shader_out_dirs
+)
+
+add_custom_target(build_shaders DEPENDS ${compile_vert_shader})
+
 set(APP_SOURCES
     ${APP_SRC_DIR}/main.cpp
     ${APP_SRC_DIR}/app.cpp
@@ -59,9 +77,13 @@ set(APP_SOURCES
 
 add_subdirectory(${GLFW_PATH} glfw)
 add_executable(${APP_OUT_NAME} ${APP_SOURCES})
+add_dependencies(${APP_OUT_NAME} build_shaders)
 
 target_link_libraries(${APP_OUT_NAME} Vulkan::Vulkan) 
 target_link_libraries(${APP_OUT_NAME} glfw)
 # glm header-only library
 target_link_libraries(${APP_OUT_NAME} glm::glm-header-only)
+
+
+
 
