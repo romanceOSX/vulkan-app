@@ -74,3 +74,6 @@ target_link_libraries(${APP_OUT_NAME} glfw)
 target_link_libraries(${APP_OUT_NAME} utils)
 target_link_libraries(${APP_OUT_NAME} glm::glm-header-only)
 
+# tests
+add_subdirectory(test)
+
