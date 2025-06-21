@@ -63,12 +63,14 @@ set(APP_SOURCES
 )
 
 add_subdirectory(${GLFW_PATH} glfw)
+add_subdirectory(utils)
+
 add_executable(${APP_OUT_NAME} ${APP_SOURCES})
 compile_shader(${CMAKE_SOURCE_DIR}/shaders/glsl/triangle/triangle.vert ${APP_OUT_NAME})
 compile_shader(${CMAKE_SOURCE_DIR}/shaders/glsl/triangle/triangle.frag ${APP_OUT_NAME})
 
 target_link_libraries(${APP_OUT_NAME} Vulkan::Vulkan) 
 target_link_libraries(${APP_OUT_NAME} glfw)
-# glm header-only library
+target_link_libraries(${APP_OUT_NAME} utils)
 target_link_libraries(${APP_OUT_NAME} glm::glm-header-only)
 
