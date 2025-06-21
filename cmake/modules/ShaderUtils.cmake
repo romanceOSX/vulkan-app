@@ -15,7 +15,7 @@ add_custom_command(
 # and creates a dependency on TARGET_NAME
 function(compile_shader SHADER_PATH TARGET_NAME)
     get_filename_component(shader_name ${SHADER_PATH} NAME)
-    set(shader_out_path ${SHADER_OUT_DIR}/${shader_name}.spirv)
+    set(shader_out_path ${SHADER_OUT_DIR}/${shader_name}.spv)
     add_custom_command(OUTPUT ${shader_out_path} 
         COMMAND Vulkan::glslc
                 ${SHADER_PATH}
