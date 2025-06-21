@@ -9,6 +9,7 @@
 #include "pipeline.hpp"
 #include "swapchain.hpp"
 #include "framebuffers.hpp"
+#include "vertex.hpp"
 
 /*
  * Command Pool class
@@ -163,8 +164,11 @@ void CommandBuffer::cmd_bind_pipeline(Pipeline& pipeline) {
     vkCmdBindPipeline(m_command_buffers.front(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_vk_pipeline());  
 }
 
-void CommandBuffer::cmd_draw() {
-    vkCmdDraw(m_command_buffers.front(), 3, 1, 0, 0);
+void CommandBuffer::cmd_draw(VertexBuffer& buf) {
+    VkBuffer vertex_buffers[] = {buf.get_vk_buffer()};
+    VkDeviceSize offsets[] = {0};
+    vkCmdBindVertexBuffers(m_command_buffers.front(), 0, 1, vertex_buffers, offsets);
+    vkCmdDraw(m_command_buffers.front(), static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 }
 
 void CommandBuffer::cmd_set_viewport_and_scissor(SwapChain& swapchain) {

@@ -20,6 +20,7 @@ class SwapChain {
         std::vector<VkImage>& get_vk_images();
         std::vector<VkImageView>& get_vk_image_views();
         VkSwapchainKHR  get_vk_swapchain();
+        void recreate();
         size_t size();
         void print_info();
 

@@ -25,8 +25,8 @@
 /* hello triangle */
 const std::vector<Vertex> vertices = {
     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{0.5f, 0.5f}, {-1.0f, 1.0f, 0.0f}},
+    {{-0.5f, 0.5f}, {1.0f, 0.0f, 1.0f}},
 };
 
 /* 
@@ -57,7 +57,7 @@ std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_desc
     /* colour data */
     attribute_descriptions[1].binding = 0;
     attribute_descriptions[1].location = 1;
-    attribute_descriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+    attribute_descriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
     attribute_descriptions[1].offset = offsetof(Vertex, color);
 
     return attribute_descriptions;
@@ -71,6 +71,7 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
 
     buffer_info.size = sizeof(vertices[0]) * vertices.size();
 
+    /* This specifies the usage of the memory being allocated */
     buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
     buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
@@ -101,6 +102,12 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
 
     /* associate allocated memory with the buffer */
     vkBindBufferMemory(m_device, m_vk_buffer, m_vk_device_memory, 0);
+
+    /* copy vertex data into the memory */
+    void *data;
+    vkMapMemory(m_device, m_vk_device_memory, 0, buffer_info.size, 0, &data);
+    memcpy(data, vertices.data(), (size_t) buffer_info.size);
+    vkUnmapMemory(m_device, m_vk_device_memory);
 }
 
 /* query memory properties from device */
@@ -129,5 +136,9 @@ VertexBuffer::~VertexBuffer() {
     APP_PRETTY_PRINT_DESTROY("destroyed vertex buffer");
     vkFreeMemory(m_device, m_vk_device_memory, nullptr);
     APP_PRETTY_PRINT_DESTROY("de-allocate vertex buffer memory");
+}
+
+VkBuffer VertexBuffer::get_vk_buffer() {
+    return m_vk_buffer;
 }
 

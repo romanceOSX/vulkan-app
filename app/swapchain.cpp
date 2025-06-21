@@ -222,6 +222,12 @@ std::vector<VkImageView>& SwapChain::get_vk_image_views() {
     return m_vk_swapchain_image_views;
 }
 
+/* TODO: implement a recreate routine for the swapchain */
+void SwapChain::recreate() {
+    m_device.wait();
+    _create_swapchain();
+}
+
 /* TODO: add a logging facility on this */
 SwapChain::~SwapChain() {
     for (auto& image_view: m_vk_swapchain_image_views) {

@@ -20,7 +20,7 @@ project(${APP_OUT_NAME})
 # Where did I get this?
 # https://www.glfw.org
 set(GLFW_PATH $ENV{HOME}/git/glfw)
-set(APP_SRC_DIR src)
+set(APP_SRC_DIR app)
 
 # Vulkan SDK path check
 if (NOT DEFINED ENV{VULKAN_SDK} OR "$ENV{VULKAN_SDK}" STREQUAL "")

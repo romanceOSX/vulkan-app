@@ -12,6 +12,8 @@ class Pipeline;
 class RenderPass;
 class SwapChain;
 class Framebuffers;
+class VertexBuffer;
+
 
 /*
  * This class is in charge of allocating a command pool for an specific device
@@ -57,7 +59,7 @@ class CommandBuffer {
         void cmd_begin_render_pass(uint32_t image_index, SwapChain& swapchain, RenderPass& render_pass, Framebuffers& framebuffers);
         void cmd_bind_pipeline(Pipeline& pipeline);
         void cmd_set_viewport_and_scissor(SwapChain& swapchain);
-        void cmd_draw();
+        void cmd_draw(VertexBuffer& buf);
         void cmd_end_render_pass();
         void end_recording();
         void submit();

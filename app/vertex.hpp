@@ -1,6 +1,8 @@
 #pragma once
+
 #include <vulkan/vulkan_core.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 class Device;
 
@@ -9,6 +11,8 @@ struct Vertex {
     glm::vec3 color;
 
 };
+
+extern const std::vector<Vertex> vertices;
 
 /* TODO: create a single class? */
 class VertexInput {
@@ -26,6 +30,7 @@ class VertexBuffer {
     public:
         VertexBuffer(Device& dev);
         ~VertexBuffer();
+        VkBuffer get_vk_buffer();
 
     private:
         uint32_t _find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties);

@@ -49,7 +49,7 @@ void _physical_device_test() {
     instance.add_extension(VK_KHR_SURFACE_EXTENSION_NAME);
     instance.add_extension(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
     //instance.add_layer("VK_LAYER_LUNARG_api_dump");
-    //instance.add_layer("VK_LAYER_KHRONOS_validation");
+    instance.add_layer("VK_LAYER_KHRONOS_validation");
     instance.init();
 
     auto vk_phy_devs = instance.get_vk_devices();
@@ -119,26 +119,26 @@ void _physical_device_test() {
         glfwPollEvents();
         /* wait for previous frames, first fence is initialized as ready */
         vkWaitForFences(device.get_vk_device(), 1, &in_flight_fences.at(current_frame), VK_TRUE, UINT64_MAX);
+        vkResetFences(device.get_vk_device(), 1, &in_flight_fences.at(current_frame));
 
         uint32_t image_index;
         vkAcquireNextImageKHR(
                 device.get_vk_device(),
                 swapchain.get_vk_swapchain(),
                 UINT64_MAX,
-                image_available_semaphores.at(current_frame),
+                image_available_semaphores.at(current_frame), /* this routine signals this semaphore when avaiable */
                 VK_NULL_HANDLE,
                 &image_index
         );
 
-        vkResetFences(device.get_vk_device(), 1, &in_flight_fences[current_frame]);
-
-        /* record command buffer */
+        /* record command buffers */
         command_buffers.at(current_frame).reset();
         command_buffers.at(current_frame).begin_recording();
         command_buffers.at(current_frame).cmd_begin_render_pass(image_index, swapchain, pipeline.get_render_pass(), framebuffers);
         command_buffers.at(current_frame).cmd_bind_pipeline(pipeline);
         command_buffers.at(current_frame).cmd_set_viewport_and_scissor(swapchain);
-        command_buffers.at(current_frame).cmd_draw();
+        /* bind and draw vertex buffer to pipeline */
+        command_buffers.at(current_frame).cmd_draw(vertex_buffer);
         command_buffers.at(current_frame).cmd_end_render_pass();
         command_buffers.at(current_frame).end_recording();
 
@@ -161,6 +161,7 @@ void _physical_device_test() {
         submit_info.pSignalSemaphores = signal_semaphores;
 
         /* submit the command buffer to the queue */
+        /* the fence will be triggered once all the command buffer execution has finished */
         if (vkQueueSubmit(device.get_vk_queue(), 1, &submit_info, in_flight_fences.at(current_frame)) != VK_SUCCESS) {
             throw std::runtime_error("Failed to submit draw command buffer 😵");
         }
