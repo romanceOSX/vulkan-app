@@ -27,3 +27,7 @@ Dev TODO list
 
 
 LEFT ON FILLING THE VERTEX BUFFER 
+
+- TODO: refactor vulkan project to be consumed as a library
+    - TODO: separeate the app code from the vulkan wrapper calls
+
