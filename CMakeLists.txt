@@ -14,10 +14,6 @@ else()
     set(APP_OUT_NAME vulkan_app)
 endif()
 
-# include custom modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/")
-include(ShaderUtils REQUIRED)
-
 # create project
 project(${APP_OUT_NAME})
 
@@ -44,6 +40,10 @@ if (Vulkan_FOUND)
     message(STATUS "Vulkan Library path: ${Vulkan_LIBRARY}")
     message(STATUS "Vulkan Include directories: ${Vulkan_INCLUDE_DIRS}")
 endif()
+
+# include custom modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/")
+include(ShaderUtils REQUIRED)
 
 # app sources
 set(APP_SOURCES
