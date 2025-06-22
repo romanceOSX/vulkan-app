@@ -7,6 +7,7 @@
 
 #include <vulkan/vulkan_core.h>
 
+#include "utils.hpp"
 #include "app_settings.hpp"
 
 #include "device.hpp"
@@ -99,8 +100,11 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
     /*
      * Shader Module creation
      */
-    auto vert_shader_module = ShaderModule(m_device, "shaders/glsl/triangle/triangle.vert.spv");
-    auto frag_shader_module = ShaderModule(m_device, "shaders/glsl/triangle/triangle.frag.spv");
+    /* TODO: move shader locations to a program options logic */
+    std::cout << "printing exe directory" << std::endl;
+    std::cout << utils_get_exe_dir() << std::endl;
+    auto vert_shader_module = ShaderModule(m_device, utils_get_exe_dir() + "/shaders/triangle.vert.spv");
+    auto frag_shader_module = ShaderModule(m_device, utils_get_exe_dir() + "/shaders/triangle.frag.spv");
 
     /* assign vert shader module to pipeline stage */
     VkPipelineShaderStageCreateInfo vert_shader_stage_info{};
