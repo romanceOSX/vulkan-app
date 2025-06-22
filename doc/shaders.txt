@@ -1,0 +1,99 @@
+--> https://shader-tutorial.dev
+
+Is the sole purpose of a GPU running shaders?
+
+What is a shader?
+    It is a 'program' used to shade an image
+    Initially GPU's didn't support programmable shaders, 
+    so we would have a fixed pipeline
+
+    Machine learning can happen on specific shaders
+
+Rendering Pipeline
+    GPUs main input come in the form of vertex data
+    Vertex data form primitives
+    Primitives together form objects
+        Vertives <=> Primitives <=> Objects
+
+    There are different types of primitives, but generally one type is used
+    to form objects
+    
+    We also provide the GPU with a shader, which will help the GPU to interpret
+    all the vertex data nonsense
+
+    The advantage of the GPU executing a shader, is that since the shader is done
+    per each one of the vertices, the GPU spawns the same shader process tons of times
+    compared to what the CPU would do
+
+    
+    *Vertex shader (prog)
+        Recieves a vertex and translates it into clip-space (homogeneus coord thing)
+    *Tesselation (opt, prog)
+        From the resultant vertices, this stage further splits the primitives
+        into sub-primitives to improve detail
+    *Geometry shader (opt, prog)
+        It recieves a primitive and outputs a different one
+        Usefull for applying cool effects
+
+    -- saved on a separate buffer, so the CPU can retreive the result so far
+    Vertex Post-processing (fixed)
+        Clipping is done to the primitives outside the area
+        Primitives are then split into more primitives, some of
+        them fall inside or outside of the area of the previous primitive, so
+        some action can be taken to remove some of them
+    Primitive Assembly (fixed)
+        Takes the primitives and splits them into simpler primitives:
+            - points
+            - lines
+            - triangles
+        Culling (removing the sides of the object not facing the view)
+        is performed
+    *Rasterization (fixed)
+        The resulting primitives are then broken down into fragments that contain
+        information on how to color the the pixels
+    *Fragment Shader (prog)
+        It takes the fragments and color info and actually computes the color of
+        the fragment
+    *Pre-sample Operations (fix)
+        some other sanity checks and stuff
+        *Color blending
+        
+    note: the '*' indicates that they are present in the vulkan description
+        
+Math intuition
+    Directions and vectors can be represented through vectors
+    **What exactly is it meant by 'direction'?
+    An extra element is added to the representation of a vector to distinguish between the two
+         v {x, y, z, w}
+        v1 {x, y, z, 1} is a coordinate
+        v1 {x, y, z, 0} is a direction
+
+    Linear transformations
+        Linear transformations are represented through matrixes, on a coordinate
+        we can operate certain transformations which make sense in the conventional way:
+            - translation (offseting the point to another place)
+            - rotation
+            - ... so on
+
+        But for directions, offseting does not really make any sense 'offseting a direction'
+        so that is why we add the w component to our vectors so they only affect points
+
+        Consider the following transformation:
+
+            | 1 3 4 0 |
+            | 1 3 4 0 |
+            | 1 3 4 0 |
+            | 0 0 0 1 |
+
+        Let's operate it by a 3d vector
+
+            | 1 0 0 dx |  | x |
+            | 0 1 0 dy |  | y |
+            | 0 0 1 dz |  | z |
+            | 0 0 0 1  |  | w |
+
+        if w is 1, then the dn components apply only for coordinates but not for
+        directions (w = 0)
+            
+
+
