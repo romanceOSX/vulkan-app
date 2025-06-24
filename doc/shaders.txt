@@ -78,13 +78,6 @@ Math intuition
         But for directions, offseting does not really make any sense 'offseting a direction'
         so that is why we add the w component to our vectors so they only affect points
 
-        Consider the following transformation:
-
-            | 1 3 4 0 |
-            | 1 3 4 0 |
-            | 1 3 4 0 |
-            | 0 0 0 1 |
-
         Let's operate it by a 3d vector
 
             | 1 0 0 dx |  | x |
@@ -95,5 +88,13 @@ Math intuition
         if w is 1, then the dn components apply only for coordinates but not for
         directions (w = 0)
             
+Fragment shaders
+    A fragment is the input from a sample of a primitive
+    The fragment shader determines the color of the pixel that correspond to
+    that fragment, remember that multiple fragments can land in the same pixel
+    overlapping, in this case we must select the colour accordingly
+
+    We define the vertex color's and not the fragment's since we don't really
+    know how many fragments will be generated
 
 
