@@ -60,6 +60,7 @@ set(APP_SOURCES
     ${APP_SRC_DIR}/framebuffers.cpp
     ${APP_SRC_DIR}/synchronization.cpp
     ${APP_SRC_DIR}/vertex.cpp
+    ${APP_SRC_DIR}/render_pass.cpp
 )
 
 add_subdirectory(${GLFW_PATH} glfw)
