@@ -9,6 +9,21 @@
 #include "device.hpp"
 
 /*
+ * Components:
+ *  - shader
+ *  - vertex input attribute (per input variable)
+ *  - vertex input binding
+ *  - buffers
+ *
+ * Both the attribute and binding provide information on how to interpret the passed data
+ *  - Input attribute's describes each of the attributes
+ *  - Input binding describes the whole structure passed to it
+ *
+ * The association between the attribute and bindings happens at pipeline creation
+ * The association between the binding and the buffer happens trhough vkCmdBindVertexBuffers
+ */
+
+/*
  * This whole module is in charge of describing vulkan how to pass in data to the shader
  * this includes the following:
  *  - the vertex data itself
@@ -24,9 +39,9 @@
 
 /* hello triangle */
 const std::vector<Vertex> vertices = {
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, 0.5f}, {-1.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {1.0f, 0.0f, 1.0f}},
+    {{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
+    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
 };
 
 /* 
@@ -44,7 +59,8 @@ VkVertexInputBindingDescription VertexInput::get_binding_description() {
 
 /* position and color vertex attributes */
 /* 
- * Tells vulkan how to pass the data format to the vertex shaderjk
+ * Tells vulkan how to pass the data format to the vertex shader
+ * --> https://docs.vulkan.org/spec/latest/chapters/fxvertex.html
  */
 std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_descriptions() {
     std::array<VkVertexInputAttributeDescription, 2> attribute_descriptions{};
