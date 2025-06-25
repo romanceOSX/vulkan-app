@@ -28,6 +28,11 @@ Dev TODO list
 
 LEFT ON FILLING THE VERTEX BUFFER 
 
-- TODO: refactor vulkan project to be consumed as a library
-    - TODO: separeate the app code from the vulkan wrapper calls
+    - TODO: refactor vulkan project to be consumed as a library
+    - TODO: separate the app code from the vulkan wrapper calls
+
+2025-06-22
+    - TODO: move the render pass into its own module
+    - TODO: move the framebuffer class into its own module
+    - TODO: should render pass and framebuffer be in their own modules?
 
