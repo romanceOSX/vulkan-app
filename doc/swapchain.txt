@@ -1,0 +1,18 @@
+The swapchain represents a queue of images (framebuffers) that the GPU draws
+into and then presents to the screen
+Each of the images represents an available image that can be
+    - rendered to
+    - presented to the display
+
+Normally systems have the following configurations:
+    - double buffering
+        one image is presented while the other one is being rendered to
+    - triple buffering
+        smoother, normally used in the following way:
+            - CPU issues draw commands to one
+            - The GPU renders another one
+            - The presentation engine displays it
+    - 3+
+        rare but often used in VR systems for high frame-rate targets
+
+
