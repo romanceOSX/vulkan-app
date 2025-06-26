@@ -1,0 +1,18 @@
+--> https://docs.vulkan.org/spec/latest/chapters/renderpass.html
+
+Draw commands are recorded within a render pass
+A render pass defines a set of image resources (attachments) to be used
+during rendering
+
+
+A render pass defines the types of inputs and outputs (slots)
+A subpass defines what each of the slots is used for
+A framebuffer provides the images into those slots
+
+It is all indexed, if the subpass uses the attachment 0 of the render pass, then
+the framebuffer gets mapped to its 0'th attachment to be used in the draw operations
+
+Render pass compatibility
+    So that means that the formats specified in the framebuffer's slots must match
+    those present in the renderpass' attachments
+
