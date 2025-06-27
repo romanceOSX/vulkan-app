@@ -50,4 +50,19 @@ Summary
     - Render pass
         The attachments referenced by the pipeline stages and their usage
 
+Rasterizer
+    --> https://docs.vulkan.org/spec/latest/chapters/primsrast.html
+    The framebuffer has a grid
+    This stage determines which squares of such grid are occupied by the primitive
+    It assigns depth value to each of the squares
+
+    What is a fragment?
+        The (x,y) data of the framebuffer, plus its depth information (z), plus any associated
+        data declared by the fragment shader is called a fragment
+
+Pipeline stages vs Pipeline states
+    They are not the same
+    stage -> specific programmable or fixed-function part of the pipeline
+    state -> a configuration that controls the behaviour of a stage or group of stages
+
 
