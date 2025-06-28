@@ -1,0 +1,19 @@
+--> https://docs.vulkan.org/spec/latest/chapters/memory.html
+
+Host memory
+    Memory needed by the vulkan implementation for non-device-visible storage
+        - contents of the image
+        - buffer objects
+
+Query device memory properties
+    VkPhysicalDeviceMemoryProperties 
+
+Usual workflow for buffers
+    - create buffer and specify use
+    - the result buffer structure will expose its requirements through a bitfield,
+      these requirements tell us the compatible memory types
+    - as a user we have the control to specify which memory properties we want, this is
+      controled through VkMemoryPropertyFlags
+    - we use these two pieces of information (compatible memory types + requested flags) to
+      find the most appropiate memory type to allocate memory from
+
