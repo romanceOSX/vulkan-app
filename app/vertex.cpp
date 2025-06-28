@@ -82,14 +82,14 @@ std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_desc
 
 VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
     auto phy_dev = m_device.get_physical_device();
+
+    /* create buffer */
     VkBufferCreateInfo buffer_info{};
     buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     buffer_info.pNext = nullptr;
     buffer_info.flags = 0;
-
     buffer_info.size = sizeof(vertices[0]) * vertices.size();
-
-    /* This specifies the usage of the memory being allocated */
+    /* VkBufferCreateInfo::usage specifies the usage of the memory being allocated */
     buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
     buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
@@ -100,11 +100,11 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
     }
     APP_PRETTY_PRINT_CREATE("created vertex buffer");
 
-    /* query memory requirements */
+    /* query buffer's memory requirements */
     VkMemoryRequirements mem_requirements;
     vkGetBufferMemoryRequirements(m_device, m_vk_buffer, &mem_requirements);
 
-    /* allocate memory */
+    /* allocate device memory */
     VkMemoryAllocateInfo alloc_info{};
     alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     alloc_info.allocationSize = mem_requirements.size;
@@ -119,10 +119,10 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
     }
     APP_PRETTY_PRINT_CREATE("allocated vertex buffer memory");
 
-    /* associate allocated memory with the buffer */
+    /* associate allocated device memory with the buffer */
     vkBindBufferMemory(m_device, m_vk_buffer, m_vk_device_memory, 0);
 
-    /* copy vertex data into the memory */
+    /* copy vertex data into the memory by mapping using host-accessible mapped memory */
     void *data;
     vkMapMemory(m_device, m_vk_device_memory, 0, buffer_info.size, 0, &data);
     memcpy(data, vertices.data(), (size_t) buffer_info.size);
