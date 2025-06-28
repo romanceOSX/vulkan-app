@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <optional>
 
 #include "vulkan/vulkan.h"
 #include <vulkan/vulkan_core.h>
@@ -46,6 +47,8 @@ class PhysicalDevice {
         std::vector<VkQueueFamilyProperties>& get_vk_device_queue_families_properties(void);
         std::vector<VkExtensionProperties>& get_vk_physical_device_extensions(void);
         VkPhysicalDeviceMemoryProperties get_vk_physical_device_memory_properties(void);
+        std::optional<uint32_t> find_memory_properties(uint32_t type_mask, VkMemoryPropertyFlags properties);
+        
         /* TODO: rename this to 'surface_support_details' */
         SwapchainSupportDetails& get_swapchain_support_details();
         void print_info();

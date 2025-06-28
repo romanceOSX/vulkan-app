@@ -183,6 +183,40 @@ void PhysicalDevice::_query_physical_device_memory_properties() {
     vkGetPhysicalDeviceMemoryProperties(m_vk_physical_device, &m_vk_physical_device_memory_properties);
 }
 
+
+VkPhysicalDeviceMemoryProperties PhysicalDevice::get_vk_physical_device_memory_properties(void) {
+    return m_vk_physical_device_memory_properties;
+}
+
+/*
+ * returns the index of the heap contianing the required properties
+ * @param type_mask     The type of memory
+ * @param properties    Properties to find
+ */
+std::optional<uint32_t> PhysicalDevice::find_memory_properties(uint32_t type_mask, VkMemoryPropertyFlags required_properties) {
+    /* you can think of it as, "I accept these certain memory types, check if they also support the requested properties" */
+    /* different memory types exist within the memory heaps */
+    VkPhysicalDeviceMemoryProperties mem_props;
+    vkGetPhysicalDeviceMemoryProperties(m_vk_physical_device, &mem_props);
+
+    uint32_t mem_type_count = get_vk_physical_device_memory_properties().memoryTypeCount;
+    for (uint32_t mem_index = 0; mem_index < mem_type_count; ++mem_index) {
+        uint32_t mem_type_bits = (1 << mem_index);
+        bool is_required_mem_type = type_mask & mem_type_bits;
+
+        VkMemoryPropertyFlags properties = 
+            get_vk_physical_device_memory_properties().memoryTypes[mem_index].propertyFlags;
+        bool has_required_properties =
+            (properties & required_properties) == required_properties;
+
+        if (is_required_mem_type && has_required_properties) {
+            return static_cast<uint32_t>(mem_index);
+        }
+    }
+
+    return {};
+}
+
 /*
  * Wrapper class for QueueFamily
  */
