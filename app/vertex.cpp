@@ -129,27 +129,6 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
     vkUnmapMemory(m_device, m_vk_device_memory);
 }
 
-/* query memory properties from device */
-// TODO: These properties can be queried before creating logical device, move it to Physical Dev instead?
-uint32_t VertexBuffer::_find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties) {
-    VkPhysicalDeviceMemoryProperties mem_properties;
-    vkGetPhysicalDeviceMemoryProperties(m_device.get_vk_physical_dev(), &mem_properties);
-
-    /* different memory types exist within the queried memory heaps */
-    /* (memoryTypes, memoryHeaps) */
-
-    for (uint32_t i = 0; i< mem_properties.memoryTypeCount; i++) {
-        if (
-                (type_filter & (1 << i))
-                && ((mem_properties.memoryTypes[i].propertyFlags & properties) == properties)
-           )
-        {
-            return i;
-        }
-    }
-    throw std::runtime_error("couldn't find suitable memory type 😵");
-}
-
 VertexBuffer::~VertexBuffer() {
     vkDestroyBuffer(m_device, m_vk_buffer, nullptr);
     APP_PRETTY_PRINT_DESTROY("destroyed vertex buffer");
