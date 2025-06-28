@@ -68,3 +68,19 @@ Rendering and presentation
         to use a frame that is being currently in use or draw multimple frames at
         the same time
 
+Command Buffers
+    --> https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html
+
+    What commands does it usually performs:
+        - bind pipelines
+        - bind descriptor sets to command buffers
+        - modify dynamic states
+        - draw commands
+        - dispatch
+        - execute secondary command buffers
+        - copy buffer and images 
+        - etc...
+
+    States
+        Each command buffer manages state independently from others
+

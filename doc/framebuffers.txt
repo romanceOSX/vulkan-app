@@ -116,3 +116,18 @@ The render pass defines the scope of work bevause it controls how attachments ar
 framebuffers. The pipeline only defines how the rendering is performed,
 not when it happens(render pass) or what resources it uses (framebuffers)
 
+Components
+    A framebuffer is composed of:
+        - width
+        - height
+        - layers
+    Its attachments normally represent:
+        - a color buffer (the output color on screen)
+        - a depth buffer (used for hidden surface removal)
+        - a stencil buffer (used for masking)
+
+    The last two are often combined into a depth-stencil attachment
+
+    A framebuffer must be compatible with its render pass, the render pass dictates most
+    of its settings
+
