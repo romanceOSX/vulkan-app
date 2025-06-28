@@ -5,8 +5,9 @@
 
 #include "app_settings.hpp"
 
-#include "vertex.hpp"
+#include "physical_device.hpp"
 #include "device.hpp"
+#include "vertex.hpp"
 
 /*
  * Components:
@@ -80,6 +81,7 @@ std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_desc
 }
 
 VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
+    auto phy_dev = m_device.get_physical_device();
     VkBufferCreateInfo buffer_info{};
     buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     buffer_info.pNext = nullptr;
@@ -106,10 +108,11 @@ VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
     VkMemoryAllocateInfo alloc_info{};
     alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     alloc_info.allocationSize = mem_requirements.size;
-    alloc_info.memoryTypeIndex = _find_memory_type(mem_requirements.memoryTypeBits,
-            VK_MEMORY_PROPERTY_HOST_CACHED_BIT
-            | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-    );
+    alloc_info.memoryTypeIndex = phy_dev.find_memory_properties(
+        mem_requirements.memoryTypeBits,
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT |
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+    ).value();
 
     if (vkAllocateMemory(m_device, &alloc_info, nullptr, &m_vk_device_memory) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate vertex buffer memory");
