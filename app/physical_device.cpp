@@ -14,6 +14,7 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): m_vk_physical_device(dev) 
     /* Get device properties */
     _query_physical_device_properties();
     _query_physical_device_extensions();
+    _query_physical_device_memory_properties();
     _query_queue_families();
 }
 
@@ -176,6 +177,10 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
 
 SwapchainSupportDetails& PhysicalDevice::get_swapchain_support_details() {
     return m_swapchain_support_details;
+}
+
+void PhysicalDevice::_query_physical_device_memory_properties() {
+    vkGetPhysicalDeviceMemoryProperties(m_vk_physical_device, &m_vk_physical_device_memory_properties);
 }
 
 /*
