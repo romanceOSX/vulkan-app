@@ -1,5 +1,13 @@
 --> https://docs.vulkan.org/spec/latest/chapters/memory.html
 
+There are Memory types and memory heaps
+    The memory types are the total amount of types available within the heaps
+    There might be different types within a single heap, so they are indicated through
+    an index mask, with the bits specifying the heaps where this memory type is available
+
+    The memory heaps also have some additional properties, but when querying for
+    properties we will mostly work by looking through the memory types
+
 Host memory
     Memory needed by the vulkan implementation for non-device-visible storage
         - contents of the image
@@ -16,4 +24,41 @@ Usual workflow for buffers
       controled through VkMemoryPropertyFlags
     - we use these two pieces of information (compatible memory types + requested flags) to
       find the most appropiate memory type to allocate memory from
+
+VkDeviceMemory is the handle that vulkan memory-related API operates with
+
+Device Memory objects
+
+We can make memory host-accessible if the bit is set in the type flags
+
+Doubts:
+    - can we have different memory types, say 4 memory types with the same property flags?
+    - is there a type of memory that is host visible?
+    - are all the memory heaps device visible?
+
+BUFFERS-------------------------------------------------------------------------
+--> https://docs.vulkan.org/spec/latest/chapters/resources.html#resources-buffer-views
+
+They are views of memory with associated formatting and dimensionality
+
+There are 3 primary resources types:
+    - buffers
+        provide access to raw arrays of bytes
+    - images
+        multidimensional arrays with associated metadata
+    - tensors
+        multidimensional as well, might contain images within and metadata
+
+There might be another type of constructs, but they are all built upon buffers
+
+BUFFER VIEWS--------------------------------------------------------------------
+
+Buffer View
+    They enable buffer access to shaders when using image operations
+
+Images
+    Up to 3 arrays of data 
+    We bind them to pipelines by the use of descriptor sets
+
+类似的看法是独立开发阶段
 
