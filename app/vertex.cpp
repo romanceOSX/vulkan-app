@@ -15,6 +15,7 @@
  *  - vertex input attribute (per input variable)
  *  - vertex input binding
  *  - buffers
+ *  - memory
  *
  * Both the attribute and binding provide information on how to interpret the passed data
  *  - Input attribute's describes each of the attributes
@@ -40,9 +41,9 @@
 
 /* hello triangle */
 const std::vector<Vertex> vertices = {
-    {{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{0.0f, -0.5f}, {1.0f, 0.5f, 1.0f}},
+    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.3f}},
+    {{-0.5f, 0.5f}, {0.4f, 0.0f, 1.0f}},
 };
 
 /* 
@@ -80,6 +81,11 @@ std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_desc
     return attribute_descriptions;
 }
 
+/*
+ * This class just allocates the memory and buffer through the desired requirements
+ * At this point of the memory creation we do not need to indicate how to parse/decode/
+ * interpret the data, we just need to indicate how much size to allocate
+ */
 VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
     auto phy_dev = m_device.get_physical_device();
 
