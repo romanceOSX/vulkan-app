@@ -15,4 +15,11 @@ Normally systems have the following configurations:
     - 3+
         rare but often used in VR systems for high frame-rate targets
 
+Initialization
+    - Query the system's swapchain
+    - Query the available images (double buffered? triple buffered? n+ buffered?)
+      this just tells you the available image slots, not some pre-allocated image, that's up
+      to the application
+    - Create a container of VkImages to fill each of the slots with 
+    - Create an image view per each of the VkImages available
 
