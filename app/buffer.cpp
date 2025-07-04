@@ -12,7 +12,9 @@ Buffer::Buffer(
     VkDeviceSize size,
     VkBufferUsageFlags usage,
     VkMemoryPropertyFlags properties
-): m_dev{dev}
+): 
+    m_dev{dev},
+    m_size{size}
 {
     auto phy_dev = m_dev.get_physical_device();
 
@@ -20,7 +22,7 @@ Buffer::Buffer(
     VkBufferCreateInfo buffer_info{};
     buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     buffer_info.pNext = nullptr;
-    buffer_info.size = size;
+    buffer_info.size = m_size;
     /* VkBufferCreateInfo::usage specifies the usage of the memory being allocated */
     buffer_info.usage = usage;
     buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -53,5 +55,17 @@ Buffer::Buffer(
 
     /* associate allocated device memory with the buffer */
     vkBindBufferMemory(m_dev, m_vk_buffer, m_vk_buffer_memory, 0);
+}
+
+void Buffer::map_memory(void** data) {
+    vkMapMemory(m_dev, m_vk_buffer_memory, 0, m_size, 0, &(*data));
+}
+
+void Buffer::unmap_memory() {
+    vkUnmapMemory(m_dev, m_vk_buffer_memory);
+}
+
+VkBuffer Buffer::get_vk_buffer() {
+    return m_vk_buffer;
 }
 

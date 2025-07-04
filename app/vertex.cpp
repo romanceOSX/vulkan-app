@@ -8,6 +8,7 @@
 #include "physical_device.hpp"
 #include "device.hpp"
 #include "vertex.hpp"
+#include "buffer.hpp"
 
 /*
  * Components:
@@ -87,52 +88,23 @@ std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_desc
  * interpret the data, we just need to indicate how much size to allocate
  */
 VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
-    auto phy_dev = m_device.get_physical_device();
+    void* data = nullptr;
+    VkDeviceSize size = sizeof(vertices[0]) * vertices.size();
 
-    /* create buffer */
-    VkBufferCreateInfo buffer_info{};
-    buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    buffer_info.pNext = nullptr;
-    buffer_info.flags = 0;
-    buffer_info.size = sizeof(vertices[0]) * vertices.size();
-    /* VkBufferCreateInfo::usage specifies the usage of the memory being allocated */
-    buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    Buffer buffer{
+        m_device,
+        size,
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+    };
 
-    if (vkCreateBuffer(m_device, &buffer_info, nullptr, &m_vk_buffer)
-            != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create vertex buffer 😵");
-    }
-    APP_PRETTY_PRINT_CREATE("created vertex buffer");
+    /* pass in reference to buffer to vertex class */
+    m_vk_buffer = buffer.get_vk_buffer();
 
-    /* query buffer's memory requirements */
-    VkMemoryRequirements mem_requirements;
-    vkGetBufferMemoryRequirements(m_device, m_vk_buffer, &mem_requirements);
-
-    /* allocate device memory */
-    VkMemoryAllocateInfo alloc_info{};
-    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    alloc_info.allocationSize = mem_requirements.size;
-    alloc_info.memoryTypeIndex = phy_dev.find_memory_properties(
-        mem_requirements.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT |
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-    ).value();
-
-    if (vkAllocateMemory(m_device, &alloc_info, nullptr, &m_vk_device_memory) != VK_SUCCESS) {
-        throw std::runtime_error("failed to allocate vertex buffer memory");
-    }
-    APP_PRETTY_PRINT_CREATE("allocated vertex buffer memory");
-
-    /* associate allocated device memory with the buffer */
-    vkBindBufferMemory(m_device, m_vk_buffer, m_vk_device_memory, 0);
-
-    /* copy vertex data into the memory by mapping using host-accessible mapped memory */
-    void *data;
-    vkMapMemory(m_device, m_vk_device_memory, 0, buffer_info.size, 0, &data);
-    memcpy(data, vertices.data(), (size_t) buffer_info.size);
-    vkUnmapMemory(m_device, m_vk_device_memory);
+    /* copy vertex memory thorugh mapping */
+    buffer.map_memory(&data);
+    memcpy(data, vertices.data(), (size_t) size);
+    buffer.unmap_memory();
 }
 
 VertexBuffer::~VertexBuffer() {
