@@ -11,6 +11,12 @@
 #include "window.hpp"
 
 /*
+ * TODO: should all logical device-related operations be bound to the device class?
+ *       Doing so in the current way (devices are separated from say, command pools, resources, etc...)
+ *       means that we can bind different command pools to different devices, is this desired?
+ */
+
+/*
  * A physical device contains queue families,
  * Queue families contain an specified number of available queues
  * We create the required queues from an specific queue family while creating logical devices
