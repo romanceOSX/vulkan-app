@@ -274,3 +274,13 @@ void QueueFamily::print_info() {
      */
 }
 
+uint32_t QueueFamily::count() {
+    return m_vk_queue_family_properties.queueCount;
+}
+
+bool QueueFamily::is_flag_supported(VkQueueFlagBits flag) {
+    return static_cast<bool>(
+        m_vk_queue_family_properties.queueFlags & flag
+    );
+}
+

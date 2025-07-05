@@ -81,6 +81,8 @@ class QueueFamily {
         void query_surface_support(Window& window);
         bool is_graphics();
         bool is_presentation();
+        bool is_flag_supported(VkQueueFlagBits flag);
+        uint32_t count();
         uint32_t get_index();
         void print_info();
 
