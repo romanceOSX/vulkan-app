@@ -165,10 +165,16 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
      *  - graphics bit
      *  - presentation bit
      */
-    for (auto queue_family: m_queue_families) {
-        queue_family.query_surface_support(window);
-        if ((true == queue_family.is_presentation()) && (true == queue_family.is_graphics())) {
-            return queue_family.get_index();
+
+    for (auto queue: m_queue_families) {
+        if (
+            /* supports graphics */
+            queue.is_flag_supported(VK_QUEUE_GRAPHICS_BIT) == true &&
+            /* window is presentable */
+            queue.is_window_supported(window)
+        ) 
+        {
+            return queue.get_index();
         }
     }
 
@@ -189,9 +195,11 @@ VkPhysicalDeviceMemoryProperties PhysicalDevice::get_vk_physical_device_memory_p
 }
 
 /*
- * returns the index of the heap contianing the required properties
- * @param type_mask     The type of memory
- * @param properties    Properties to find
+ * Finds the memory type that satisties the requested properties
+ *
+ * @param type_mask             The type of memory indexes mask to look the properties in
+ * @param required_properties   Properties to find
+ * @return                      optional index of the memory type
  */
 std::optional<uint32_t> PhysicalDevice::find_memory_properties(uint32_t type_mask, VkMemoryPropertyFlags required_properties) {
     /* you can think of it as, "I accept these certain memory types, check if they also support the requested properties" */
@@ -218,22 +226,20 @@ std::optional<uint32_t> PhysicalDevice::find_memory_properties(uint32_t type_mas
 }
 
 /*
- * Wrapper class for QueueFamily
+ * Wrapper class for VkQueueFamilyProperties
  */
-QueueFamily::QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties& queue_family, uint32_t index):
+QueueFamily::QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties queue_family, uint32_t index):
     m_vk_queue_family_properties{queue_family},
     m_vk_physical_device{physical_device},
     m_queue_family_index{index}
 { }
 
-void QueueFamily::query_surface_support(Window& window) {
-    /* check if queue has graphic bit */
-    if (m_vk_queue_family_properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-        m_is_graphics = true;
-    }
-
-    /* check for presentation */
+/* 
+ * Checks if the queue family supports the given window surface
+ */
+bool QueueFamily::is_window_supported(Window& window) {
     VkBool32 is_suitable;
+
     vkGetPhysicalDeviceSurfaceSupportKHR(
             m_vk_physical_device,
             m_queue_family_index,
@@ -241,28 +247,22 @@ void QueueFamily::query_surface_support(Window& window) {
             &is_suitable
     );
 
-    m_is_presentation = static_cast<bool>(is_suitable);
-
-    m_is_presentation_queried = true;
+    return static_cast<bool>(is_suitable);
 }
 
-bool QueueFamily::is_graphics() {
-    if (!m_is_presentation_queried) { throw std::runtime_error("Window surface support was not queried 😵"); }
-    return m_is_graphics;
-}
-
-bool QueueFamily::is_presentation() {
-    if (!m_is_presentation_queried) { throw std::runtime_error("Window surface support was not queried 😵"); }
-    return m_is_presentation;
-}
-
+/*
+ * gets the queue family index 
+ */
 uint32_t QueueFamily::get_index() {
     return m_queue_family_index;
 }
 
+/*
+ * Pretty prints the queue family information
+ */
 void QueueFamily::print_info() {
     APP_PRINT_INFO("Queue Family info:");
-    std::cout << "Queue index: " << m_queue_family_index << std::endl;;
+    std::cout << "Queue index: " << m_queue_family_index << std::endl;
     std::cout << "Queue family flags: " << m_vk_queue_family_properties.queueFlags << std::endl;
     std::cout << "Number of queues: " << m_vk_queue_family_properties.queueCount << std::endl;
 
@@ -274,10 +274,16 @@ void QueueFamily::print_info() {
      */
 }
 
+/*
+ * Returns the number of queues in the queue family
+ */
 uint32_t QueueFamily::count() {
     return m_vk_queue_family_properties.queueCount;
 }
 
+/*
+ * Checks if the specified queue flags are supported
+ */
 bool QueueFamily::is_flag_supported(VkQueueFlagBits flag) {
     return static_cast<bool>(
         m_vk_queue_family_properties.queueFlags & flag

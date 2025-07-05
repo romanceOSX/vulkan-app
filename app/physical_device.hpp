@@ -77,18 +77,17 @@ class PhysicalDevice {
 /* TODO: make print functions const */
 class QueueFamily {
     public:
-        QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties& queue_family, uint32_t index);
-        void query_surface_support(Window& window);
-        bool is_graphics();
-        bool is_presentation();
+        QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties queue_family, uint32_t index);
+        bool is_window_supported(Window& window);
         bool is_flag_supported(VkQueueFlagBits flag);
         uint32_t count();
         uint32_t get_index();
+        /* TODO: print info should return a string, not directly to stdout */
         void print_info();
 
     private:
         VkPhysicalDevice                m_vk_physical_device;
-        VkQueueFamilyProperties&        m_vk_queue_family_properties;
+        VkQueueFamilyProperties         m_vk_queue_family_properties;
         uint32_t                        m_queue_family_index;
         bool                            m_is_graphics       = false;
         bool                            m_is_presentation   = false;
