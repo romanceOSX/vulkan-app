@@ -73,12 +73,17 @@ void PhysicalDevice::print_info() {
 }
 
 /*
+ * When we say that a queue family has a 'presentation' capabilities, we mean that such
+ * queue family is compatible with the given Window Surface
+ * TODO: does this imply that the queue family is also graphics-capable?
+ */
+
+/*
  * TODO: This function will look only for the queue supporting both presentation and
  * graphics capabilities, add support for choosing a different queue or the same one
  * returns the index of the queue family that supports such operations 
  */
-/* TODO: check copy constructor of std::optional */
-std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Window& window) {
+std::optional<QueueFamily> PhysicalDevice::check_window_surface_compatibility(Window& window) {
     std::vector<const char*> required_extensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
     };
@@ -127,23 +132,23 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
     if (0 != format_count) {
         m_swapchain_support_details.formats.resize(format_count);
         vkGetPhysicalDeviceSurfaceFormatsKHR(
-                m_vk_physical_device,
-                window.get_vk_surface(),
-                &format_count,
-                m_swapchain_support_details.formats.data()
+            m_vk_physical_device,
+            window.get_vk_surface(),
+            &format_count,
+            m_swapchain_support_details.formats.data()
         );
     }
 
     /* query present modes */
     uint32_t mode_count;
-   vkGetPhysicalDeviceSurfacePresentModesKHR(m_vk_physical_device, window.get_vk_surface(), &mode_count, nullptr); 
+    vkGetPhysicalDeviceSurfacePresentModesKHR(m_vk_physical_device, window.get_vk_surface(), &mode_count, nullptr); 
     if (0 != mode_count) {
         m_swapchain_support_details.preset_modes.resize(mode_count);
         vkGetPhysicalDeviceSurfacePresentModesKHR(
-                m_vk_physical_device,
-                window.get_vk_surface(),
-                &mode_count,
-                m_swapchain_support_details.preset_modes.data()
+            m_vk_physical_device,
+            window.get_vk_surface(),
+            &mode_count,
+            m_swapchain_support_details.preset_modes.data()
         );
     }
 
@@ -165,8 +170,7 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
      *  - graphics bit
      *  - presentation bit
      */
-
-    for (auto queue: m_queue_families) {
+    for (auto& queue: m_queue_families) {
         if (
             /* supports graphics */
             queue.is_flag_supported(VK_QUEUE_GRAPHICS_BIT) == true &&
@@ -174,7 +178,7 @@ std::optional<uint32_t> PhysicalDevice::check_window_surface_compatibility(Windo
             queue.is_window_supported(window)
         ) 
         {
-            return queue.get_index();
+            return std::move(queue);
         }
     }
 
