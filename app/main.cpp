@@ -70,13 +70,14 @@ void _physical_device_test() {
     physical_device.print_info();
 
     /* get suitable queue family index */
-    auto queue_family = physical_device.check_window_surface_compatibility(window).value();
+    auto render_queue_family = physical_device.is_window_surface_compatible(window).value();
 
     /* create logical device */
-    Device device{physical_device, window};
+    Device device{physical_device};
     device.add_extension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-    device.add_extension("VK_KHR_portability_subset"); /* Check vulkan spec for this */
-    device.init(1);
+    device.add_extension("VK_KHR_portability_subset");                          /* --> https://github.com/KhronosGroup/MoltenVK */
+    device.add_queue(render_queue_family, 1, 1.0);
+    device.init();
     device.print_info();
     
     /* create swapchain */
@@ -159,7 +160,7 @@ void _physical_device_test() {
 
         /* submit the command buffer to the queue */
         /* the fence will be triggered once all the command buffer execution has finished */
-        if (vkQueueSubmit(device.get_vk_queue(), 1, &submit_info, in_flight_fences.at(current_frame)) != VK_SUCCESS) {
+        if (vkQueueSubmit(device.get_vk_queue(render_queue_family), 1, &submit_info, in_flight_fences.at(current_frame)) != VK_SUCCESS) {
             throw std::runtime_error("Failed to submit draw command buffer 😵");
         }
 
@@ -177,7 +178,7 @@ void _physical_device_test() {
 
         present_info.pImageIndices = &image_index;
 
-        vkQueuePresentKHR(device.get_vk_queue(), &present_info);
+        vkQueuePresentKHR(device.get_vk_queue(render_queue_family), &present_info);
 
         current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
