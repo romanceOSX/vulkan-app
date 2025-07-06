@@ -10,6 +10,15 @@
 #include "physical_device.hpp"
 #include "window.hpp"
 
+/*
+ * A physical device contains queue families,
+ * Queue families contain an specified number of available queues
+ * We create the required queues from an specific queue family while creating logical devices
+ */
+
+/*
+ * VkPhysicalDevice wrapper class
+ */
 PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev): m_vk_physical_device(dev) {
     /* Get device properties */
     _query_physical_device_properties();
@@ -73,15 +82,10 @@ void PhysicalDevice::print_info() {
 }
 
 /*
- * When we say that a queue family has a 'presentation' capabilities, we mean that such
- * queue family is compatible with the given Window Surface
- * TODO: does this imply that the queue family is also graphics-capable?
- */
-
-/*
- * TODO: This function will look only for the queue supporting both presentation and
- * graphics capabilities, add support for choosing a different queue or the same one
- * returns the index of the queue family that supports such operations 
+ * This function performs the following checks:
+ *  - overall device compatiblity with the given window surface
+ *  - looks for a queue family that is compatible with the given window surface
+ *  - looks for a queue that contains graphics capabilities
  */
 std::optional<QueueFamily> PhysicalDevice::is_window_surface_compatible(Window& window) {
     std::vector<const char*> required_extensions = {

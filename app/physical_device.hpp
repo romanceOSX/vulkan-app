@@ -84,14 +84,15 @@ class QueueFamily {
         uint32_t get_index() const;
         /* TODO: print info should return a string, not directly to stdout */
         void print_info();
+        /* TODO: add '==' is_equal comparator by comparing the queue family index */
 
     private:
-        VkPhysicalDevice                m_vk_physical_device;
-        VkQueueFamilyProperties         m_vk_queue_family_properties;
-        uint32_t                        m_queue_family_index;
-        bool                            m_is_graphics       = false;
-        bool                            m_is_presentation   = false;
-        bool                            m_is_presentation_queried = false;
-        std::optional<uint32_t>         m_suitable_queue_family_index;
+        VkPhysicalDevice            m_vk_physical_device;
+        VkQueueFamilyProperties     m_vk_queue_family_properties;
+        uint32_t                    m_queue_family_index;
+        bool                        m_is_graphics       = false;
+        bool                        m_is_presentation   = false;
+        bool                        m_is_presentation_queried = false;
+        std::optional<uint32_t>     m_suitable_queue_family_index;
 };
 
