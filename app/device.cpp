@@ -11,9 +11,30 @@
 #include "window.hpp"
 
 /*
- * TODO: should all logical device-related operations be bound to the device class?
- *       Doing so in the current way (devices are separated from say, command pools, resources, etc...)
- *       means that we can bind different command pools to different devices, is this desired?
+ * A device represents a logical connection to the physical device
+ * A physical device exposes a number of queue families,
+ * each queue family contains a certain number of queues
+ *
+ * Both queues and devices are created at the same time
+ *
+ * Device uses
+ *  --> https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#devsandqueues-use
+ *  A device is used in the following vulkan operations:
+ *      - Creation of Queues
+ *      - Creation of synchronization constructs
+ *      - Allocating, Free'ing and managing memory
+ *      - Creation and destruction of command buffers
+ *      - Creation destruction and management of graphics state (Pipeline State Objects)
+ *      - etc...
+ *
+ * The queue family index is the piece of information used to relate different
+ * vulkan constructs together:
+ *  - queue families
+ *  - vkGetDeviceQueue
+ *  - command pools
+ *  - command buffers
+ *  - resources (images/buffers)
+ *
  */
 
 /*

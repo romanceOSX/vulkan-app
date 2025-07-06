@@ -20,6 +20,12 @@ enum class AppResult;
  *  -> window
  */
 
+/*
+ * NOTE: information about queue families is externally managed, meaning that the
+ *       class alone won't be able to tell which queue is used for windowing, computing
+ *       or any other task
+ */
+
 /* TODO: Implement logical device wrapper, see Instance class for reference */
 /* TODO: Add validation for existing, valid extensions */
 /*
