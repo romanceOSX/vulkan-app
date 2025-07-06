@@ -189,6 +189,11 @@ std::optional<QueueFamily> PhysicalDevice::is_window_surface_compatible(Window& 
     return {};
 }
 
+/*
+ * Pops and returns popped queue family object out of the internal list
+ * TODO: should we create a read-only list and a modifyiable one for these kinds
+ *       of operations?
+ */
 QueueFamily PhysicalDevice::_pop_queue_family(QueueFamily& queue) {
     for (auto it = std::begin(m_queue_families); it != std::end(m_queue_families); ++it) {
         /* it is the same queue family */
