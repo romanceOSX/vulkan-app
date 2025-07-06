@@ -57,11 +57,8 @@ class Device {
     private:
         PhysicalDevice&                         m_physical_device;
         VkDevice                                m_vk_device;
-        VkQueue                                 m_vk_queue;
         std::vector<const char*>                m_extensions;
         std::vector<VkDeviceQueueCreateInfo>    m_dev_queue_create_infos;
-        uint32_t                                m_queue_count;
-        uint32_t                                m_queue_family_index;
         bool                                    m_is_init = false;
 };
 

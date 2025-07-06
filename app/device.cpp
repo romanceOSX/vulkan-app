@@ -89,10 +89,6 @@ VkQueue Device::get_vk_queue(const QueueFamily& queue_family) {
     return vk_queue;
 }
 
-uint32_t Device::get_queue_family_index() {
-    return m_queue_family_index;
-}
-
 VkDevice Device::get_vk_device() {
     return m_vk_device;
 }
@@ -107,12 +103,11 @@ void Device::print_info() {
     }
 
     APP_PRINT_INFO("Logical device info:");
-    std::cout << "Choosen queue family index: " << m_queue_family_index << std::endl;
     std::cout << "Enabled device extensions: " << std::endl;
     for (const auto& extension: m_extensions) {
         std::cout << "- " << extension << std::endl;
     }
-    std::cout << "Number of queue families spawned: " << m_queue_count << std::endl;
+    std::cout << "Number of queue families spawned: " << m_dev_queue_create_infos.size() << std::endl;
 }
 
 PhysicalDevice& Device::get_physical_device() {

@@ -39,17 +39,6 @@ Window::~Window() {
     APP_PRETTY_PRINT_DESTROY("destroyed window surface");
 }
 
-bool Window::is_device_suitable(Device &dev) {
-    VkBool32 res;
-    vkGetPhysicalDeviceSurfaceSupportKHR(
-            dev.get_vk_physical_dev(),
-            dev.get_queue_family_index(),
-            m_vk_surface,
-            &res
-    );
-    return res;
-}
-
 void Window::wait_to_close_window() {
     while (!glfwWindowShouldClose(m_glfw_window)) {
         glfwPollEvents();

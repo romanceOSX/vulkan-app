@@ -10,16 +10,21 @@
 #include "swapchain.hpp"
 #include "framebuffers.hpp"
 #include "vertex.hpp"
+/* TODO: create a module just for QueueFamily's class */
+#include "physical_device.hpp" 
 
 /*
  * Command Pool class
  */
-CommandPool::CommandPool(Device& dev): m_device{dev} {
+CommandPool::CommandPool(Device& dev, QueueFamily& queue_family):
+    m_device{dev},
+    m_queue_family{queue_family}
+{
     VkCommandPoolCreateInfo command_pool_create = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .pNext = nullptr,
         .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-        .queueFamilyIndex = m_device.get_queue_family_index(),
+        .queueFamilyIndex = m_queue_family.get_index(),
     };
 
     if (VK_SUCCESS != vkCreateCommandPool(

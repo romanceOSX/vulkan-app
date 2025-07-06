@@ -13,6 +13,7 @@ class RenderPass;
 class SwapChain;
 class Framebuffers;
 class VertexBuffer;
+class QueueFamily;
 
 
 /*
@@ -26,7 +27,7 @@ class VertexBuffer;
 class CommandPool {
     public:
         CommandPool() = delete;
-        CommandPool(Device& dev);
+        CommandPool(Device& dev, QueueFamily& queue_family);
         ~CommandPool();
         void trim();
         void reset();
@@ -41,6 +42,7 @@ class CommandPool {
         std::vector<CommandBuffer>      m_command_buffers;
         Device&                         m_device;
         VkCommandPool                   m_command_pool;
+        QueueFamily&                    m_queue_family;
 };
 
 /* TODO: Rename this to CommandBuffers plural! */

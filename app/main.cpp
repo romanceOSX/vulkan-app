@@ -95,7 +95,7 @@ void _physical_device_test() {
     VertexBuffer vertex_buffer{device};
 
     /* create Command buffers */
-    CommandPool command_pool{device};
+    CommandPool command_pool{device, render_queue_family};
     std::vector<VkSemaphore> image_available_semaphores;
     std::vector<VkSemaphore> render_finished_semaphores;
     std::vector<VkFence> in_flight_fences;
