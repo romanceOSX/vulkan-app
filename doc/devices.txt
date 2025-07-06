@@ -1,0 +1,28 @@
+Physical Device
+    ...
+
+Logical Device
+    --> https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#devsandqueues-devices
+    At creation we specify:
+        - devices extensions
+        - created queues
+
+Queue families
+    These can be queried before the creation of a logical device, through the
+    vulkan physical device construct
+
+    Queue family index
+        These tie together operations in multiple places within vulkan
+        to specift family of queues
+            - when retrieving a device queue
+            - when creating a command pool
+                (only command pools of the index from the created queue can be used)
+            - when creating resources (buffers / images)
+
+Queue creation
+    Queue creation is coupled with the creation of a Logical Device
+
+A device has 'n' number of queue families, each queue family has an 'x'
+amount of queues for such given queue family
+
+
