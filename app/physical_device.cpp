@@ -234,6 +234,18 @@ std::optional<uint32_t> PhysicalDevice::find_memory_properties(uint32_t type_mas
 }
 
 /*
+ * Finds the required queue family
+ */
+std::optional<QueueFamily> PhysicalDevice::find_queue_family(VkQueueFlagBits flag) {
+    for (auto& queue: m_queue_families) {
+        if (queue.is_flag_supported(flag) == true) {
+            return std::move(queue);
+        }
+    }
+    return {};
+}
+
+/*
  * Wrapper class for VkQueueFamilyProperties
  */
 QueueFamily::QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties queue_family, uint32_t index):

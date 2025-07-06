@@ -48,6 +48,7 @@ class PhysicalDevice {
         std::vector<VkExtensionProperties>& get_vk_physical_device_extensions(void);
         VkPhysicalDeviceMemoryProperties get_vk_physical_device_memory_properties(void);
         std::optional<uint32_t> find_memory_properties(uint32_t type_mask, VkMemoryPropertyFlags properties);
+        std::optional<QueueFamily> find_queue_family(VkQueueFlagBits flag);
         
         /* TODO: rename this to 'surface_support_details' */
         SwapchainSupportDetails& get_swapchain_support_details();
