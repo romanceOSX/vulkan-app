@@ -9,6 +9,7 @@
  * Forward declarations
  */
 class PhysicalDevice;
+class QueueFamily;
 class Window;
 class Device;
 enum class AppResult;
@@ -38,13 +39,15 @@ class Device {
     public:
         Device() = delete;
         Device(Device& other) = delete;
-        Device(PhysicalDevice& dev, Window& window);
+        Device(PhysicalDevice& dev);
         ~Device();
         operator VkDevice();
         void wait(void);
         void add_extension(const char*);
-        void init(uint32_t count);
-        VkQueue get_vk_queue();
+        void add_queue(const QueueFamily& queue_family, uint32_t count, float priority);
+        void init();
+        void insert_queue();
+        VkQueue get_vk_queue(const QueueFamily& queue_family);
         uint32_t get_queue_family_index();
         VkDevice get_vk_device();
         PhysicalDevice& get_physical_device();
@@ -52,19 +55,20 @@ class Device {
         void print_info();
 
     private:
-        uint32_t _get_suitable_queue_index(void);
-
         PhysicalDevice&                         m_physical_device;
-        Window&                                 m_window;
         VkDevice                                m_vk_device;
         VkQueue                                 m_vk_queue;
-        VkPhysicalDeviceProperties              m_gpu_props;
-        VkPhysicalDeviceMemoryProperties        m_gpu_mem_props;
         std::vector<const char*>                m_extensions;
-        std::vector<VkQueueFamilyProperties>    m_queue_family_props;
-        uint32_t                                m_graphics_queue_family_index;
+        std::vector<VkDeviceQueueCreateInfo>    m_dev_queue_create_infos;
         uint32_t                                m_queue_count;
         uint32_t                                m_queue_family_index;
         bool                                    m_is_init = false;
 };
+
+/*
+ * Create devices
+ * Create queues through their indices? or through their queuefamily structure?
+ * add_queue(flags, count, priority);
+ * add_queue(QueueFamily, count, priority)
+ */
 

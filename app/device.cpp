@@ -37,66 +37,42 @@
  *
  */
 
+/* TODO: we should add an init check to the device in a idiomatic way by overloading the bool operator */
+
 /*
- * A physical device contains queue families,
- * Queue families contain an specified number of available queues
- * We create the required queues from an specific queue family while creating logical devices
+ * TODO: should all logical device-related operations be bound to the device class?
+ *       Doing so in the current way (devices are separated from say, command pools, resources, etc...)
+ *       means that we can bind different command pools to different devices, is this desired?
  */
 
-Device::Device(PhysicalDevice& dev, Window& window): m_physical_device{dev}, m_window{window} { }
-
-uint32_t Device::_get_suitable_queue_index(void) {
-    /* TODO: add a cleaner way to query suitable indexes */
-    if (auto ret = m_physical_device.check_window_surface_compatibility(m_window)) {
-        return ret.value().get_index();
-    }
-    throw std::runtime_error("Physical Device not compatible with window 😵");
+Device::Device(PhysicalDevice& dev): m_physical_device{dev} {
 }
 
+/*
+ * Adds required extension to the device
+ */
 void Device::add_extension(const char *ext) {
     m_extensions.push_back(ext); 
 }
 
-void Device::init(uint32_t count) {
-    /* calculate family index */
-    /* TODO: we can pass the queuefamily wrapper instead of the index */
-    m_queue_family_index = _get_suitable_queue_index();
-    m_queue_count = count;
-
-    if (count > m_physical_device.get_vk_device_queue_families_properties().at(m_queue_family_index).queueCount) {
-        throw std::runtime_error("Requesting more queues than available 😵");
-    }
-
-    float queue_priority = 1.0f;
-
-    /* queue Creation */
-    VkDeviceQueueCreateInfo queue_create_info {
-        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-            .pNext = nullptr,
-            .flags = 0,
-            .queueFamilyIndex = m_queue_family_index,
-            .queueCount = m_queue_count,
-            .pQueuePriorities = &queue_priority,
-    };
-
-    /* TODO: VkDeviceQueueCreateInfo could be an array of desired queue creations */
+void Device::init() {
+    /* create device and queues */
     VkDeviceCreateInfo device_create_info {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         .pNext = nullptr,
         .flags = 0,
-        .queueCreateInfoCount = 1,
-        .pQueueCreateInfos = &queue_create_info,
+        .queueCreateInfoCount = static_cast<uint32_t>(m_dev_queue_create_infos.size()),
+        .pQueueCreateInfos = m_dev_queue_create_infos.data(),
         .pEnabledFeatures = VK_FALSE,
     };
 
     device_create_info.ppEnabledExtensionNames = m_extensions.data();
-    device_create_info.enabledExtensionCount = m_extensions.size();
+    device_create_info.enabledExtensionCount = static_cast<uint32_t>(m_extensions.size());
 
     if (VK_SUCCESS != vkCreateDevice(m_physical_device.get_vk_physical_device(), &device_create_info, nullptr, &m_vk_device)) {
         APP_DBG_ERR("Failed to create device");
     }
 
-    vkGetDeviceQueue(m_vk_device, m_queue_family_index, 0, &m_vk_queue);
     m_is_init = true;
     APP_PRETTY_PRINT_CREATE("created logical device and requested queue");
 }
@@ -107,8 +83,10 @@ void Device::wait() {
 }
 
 /* TODO: add a check for valid device init */
-VkQueue Device::get_vk_queue() {
-    return m_vk_queue;
+VkQueue Device::get_vk_queue(const QueueFamily& queue_family) {
+    VkQueue vk_queue;
+    vkGetDeviceQueue(m_vk_device, queue_family.get_index(), 0, &vk_queue);
+    return vk_queue;
 }
 
 uint32_t Device::get_queue_family_index() {
@@ -139,6 +117,28 @@ void Device::print_info() {
 
 PhysicalDevice& Device::get_physical_device() {
     return m_physical_device;
+}
+
+/*
+ * Specifies a queue to create upon Device initialization
+ */
+void Device::add_queue(const QueueFamily& queue_family, uint32_t count, float priority) {
+    /* --> https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#devsandqueues-queue-creation */
+
+    /* TODO: add is_init check to see if someone tries to add a queue after creation */
+    /* WARN: should we use something more idiomatic rather than an assert? */
+    assert(count <= queue_family.count());
+
+    VkDeviceQueueCreateInfo queue_create_info {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,                                                             /* TODO: should we also pass this as a parameter? */
+        .queueFamilyIndex = queue_family.get_index(),
+        .queueCount = count,
+        .pQueuePriorities = &priority,
+    };
+
+    m_dev_queue_create_infos.push_back(queue_create_info);
 }
 
 /* user-defined conversion function */
