@@ -40,7 +40,7 @@ class PhysicalDevice {
     public:
         PhysicalDevice() = delete;
         PhysicalDevice(VkPhysicalDevice dev);
-        std::optional<QueueFamily> check_window_surface_compatibility(Window& window);
+        std::optional<QueueFamily> is_window_surface_compatible(Window& window);
         VkPhysicalDeviceProperties& get_vk_physical_device_properties(void);
         VkPhysicalDevice get_vk_physical_device(void);
         uint32_t get_queue_families_count(void);

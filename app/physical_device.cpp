@@ -83,7 +83,7 @@ void PhysicalDevice::print_info() {
  * graphics capabilities, add support for choosing a different queue or the same one
  * returns the index of the queue family that supports such operations 
  */
-std::optional<QueueFamily> PhysicalDevice::check_window_surface_compatibility(Window& window) {
+std::optional<QueueFamily> PhysicalDevice::is_window_surface_compatible(Window& window) {
     std::vector<const char*> required_extensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
     };
