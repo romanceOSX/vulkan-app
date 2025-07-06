@@ -257,7 +257,7 @@ bool QueueFamily::is_window_supported(Window& window) {
 /*
  * gets the queue family index 
  */
-uint32_t QueueFamily::get_index() {
+uint32_t QueueFamily::get_index() const {
     return m_queue_family_index;
 }
 
@@ -281,7 +281,7 @@ void QueueFamily::print_info() {
 /*
  * Returns the number of queues in the queue family
  */
-uint32_t QueueFamily::count() {
+uint32_t QueueFamily::count() const {
     return m_vk_queue_family_properties.queueCount;
 }
 

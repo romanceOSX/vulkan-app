@@ -80,8 +80,8 @@ class QueueFamily {
         QueueFamily(VkPhysicalDevice physical_device, VkQueueFamilyProperties queue_family, uint32_t index);
         bool is_window_supported(Window& window);
         bool is_flag_supported(VkQueueFlagBits flag);
-        uint32_t count();
-        uint32_t get_index();
+        uint32_t count() const;
+        uint32_t get_index() const;
         /* TODO: print info should return a string, not directly to stdout */
         void print_info();
 
