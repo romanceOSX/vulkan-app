@@ -59,6 +59,7 @@ class PhysicalDevice {
         void _query_physical_device_extensions();
         void _query_queue_families();
         void _query_physical_device_memory_properties();
+        QueueFamily _pop_queue_family(QueueFamily& queue);
 
         VkPhysicalDeviceProperties                  m_vk_physical_device_properties;
         VkPhysicalDevice                            m_vk_physical_device;

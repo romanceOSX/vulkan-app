@@ -182,11 +182,22 @@ std::optional<QueueFamily> PhysicalDevice::is_window_surface_compatible(Window& 
             queue.is_window_supported(window)
         ) 
         {
-            return std::move(queue);
+            return _pop_queue_family(queue);
         }
     }
 
     return {};
+}
+
+QueueFamily PhysicalDevice::_pop_queue_family(QueueFamily& queue) {
+    for (auto it = std::begin(m_queue_families); it != std::end(m_queue_families); ++it) {
+        /* it is the same queue family */
+        if (queue.get_index() == queue.get_index()) {
+            auto ret_queue = std::move(*it);
+            m_queue_families.erase(it);
+            return ret_queue;
+        }
+    }
 }
 
 SwapchainSupportDetails& PhysicalDevice::get_swapchain_support_details() {
@@ -237,9 +248,9 @@ std::optional<uint32_t> PhysicalDevice::find_memory_properties(uint32_t type_mas
  * Finds the required queue family
  */
 std::optional<QueueFamily> PhysicalDevice::find_queue_family(VkQueueFlagBits flag) {
-    for (auto& queue: m_queue_families) {
-        if (queue.is_flag_supported(flag) == true) {
-            return std::move(queue);
+    for (auto it = std::begin(m_queue_families); it != std::end(m_queue_families); ++it) {
+        if ((*it).is_flag_supported(flag) == true) {
+            return _pop_queue_family(*it);
         }
     }
     return {};
