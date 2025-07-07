@@ -71,12 +71,16 @@ void _physical_device_test() {
 
     /* get suitable queue family index */
     auto render_queue_family = physical_device.is_window_surface_compatible(window).value();
+    /* this queue family will be used for the staging buffer */
+    auto transfer_queue_family = physical_device.find_queue_family(VK_QUEUE_TRANSFER_BIT).value();
 
     /* create logical device */
     Device device{physical_device};
     device.add_extension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-    device.add_extension("VK_KHR_portability_subset");                          /* --> https://github.com/KhronosGroup/MoltenVK */
+    /* Required extension: --> https://github.com/KhronosGroup/MoltenVK */
+    device.add_extension("VK_KHR_portability_subset");
     device.add_queue(render_queue_family, 1, 1.0);
+    device.add_queue(transfer_queue_family, 1, 1.0);
     device.init();
     device.print_info();
     

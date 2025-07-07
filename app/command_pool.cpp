@@ -16,6 +16,10 @@
 /*
  * Command Pool class
  */
+
+/*
+ * Constructor that creates a command pool out of the provided queue family
+ */
 CommandPool::CommandPool(Device& dev, QueueFamily& queue_family):
     m_device{dev},
     m_queue_family{queue_family}
@@ -28,7 +32,7 @@ CommandPool::CommandPool(Device& dev, QueueFamily& queue_family):
     };
 
     if (VK_SUCCESS != vkCreateCommandPool(
-                dev.get_vk_device(), 
+                dev, 
                 &command_pool_create,
                 nullptr,
                 &m_command_pool)
@@ -169,10 +173,11 @@ void CommandBuffer::cmd_bind_pipeline(Pipeline& pipeline) {
     vkCmdBindPipeline(m_command_buffers.front(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get_vk_pipeline());  
 }
 
-void CommandBuffer::cmd_draw(VertexBuffer& buf) {
-    VkBuffer vertex_buffers[] = {buf.get_vk_buffer()};
-    VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(m_command_buffers.front(), 0, 1, vertex_buffers, offsets);
+/*
+ * Binding the vertex buffer to the memory buffer allows the buffer to be read
+ * and interpret the input attributes described in such buffer                
+ */
+void CommandBuffer::cmd_draw(VertexBuffer& buf) {                             
     vkCmdDraw(m_command_buffers.front(), static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 }
 
@@ -203,6 +208,7 @@ void CommandBuffer::end_recording() {
         throw std::runtime_error("Failed to record command buffer ❌📹");
     }
 }
+
 /*
  * Command Buffer submission
  */
