@@ -178,6 +178,9 @@ void CommandBuffer::cmd_bind_pipeline(Pipeline& pipeline) {
  * and interpret the input attributes described in such buffer                
  */
 void CommandBuffer::cmd_draw(VertexBuffer& buf) {                             
+    VkBuffer vertex_buffers[] = {buf.get_vk_buffer()};
+    VkDeviceSize offsets[] = {0};
+    vkCmdBindVertexBuffers(m_command_buffers.front(), 0, 1, vertex_buffers, offsets);
     vkCmdDraw(m_command_buffers.front(), static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 }
 
