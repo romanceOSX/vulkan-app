@@ -2,6 +2,7 @@
 
 #define VK_USE_PLATFORM_MACOS_MVK
 #include <vulkan/vulkan_core.h>
+#include <vulkan/vulkan.hpp>
 
 #include "app_settings.hpp"
 #include "instance.hpp"

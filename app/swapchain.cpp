@@ -146,9 +146,9 @@ SwapChain::SwapChain(Device& dev, Window& window):
     _create_swapchain();
 
     /* query swap chain images */
+    /* create an image view per each image available in the swapchain */
     uint32_t image_count;
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, nullptr);
-    /* we create an image view per each image available in the swapchain */
     m_vk_swapchain_images.resize(image_count);
     m_vk_swapchain_image_views.resize(image_count);
     vkGetSwapchainImagesKHR(m_device.get_vk_device(), m_vk_swapchain, &image_count, m_vk_swapchain_images.data());

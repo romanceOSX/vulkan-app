@@ -54,7 +54,9 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
         vert_shader_stage_info,
     };
 
-    /* vertex input */
+    /*
+     * Vertex input bindings
+     */
     /* no vertex data to load now, will be using vertex buffers instead */
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -216,7 +218,7 @@ Pipeline::Pipeline(Device& dev, SwapChain& swapchain):
 
     /* FIX: pipeline/validation layer error */
     /* --> https://stackoverflow.com/questions/45460516/vkcreatepipeline-fails-and-validation-layer-segment-faults */
-    pipeline_info.pTessellationState = nullptr; 
+    pipeline_info.pTessellationState = nullptr;
 
     pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
     pipeline_info.basePipelineIndex = -1;

@@ -8,6 +8,11 @@
 #include "pipeline.hpp"
 #include "swapchain.hpp"
 
+/*
+ * Framebuffers are the most direct interface to image resources (VkImageViews)
+ * They encapsulate such resources
+ */
+
 /* TODO: make this class more flexible, first determine use-cases */
 Framebuffers::Framebuffers(Device& dev, SwapChain& swap, Pipeline& pipeline):
     m_device{dev},

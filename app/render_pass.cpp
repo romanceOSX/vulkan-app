@@ -4,6 +4,12 @@
 #include "render_pass.hpp"
 
 /*
+ * In a render pass we first define the attachments that will be used in the render pass
+ * Then we declare settings for them in the form of references, through indexes
+ * we can specify to which attachment we should apply such settings
+ */
+
+/*
  * RenderPass class
  */
 RenderPass::RenderPass(Device& device, SwapChain& swapchain):
