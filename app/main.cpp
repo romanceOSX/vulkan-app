@@ -94,15 +94,15 @@ void _physical_device_test() {
     /* create Framebuffers */
     Framebuffers framebuffers{device, swapchain, pipeline};
 
-    /* create Vertex buffers */
-    // TODO: create vertex buffers
-    VertexBuffer vertex_buffer{device};
-
     /* create Command buffers */
     CommandPool command_pool{device, render_queue_family};
     std::vector<VkSemaphore> image_available_semaphores;
     std::vector<VkSemaphore> render_finished_semaphores;
     std::vector<VkFence> in_flight_fences;
+
+    /* create Vertex buffers */
+    // TODO: create vertex buffers
+    VertexBuffer vertex_buffer{device, command_pool};
 
     /* create objects needed per frame */
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
