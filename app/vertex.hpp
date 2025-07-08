@@ -5,6 +5,7 @@
 #include <vector>
 
 class Device;
+class CommandPool;
 
 struct Vertex {
     glm::vec2 pos;
@@ -28,7 +29,7 @@ class VertexInput {
  */
 class VertexBuffer {
     public:
-        VertexBuffer(Device& dev);
+        VertexBuffer(Device& dev, CommandPool& cmd_pool);
         ~VertexBuffer();
         VkBuffer get_vk_buffer();
 
@@ -37,5 +38,6 @@ class VertexBuffer {
         Device&             m_device;
         VkBuffer            m_vk_buffer;
         VkDeviceMemory      m_vk_device_memory;
+        CommandPool&        m_cmd_pool;
 };
 

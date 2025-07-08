@@ -42,9 +42,10 @@
 
 /* hello triangle */
 const std::vector<Vertex> vertices = {
-    {{0.0f, -0.5f}, {1.0f, 0.5f, 1.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.3f}},
-    {{-0.5f, 0.5f}, {0.4f, 0.0f, 1.0f}},
+    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
 };
 
 /* 
@@ -87,24 +88,39 @@ std::array<VkVertexInputAttributeDescription, 2> VertexInput::get_attribute_desc
  * At this point of the memory creation we do not need to indicate how to parse/decode/
  * interpret the data, we just need to indicate how much size to allocate
  */
-VertexBuffer::VertexBuffer(Device& dev): m_device{dev} {
+VertexBuffer::VertexBuffer(Device& dev, CommandPool& cmd_pool):
+    m_device{dev},
+    m_cmd_pool{cmd_pool}
+{
     void* data = nullptr;
     VkDeviceSize size = sizeof(vertices[0]) * vertices.size();
 
-    Buffer buffer{
+    /* create staging buffer */
+    Buffer staging_buffer{
         m_device,
         size,
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
     };
 
     /* pass in reference to buffer to vertex class */
-    m_vk_buffer = buffer.get_vk_buffer();
+    m_vk_buffer = staging_buffer.get_vk_buf();
 
     /* copy vertex memory thorugh mapping */
-    buffer.map_memory(&data);
+    staging_buffer.map_memory(&data);
     memcpy(data, vertices.data(), (size_t) size);
-    buffer.unmap_memory();
+    staging_buffer.unmap_memory();
+
+    /* create device-local buffer */
+    Buffer vertex_buffer{
+        m_device,
+        size,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+    };
+
+    /* copy staging buffer from device-visible buffer to device-local buffer */
+    Buffer::copy_buffer(m_cmd_pool, staging_buffer, vertex_buffer, size);
 }
 
 VertexBuffer::~VertexBuffer() {
