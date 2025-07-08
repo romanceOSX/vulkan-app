@@ -34,6 +34,7 @@ class CommandPool {
         CommandBuffer& create_command_buffer();
         VkCommandPool get_vk_command_pool();
         std::vector<CommandBuffer>& get_command_buffers();
+        QueueFamily get_queue_family();
         Device& get_device();
 
     private:

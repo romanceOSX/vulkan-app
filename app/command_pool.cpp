@@ -220,3 +220,8 @@ void CommandBuffer::submit() {
     auto [a, b] = tup;
 }
 
+
+QueueFamily CommandPool::get_queue_family() {
+    return m_queue_family;
+}
+
