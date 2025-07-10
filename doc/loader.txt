@@ -21,4 +21,4 @@ Doubts
             This last point is only valid if we dynamically link to a shared library,
             we can also do this manually through some special functions at runtime, but that depends
             on the program, this concept of manual loading is heavily used in vulkan
-        
+
