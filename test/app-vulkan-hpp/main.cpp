@@ -22,9 +22,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ApplicationInfo applicationInfo{
             .pApplicationName = AppName.c_str(),  
         };
-    //vk::ApplicationInfo applicationInfo( AppName.c_str(), 1, EngineName.c_str(), 1, VK_API_VERSION_1_1 );
+
+    vk::ApplicationInfo applicationInfo( AppName.c_str(), 1, EngineName.c_str(), 1, VK_API_VERSION_1_1 );
 
     // initialize the vk::InstanceCreateInfo
+
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo );
 
     // create an Instance
