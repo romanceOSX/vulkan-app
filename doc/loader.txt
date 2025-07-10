@@ -3,13 +3,22 @@ statically, yet this approach is not often desired, the normal workflow is to
 compile dynamically against the loader and manually query the vulkan function
 pointers to the desired logic
 
+Types of linking:
+    - Dynamically link to a shared library (.lib, .dylib, .so)
+    - Static linking to a static library (.a, .lib)
+    - Runtime loading of a shared library (use-case specific)
+
+Windows specific
+    In windows '.lib' could either be a:
+        - import library
+        - static library
 
 Doubts
     - Why doesn't vulkan include a dynamic library with those out-of-core references
       extensions already in place?
         Not all the extension functions are guaranteed to be available in all vulkan implementations
         In addition, the OS dll dynamic dispatch needs to guaranteed that all functions references exist
-            This last point is only valid if we statically link to the dynamic library,
+            This last point is only valid if we dynamically link to a shared library,
             we can also do this manually through some special functions at runtime, but that depends
             on the program, this concept of manual loading is heavily used in vulkan
         
