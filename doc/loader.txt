@@ -1,0 +1,15 @@
+Vulkan loaders often have a bunch of symbols available in case one compiles
+statically, yet this approach is not often desired, the normal workflow is to
+compile dynamically against the loader and manually query the vulkan function
+pointers to the desired logic
+
+
+Doubts
+    - Why doesn't vulkan include a dynamic library with those out-of-core references
+      extensions already in place?
+        Not all the extension functions are guaranteed to be available in all vulkan implementations
+        In addition, the OS dll dynamic dispatch needs to guaranteed that all functions references exist
+            This last point is only valid if we statically link to the dynamic library,
+            we can also do this manually through some special functions at runtime, but that depends
+            on the program, this concept of manual loading is heavily used in vulkan
+        
