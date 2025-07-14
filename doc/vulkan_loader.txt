@@ -1,0 +1,28 @@
+--> https://github.com/KhronosGroup/Vulkan-Loader/blob/main/docs/LoaderInterfaceArchitecture.md
+
+Dispatch tables and chain calls
+
+A dispatchable handle in vulkan under the hood (In the loader) is a pointer
+to a structure, that structure contains a pointer to a dispatch table that
+containspointers to vulkan functions relating to that specific object
+
+There are two types of tables that the loader mantains:
+    - Instance dispatch table
+        - created when calling vkCreateInstance
+    - Device dispatch table
+        - created when calling vkCreateDevice
+
+When either of these functions are called, the loader will create a 'call chain'
+for each of the functions
+
+When calling a function normally the first thing it will hit is a trampoline function
+that calls to the appropiate entry within the dispatch table for the given object
+
+Call Chain
+                    vulkan dispatchable handle
+                            points to...
+            structure with data and a pointer to a dispatch table
+                            pointing to...
+        dispatch table with function pointers pointing to the first
+                        element of the call chain
+                            
