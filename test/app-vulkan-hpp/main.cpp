@@ -2,31 +2,34 @@
  * Vulkan-hpp sample test
  */
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <print>
 #include <sstream>
 #include <vector>
+#include <ranges>
+#include <algorithm>
 
 #define VULKAN_HPP_NO_CONSTRUCTORS
 #define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
+#define VK_USE_PLATFORM_METAL_EXT
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_raii.hpp>
+#include <vulkan/vulkan_handles.hpp>
 
-static std::string AppName    = "01_InitInstanceRAII";
-static std::string EngineName = "Vulkan.hpp";
-
+/* 
+ * namespace imports
+ */
 using std::vector;
+using std::string;
 
-void print_available_instance_layers(vk::raii::Context &ctx) {
-    vector<vk::LayerProperties> properties = ctx.enumerateInstanceLayerProperties();
-    for (auto& p: properties) {
-        std::cout 
-            << p.layerName << std::endl
-            << p.description << std::endl;
-    }
-}
+static string AppName    = "01_InitInstanceRAII";
+static string EngineName = "Vulkan.hpp";
 
+/* 
+ * ostream overrides
+ */
 std::ostream& operator<<(std::ostream& stream, vector<vk::LayerProperties> layers) {
     for (auto& layer: layers) {
         stream
@@ -34,20 +37,24 @@ std::ostream& operator<<(std::ostream& stream, vector<vk::LayerProperties> layer
             << layer.layerName << " (" << layer.description << ")" << std::endl
         ;
     }
-
     return stream;
 }
 
-void scan_system(vk::raii::Context &ctx) {
-    std::cout << ctx.enumerateInstanceLayerProperties();
+std::ostream& operator<<(std::ostream& stream, vector<vk::ExtensionProperties> extensions) {
+    for (auto& ext: extensions) {
+        stream
+            << "\t- "
+            << ext.extensionName << " (v" << ext.specVersion << ")" << std::endl
+        ;
+    }
+    return stream;
+}
 
-    //vector<vk::ExtensionProperties> extensions = ctx.enumerateInstanceExtensionProperties();
-    //for (auto& ext: extensions) {
-    //    std::cout
-    //        << "\t- "
-    //        << ext.extensionName << std::endl
-    //        ;
-    //}
+void print_system_info(vk::raii::Context &ctx) {
+    std::cout << "Querying instance layers..." << std::endl;
+    std::cout << ctx.enumerateInstanceLayerProperties();
+    std::cout << "Querying extensions..." << std::endl;
+    std::cout << ctx.enumerateInstanceExtensionProperties();
 }
 
 int test_template() {
@@ -63,7 +70,7 @@ int test_template() {
          */
         vk::raii::Context context;
 
-        scan_system(context);
+        print_system_info(context);
 
         /* get instance layer properties */
         std::vector<vk::LayerProperties> layers = context.enumerateInstanceLayerProperties();
@@ -106,9 +113,43 @@ int test_template() {
     return 0;
 }
 
+void test_misc_api() {
+}
+
+namespace views = std::views;
+namespace ranges = std::ranges;
+
 void test_vulkan() {
+    std::cout << "Vulkan application :3" << std::endl;
+
     vk::raii::Context ctx;
-    scan_system(ctx);
+    print_system_info(ctx);
+
+    vector<const char*> layers{
+        "VK_LAYER_KHRONOS_validation",
+    };
+
+    vector<const char*> extensions{
+        vk::KHRGetPhysicalDeviceProperties2ExtensionName,
+        vk::KHRPortabilityEnumerationExtensionName,
+        //vk::EXTMetalSurfaceExtensionName,
+        //vk::KHRSurfaceExtensionName,
+    };
+
+    ranges::for_each(extensions, [](auto& s) {std::cout << "**" << s << std::endl;});
+
+    vk::InstanceCreateInfo instance_create{
+        .flags = vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR,
+        .enabledLayerCount = static_cast<uint32_t>(layers.size()),
+        .ppEnabledLayerNames = layers.data(),
+        .enabledExtensionCount = static_cast<uint32_t>(extensions.size()),
+        .ppEnabledExtensionNames = extensions.data(),
+    };
+
+    auto instance = std::make_unique<vk::raii::Instance>(ctx, instance_create);
+
+    //ctx.createInstance(const vk::InstanceCreateInfo &createInfo)
+    //vk::createInstance()
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
