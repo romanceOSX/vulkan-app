@@ -22,6 +22,9 @@
 #include <vulkan/vulkan_structs.hpp>
 #include <vulkan/vulkan_enums.hpp>
 
+#include "utils/utils.hpp"
+#include "utils/ostream_formatters.hpp"
+
 /* 
  * namespace imports
  */
@@ -34,56 +37,12 @@ using std::string;
 constexpr string AppName    = "01_InitInstanceRAII";
 constexpr string EngineName = "Vulkan.hpp";
 
-/*
- * program utils
- */
-template <ranges::range T>
-void utils_print_container(T& cont) {
-    ranges::for_each(cont, [](auto& e) { std::cout << "**" << e << std::endl; });
-}
-
-/* 
- * ostream overrides
- */
-std::ostream& operator<<(std::ostream& stream, vector<vk::LayerProperties> layers) {
-    for (auto& layer: layers) {
-        stream
-            << "\t- "
-            << layer.layerName << " (" << layer.description << ")" << std::endl
-        ;
-    }
-    return stream;
-}
-
-std::ostream& operator<<(std::ostream& stream, vector<vk::ExtensionProperties> extensions) {
-    for (auto& ext: extensions) {
-        stream
-            << "\t- "
-            << ext.extensionName << " (v" << ext.specVersion << ")" << std::endl
-        ;
-    }
-    return stream;
-}
-
-std::ostream& operator<<(std::ostream& stream, vk::QueueFamilyProperties& queue) {
-    stream << std::format(
-            "Queue Family flags: 0x{:02x}, count: {}",
-            static_cast<vk::QueueFlags::MaskType>(queue.queueFlags),
-            queue.queueCount
-        );
-    return stream;
-}
-
-std::ostream& operator<<(std::ostream& stream, vk::raii::PhysicalDevice& dev) {
-    auto queue_props = dev.getQueueFamilyProperties();
-    ranges::for_each(queue_props, [&](auto &q) { stream << 2;} );
-    return stream;
-}
 
 void print_vulkan_platform_info(vk::raii::Context &ctx) {
-    std::cout << "Querying instance layers..." << std::endl;
+    std::cout << std::format("Vulkan v{}", ctx.enumerateInstanceVersion()) << std::endl;
+    std::cout << "Available instance layers:" << std::endl;
     std::cout << ctx.enumerateInstanceLayerProperties();
-    std::cout << "Querying extensions..." << std::endl;
+    std::cout << "Available instance extensions:" << std::endl;
     std::cout << ctx.enumerateInstanceExtensionProperties();
 }
 
