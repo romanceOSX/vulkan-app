@@ -59,7 +59,7 @@ uint32_t findGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
 
 }
 
-void print_vulkan_platform_info(vk::raii::Context &ctx) {
+void printVulkanPlatformInfo(vk::raii::Context &ctx) {
     std::cout << std::format("Vulkan v{}", ctx.enumerateInstanceVersion()) << std::endl;
     std::cout << "Available instance layers:" << std::endl;
     std::cout << ctx.enumerateInstanceLayerProperties();
@@ -67,7 +67,7 @@ void print_vulkan_platform_info(vk::raii::Context &ctx) {
     std::cout << ctx.enumerateInstanceExtensionProperties();
 }
 
-void print_instance_info(std::unique_ptr<vk::raii::Instance>& instance) {
+void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance) {
     auto vec = instance->enumeratePhysicalDevices();
 
     /* print devices */
@@ -84,71 +84,12 @@ void print_instance_info(std::unique_ptr<vk::raii::Instance>& instance) {
     //utils_print_container(vec);
 }
 
-int test_template() {
-    /* VULKAN_HPP_KEY_START */
-    try
-    {
-        /* 
-         * The vulkan context is in charge of acting as a dispatcher for the vulkan loader
-         *
-         * The dispatcher is in charge of getting the correct function to call out of the
-         * vulkan loader at runtime
-         *  --> https://github.com/KhronosGroup/Vulkan-Loader
-         */
-        vk::raii::Context context;
-
-        print_vulkan_platform_info(context);
-
-        /* get instance layer properties */
-        std::vector<vk::LayerProperties> layers = context.enumerateInstanceLayerProperties();
-
-        for (auto& layer: layers) {
-            std::cout << layer.layerName << "\t" << layer.description << std::endl;
-        }
-
-        /* fill-in app info */
-        vk::ApplicationInfo app_info{
-            .pApplicationName = AppName.c_str(),  
-        };
-
-        //vk::InstanceCreateInfo instance_create_info({}, &app_info);
-        vk::InstanceCreateInfo instance_create_info{
-            .pApplicationInfo = &app_info,
-        };
-
-        /* create instance */
-        auto instance = std::make_unique<vk::raii::Instance>(context, instance_create_info);
-    }
-    catch ( vk::SystemError & err )
-    {
-        std::cout << "vk::SystemError: " << err.what() << std::endl;
-        exit( -1 );
-    }
-    catch ( std::exception & err )
-    {
-        std::cout << "std::exception: " << err.what() << std::endl;
-        exit( -1 );
-    }
-    catch ( ... )
-    {
-        std::cout << "unknown error\n";
-        exit( -1 );
-    }
-
-    /* VULKAN_HPP_KEY_END */
-
-    return 0;
-}
-
-void test_misc_api() {
-}
-
 void testVulkan() {
     std::cout << "---Vulkan sample App :3---" << std::endl;
 
     vk::raii::Context ctx;
 
-    print_vulkan_platform_info(ctx);
+    printVulkanPlatformInfo(ctx);
 
     vector<const char*> layers{
         "VK_LAYER_KHRONOS_validation",
@@ -171,7 +112,7 @@ void testVulkan() {
 
     auto instance = std::make_unique<vk::raii::Instance>(ctx, instance_create);
 
-    print_instance_info(instance);
+    printInstanceInfo(instance);
 
     /* NOTE: what is the point of raii'ing a physical device if its creation depends on instance? */
     vk::raii::PhysicalDevice phy_dev = instance->enumeratePhysicalDevices().front();
@@ -204,6 +145,5 @@ void testVulkan() {
 int main( int /*argc*/, char ** /*argv*/ )
 {
     testVulkan();
-    //test_template();
 }
 
