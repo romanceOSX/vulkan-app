@@ -9,8 +9,12 @@ namespace ranges = std::ranges;
 /*
  * program utils
  */
+namespace ut {
+
 template <ranges::range T>
-void utils_print_container(T& cont) {
+void print_container(T& cont) {
     ranges::for_each(cont, [](auto& e) { std::cout << "**" << e << std::endl; });
+}
+
 }
 
