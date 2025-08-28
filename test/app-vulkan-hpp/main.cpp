@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <utility>
 
+#define VK_ENABLE_BETA_EXTENSIONS
 #define VULKAN_HPP_NO_CONSTRUCTORS
 #define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
 #define VK_USE_PLATFORM_METAL_EXT
@@ -142,10 +143,11 @@ int test_template() {
 void test_misc_api() {
 }
 
-void test_vulkan() {
-    std::cout << "Vulkan application :3" << std::endl;
+void testVulkan() {
+    std::cout << "---Vulkan sample App :3---" << std::endl;
 
     vk::raii::Context ctx;
+
     print_vulkan_platform_info(ctx);
 
     vector<const char*> layers{
@@ -173,17 +175,35 @@ void test_vulkan() {
 
     /* NOTE: what is the point of raii'ing a physical device if its creation depends on instance? */
     vk::raii::PhysicalDevice phy_dev = instance->enumeratePhysicalDevices().front();
+
     auto queue_index = vu::findGraphicsQueueFamilyIndex(phy_dev);
 
     std::cout << std::format("--Queue index={}", queue_index) << std::endl;
 
-    //ctx.createInstance(const vk::InstanceCreateInfo &createInfo)
-    //vk::createInstance()
+    float queue_priority = 0.0f;
+
+    vector<const char*> dev_extensions{
+        vk::KHRPortabilitySubsetExtensionName,
+    };
+
+    vk::DeviceQueueCreateInfo queue_create {
+        .queueFamilyIndex = queue_index,
+        .queueCount = 1,
+        .pQueuePriorities = &queue_priority,
+    };
+    vk::DeviceCreateInfo dev_create {
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &queue_create,
+        .enabledExtensionCount = static_cast<uint32_t>(dev_extensions.size()),
+        .ppEnabledExtensionNames = dev_extensions.data(),
+    };
+
+    vk::raii::Device dev{phy_dev, dev_create};
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
-    test_vulkan();
+    testVulkan();
     //test_template();
 }
 
