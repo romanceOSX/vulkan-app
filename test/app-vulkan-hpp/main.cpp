@@ -37,6 +37,26 @@ using std::string;
 constexpr string AppName    = "01_InitInstanceRAII";
 constexpr string EngineName = "Vulkan.hpp";
 
+/*
+ * utilities
+ */
+namespace vu {
+
+uint32_t findGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
+    auto queue_families = phy_dev.getQueueFamilyProperties();
+
+    auto graphics_queue = ranges::find_if(queue_families, [](vk::QueueFamilyProperties& queue){
+        return static_cast<bool>(queue.queueFlags & vk::QueueFlagBits::eGraphics);
+    });
+
+    assert(graphics_queue != queue_families.end());
+
+    std::cout << "--Found graphics queue!! " << *graphics_queue << std::endl;
+
+    return static_cast<uint32_t>(std::distance(queue_families.begin(), graphics_queue));
+}
+
+}
 
 void print_vulkan_platform_info(vk::raii::Context &ctx) {
     std::cout << std::format("Vulkan v{}", ctx.enumerateInstanceVersion()) << std::endl;
@@ -48,6 +68,8 @@ void print_vulkan_platform_info(vk::raii::Context &ctx) {
 
 void print_instance_info(std::unique_ptr<vk::raii::Instance>& instance) {
     auto vec = instance->enumeratePhysicalDevices();
+
+    /* print devices */
     ranges::for_each(vec, [](vk::raii::PhysicalDevice& dev) {
         std::cout << "- Device " << std::endl
             << std::format("Queue Families ({}):", dev.getQueueFamilyProperties().size()) << std::endl;
@@ -55,6 +77,8 @@ void print_instance_info(std::unique_ptr<vk::raii::Instance>& instance) {
             std::cout << "\t- " << queue << std::endl;
         });
     });
+
+    /* find suitable index? */
 
     //utils_print_container(vec);
 }
@@ -146,6 +170,12 @@ void test_vulkan() {
     auto instance = std::make_unique<vk::raii::Instance>(ctx, instance_create);
 
     print_instance_info(instance);
+
+    /* NOTE: what is the point of raii'ing a physical device if its creation depends on instance? */
+    vk::raii::PhysicalDevice phy_dev = instance->enumeratePhysicalDevices().front();
+    auto queue_index = vu::findGraphicsQueueFamilyIndex(phy_dev);
+
+    std::cout << std::format("--Queue index={}", queue_index) << std::endl;
 
     //ctx.createInstance(const vk::InstanceCreateInfo &createInfo)
     //vk::createInstance()
