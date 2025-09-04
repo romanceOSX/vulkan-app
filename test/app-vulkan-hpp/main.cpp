@@ -3,10 +3,12 @@
  */
 
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <memory>
 #include <print>
 #include <sstream>
+#include <tuple>
 #include <utility>
 #include <vector>
 #include <ranges>
@@ -17,11 +19,15 @@
 #define VULKAN_HPP_NO_CONSTRUCTORS
 #define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
 #define VK_USE_PLATFORM_METAL_EXT
+#include <vulkan/vulkan_core.h>
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_raii.hpp>
 #include <vulkan/vulkan_handles.hpp>
 #include <vulkan/vulkan_structs.hpp>
 #include <vulkan/vulkan_enums.hpp>
+
+#define GLFW_INCLUDE_VULKAN
+#include "GLFW/glfw3.h"
 
 #include "utils/utils.hpp"
 #include "utils/ostream_formatters.hpp"
@@ -55,6 +61,41 @@ uint32_t findGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
     std::cout << "--Found graphics queue!! " << *graphics_queue << std::endl;
 
     return static_cast<uint32_t>(std::distance(queue_families.begin(), graphics_queue));
+}
+
+// tuple that represents a physical device and a queue index
+using QueuePhyDeviceTup_t = std::tuple<vk::raii::PhysicalDevice, uint32_t>;
+
+// finds the best suitable physical device, and queue_family
+QueuePhyDeviceTup_t GetSuitableDevice(vk::raii::Instance& instance, vk::raii::SurfaceKHR& surface) {
+    for (auto& phy_dev : instance.enumeratePhysicalDevices()) {
+        auto queues = phy_dev.getQueueFamilyProperties();
+        for (auto it = queues.begin(); it != queues.end(); ++it) {
+            uint32_t index = static_cast<uint32_t>(std::distance(queues.begin(), it));
+            if (phy_dev.getSurfaceSupportKHR(index, surface))
+                assert(it != queues.end());
+                return std::make_tuple(phy_dev, index);
+        }
+    }
+}
+
+vk::raii::SurfaceKHR CreateWindowSurface(vk::raii::Instance& instance) {
+    uint32_t width = 500;
+    uint32_t height = 500;
+    
+    glfwInit();
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+    VkSurfaceKHR _surface;
+    GLFWwindow* window = glfwCreateWindow(width, height, "vulkan hpp", nullptr, nullptr);
+
+    assert(window != nullptr);
+
+    if (VK_SUCCESS != glfwCreateWindowSurface(*instance, window, nullptr, &_surface)) {
+        throw std::runtime_error("Failed to create window surface ❌");
+    }
+
+    return vk::raii::SurfaceKHR(instance, _surface);
 }
 
 }
@@ -91,6 +132,7 @@ void testVulkan() {
 
     printVulkanPlatformInfo(ctx);
 
+    // Instance creation
     vector<const char*> layers{
         "VK_LAYER_KHRONOS_validation",
     };
@@ -98,8 +140,8 @@ void testVulkan() {
     vector<const char*> extensions{
         vk::KHRGetPhysicalDeviceProperties2ExtensionName,
         vk::KHRPortabilityEnumerationExtensionName,
-        //vk::EXTMetalSurfaceExtensionName,
-        //vk::KHRSurfaceExtensionName,
+        vk::KHRSurfaceExtensionName,
+        vk::EXTMetalSurfaceExtensionName,
     };
 
     vk::InstanceCreateInfo instance_create{
@@ -114,12 +156,20 @@ void testVulkan() {
 
     printInstanceInfo(instance);
 
-    /* NOTE: what is the point of raii'ing a physical device if its creation depends on instance? */
-    vk::raii::PhysicalDevice phy_dev = instance->enumeratePhysicalDevices().front();
+    // Window Creation
+    vk::raii::SurfaceKHR surface = vu::CreateWindowSurface(*instance);
 
-    auto queue_index = vu::findGraphicsQueueFamilyIndex(phy_dev);
+    // Device Creation
+    // NOTE: what is the point of raii'ing a physical device if its creation depends on instance?
+    //vk::raii::PhysicalDevice phy_dev = instance->enumeratePhysicalDevices().front();
 
-    std::cout << std::format("--Queue index={}", queue_index) << std::endl;
+    // find device by graphics
+    //auto queue_index = vu::findGraphicsQueueFamilyIndex(phy_dev);
+    
+    // find device by window-compatibility
+    auto[phy_dev, queue_index] = vu::GetSuitableDevice(*instance, surface);
+
+    std::cout << std::format("--Queue index: {}", queue_index) << std::endl;
 
     float queue_priority = 0.0f;
 
@@ -139,7 +189,22 @@ void testVulkan() {
         .ppEnabledExtensionNames = dev_extensions.data(),
     };
 
-    vk::raii::Device dev{phy_dev, dev_create};
+    vk::raii::Device device{phy_dev, dev_create};
+
+    // Command Pool
+    vk::CommandPoolCreateInfo command_pool_create {
+        .queueFamilyIndex = queue_index,
+    };
+    vk::raii::CommandPool command_pool(device, command_pool_create);
+    
+    // command buffer
+    vk::CommandBufferAllocateInfo cmd_buf_alloc_info {
+        .commandPool = command_pool,
+        .level = vk::CommandBufferLevel::ePrimary,
+        .commandBufferCount = 1,
+    };
+    // NOTE: CommandBuffers inherits from the vector class
+    vk::raii::CommandBuffer command_buffer = std::move(vk::raii::CommandBuffers(device, cmd_buf_alloc_info).front());
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
