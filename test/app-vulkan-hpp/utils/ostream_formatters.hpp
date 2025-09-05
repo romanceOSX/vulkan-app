@@ -14,7 +14,7 @@ using std::vector;
 /* 
  * ostream overrides
  */
-std::ostream& operator<<(std::ostream& stream, vector<vk::LayerProperties> layers) {
+inline std::ostream& operator<<(std::ostream& stream, vector<vk::LayerProperties> layers) {
     for (auto& layer: layers) {
         stream
             << "\t- "
@@ -24,7 +24,7 @@ std::ostream& operator<<(std::ostream& stream, vector<vk::LayerProperties> layer
     return stream;
 }
 
-std::ostream& operator<<(std::ostream& stream, vector<vk::ExtensionProperties> extensions) {
+inline std::ostream& operator<<(std::ostream& stream, vector<vk::ExtensionProperties> extensions) {
     for (auto& ext: extensions) {
         stream
             << "\t- "
@@ -34,7 +34,7 @@ std::ostream& operator<<(std::ostream& stream, vector<vk::ExtensionProperties> e
     return stream;
 }
 
-std::ostream& operator<<(std::ostream& stream, vk::QueueFamilyProperties& queue) {
+inline std::ostream& operator<<(std::ostream& stream, vk::QueueFamilyProperties& queue) {
     stream << std::format(
             "Queue Family flags: 0x{:02x}, count: {}",
             static_cast<vk::QueueFlags::MaskType>(queue.queueFlags),
@@ -43,9 +43,14 @@ std::ostream& operator<<(std::ostream& stream, vk::QueueFamilyProperties& queue)
     return stream;
 }
 
-std::ostream& operator<<(std::ostream& stream, vk::raii::PhysicalDevice& dev) {
+inline std::ostream& operator<<(std::ostream& stream, vk::raii::PhysicalDevice& dev) {
     auto queue_props = dev.getQueueFamilyProperties();
     ranges::for_each(queue_props, [&](auto &q) { stream << 2;} );
+    return stream;
+}
+
+inline std::ostream& operator<<(std::ostream& stream, vk::SurfaceFormatKHR& fmt) {
+    stream << "SurfaceFormatKHR";
     return stream;
 }
 
