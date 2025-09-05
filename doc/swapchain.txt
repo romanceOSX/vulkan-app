@@ -23,3 +23,36 @@ Initialization
     - Create a container of VkImages to fill each of the slots with 
     - Create an image view per each of the VkImages available
 
+redux
+    A swapchain is an abstraction over an array of images that are associated in a way
+    with an specific surface, these images are VkImages and are created by the platform
+
+    Components
+        Presentation Engine
+        Window
+        Surface
+        Swapchain
+    The window is the native to the platform, it supports a Vulkan Surface where one
+    can attach a vulkan swapchain to it
+
+    Presentation Engine
+        Abstraction for the platform's compositor or display engine
+        Some implementations use the graphics queues or a separate presentation hardware
+        to perform the presentation
+
+    Workflow
+        - create the swapchain by requesting how the images will look like
+            - normally how the image will look like depends on the physical device and
+              it's support over an specific surface, so it is a combination of those
+              2 things (physical device, surface)
+            - We need to query the device and surface for the following things:
+                - available formats
+                - available presentation modes
+                - extent
+        - acquire the image from the presentation engine
+        - wait for the image to be available thorugh some synchronization mechanism
+        - write to the image and do the pipeline thing
+        - release the image either by:
+            - giving it back to the presentation engine
+            - releasing it manually
+
