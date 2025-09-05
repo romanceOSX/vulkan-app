@@ -4,6 +4,8 @@
 #include <ranges>
 #include <algorithm>
 
+#include "ostream_formatters.hpp"
+
 namespace ranges = std::ranges;
 
 /*
