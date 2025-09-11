@@ -98,6 +98,11 @@ vk::raii::SurfaceKHR CreateWindowSurface(vk::raii::Instance& instance) {
     return vk::raii::SurfaceKHR(instance, _surface);
 }
 
+// create swapchain
+void CreateSwapchain(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
+    
+}
+
 }
 
 void printVulkanPlatformInfo(vk::raii::Context &ctx) {
@@ -205,6 +210,13 @@ void testVulkan() {
     };
     // NOTE: CommandBuffers inherits from the vector class
     vk::raii::CommandBuffer command_buffer = std::move(vk::raii::CommandBuffers(device, cmd_buf_alloc_info).front());
+
+    // Swapchain Creation
+    
+    // get supported formats
+    vector<vk::SurfaceFormatKHR> formats = phy_dev.getSurfaceFormatsKHR(surface);
+    assert(!formats.empty());
+    //ut::print_container(formats);
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
