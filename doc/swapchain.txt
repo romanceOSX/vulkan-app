@@ -42,6 +42,9 @@ redux
 
     Workflow
         - create the swapchain by requesting how the images will look like
+            "The capabilities of a swapchain targeting a surface are the intersection of
+             capabilities of the WSI platform, the native window or display, and the
+             physical device"
             - normally how the image will look like depends on the physical device and
               it's support over an specific surface, so it is a combination of those
               2 things (physical device, surface)
@@ -55,4 +58,11 @@ redux
         - release the image either by:
             - giving it back to the presentation engine
             - releasing it manually
+
+Surface Queries
+    There are 3 things we can query to check the available configurations between our
+    physical device and surface:
+        - capabilities
+        - format support
+        - presentation mode support
 
