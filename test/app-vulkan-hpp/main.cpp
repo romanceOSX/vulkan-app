@@ -100,7 +100,6 @@ vk::raii::SurfaceKHR CreateWindowSurface(vk::raii::Instance& instance) {
 
 // create swapchain
 void CreateSwapchain(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
-    
 }
 
 }
@@ -202,7 +201,7 @@ void testVulkan() {
     };
     vk::raii::CommandPool command_pool(device, command_pool_create);
     
-    // command buffer
+    // Command Buffer
     vk::CommandBufferAllocateInfo cmd_buf_alloc_info {
         .commandPool = command_pool,
         .level = vk::CommandBufferLevel::ePrimary,
@@ -212,10 +211,20 @@ void testVulkan() {
     vk::raii::CommandBuffer command_buffer = std::move(vk::raii::CommandBuffers(device, cmd_buf_alloc_info).front());
 
     // Swapchain Creation
+
+    // get capabilities
+    vk::SurfaceCapabilitiesKHR capabilities = phy_dev.getSurfaceCapabilitiesKHR(surface);
     
     // get supported formats
     vector<vk::SurfaceFormatKHR> formats = phy_dev.getSurfaceFormatsKHR(surface);
     assert(!formats.empty());
+
+    // get present modes
+    vector<vk::PresentModeKHR> surface_present_modes = phy_dev.getSurfacePresentModesKHR();
+
+    vk::SwapchainCreateInfoKHR swapchain_create{
+    };
+
     //ut::print_container(formats);
 }
 
