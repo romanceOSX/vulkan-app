@@ -20,3 +20,10 @@ void print_container(T& cont) {
 
 }
 
+
+namespace vu {
+
+uint32_t GetGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev);
+vector<uint32_t> GetGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev);
+
+}
