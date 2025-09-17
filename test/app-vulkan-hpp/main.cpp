@@ -233,12 +233,13 @@ void testVulkan() {
 
 void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
     auto device = instance.enumeratePhysicalDevices().front();
-    vector<uint32_t> graphics_queue_families = vu::GetGraphicsQueueFamilyIndexes(device);
+    vector<uint32_t> graphics_queue_families = vu::getGraphicsQueueFamilyIndexes(device);
     ut::print_container(graphics_queue_families);
+    uint32_t graphics_queue_family = vu::getGraphicsQueueFamilyIndex(device);
 }
 
 void testVulkanUtils() {
-    std::cout << "--- Testing Vulkan Utils" << std::endl; 
+    ut::prettyPrint("Testing Vulkan Utils 👀");
     vk::raii::Context ctx{};
     
     // Instance creation
@@ -268,7 +269,7 @@ void testVulkanUtils() {
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
-    testVulkan();
     testVulkanUtils();
+    //testVulkan();
 }
 

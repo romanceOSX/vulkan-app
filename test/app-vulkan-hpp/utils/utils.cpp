@@ -9,13 +9,21 @@ using std::vector;
 namespace ranges = std::ranges;
 namespace views = std::ranges::views;
 
+namespace ut {
+
+void prettyPrint(const std::string& prompt) {
+    std::cout << std::format("-- {}", prompt) << std::endl;
+}
+    
+}
+
 namespace vu {
 
 // from a phy_dev and a surface find the 'presentation' queue family
 // prioritize being the graphic bit first
 
 // get graphic bit from a device
-uint32_t GetGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
+uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
     uint32_t res = 0;
     vector<vk::QueueFamilyProperties> properties = phy_dev.getQueueFamilyProperties();
 
@@ -29,7 +37,7 @@ uint32_t GetGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
 }
 
 // returns all the available queue families with the requested indexes
-vector<uint32_t> GetGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev) {
+vector<uint32_t> getGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev) {
     vector<vk::QueueFamilyProperties> properties = phy_dev.getQueueFamilyProperties();
     size_t count = 0;
 

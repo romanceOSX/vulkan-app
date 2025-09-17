@@ -13,9 +13,18 @@ namespace ranges = std::ranges;
  */
 namespace ut {
 
+void prettyPrint(const std::string& prompt);
+
 template <ranges::range T>
 void print_container(T& cont) {
-    ranges::for_each(cont, [](auto& e) { std::cout << "**" << e << std::endl; });
+    std::cout
+        << std::format("Printing container with {} elments: ", ranges::size(cont))
+        << std::endl
+        << "{" << std::endl;
+    ranges::for_each(cont, [](auto& e) { std::cout << "    " << e << std::endl; });
+
+    std::cout
+        << "}" << std::endl;
 }
 
 }
@@ -23,7 +32,7 @@ void print_container(T& cont) {
 
 namespace vu {
 
-uint32_t GetGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev);
-vector<uint32_t> GetGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev);
+uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev);
+vector<uint32_t> getGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev);
 
 }
