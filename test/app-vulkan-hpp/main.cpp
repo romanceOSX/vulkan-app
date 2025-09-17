@@ -102,6 +102,9 @@ vk::raii::SurfaceKHR CreateWindowSurface(vk::raii::Instance& instance) {
 void CreateSwapchain(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
 }
 
+// get present and graphics queue families
+//
+
 }
 
 void printVulkanPlatformInfo(vk::raii::Context &ctx) {
@@ -228,8 +231,44 @@ void testVulkan() {
     //ut::print_container(formats);
 }
 
+void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
+    auto device = instance.enumeratePhysicalDevices().front();
+    vector<uint32_t> graphics_queue_families = vu::GetGraphicsQueueFamilyIndexes(device);
+    ut::print_container(graphics_queue_families);
+}
+
+void testVulkanUtils() {
+    std::cout << "--- Testing Vulkan Utils" << std::endl; 
+    vk::raii::Context ctx{};
+    
+    // Instance creation
+    vector<const char*> layers{
+        "VK_LAYER_KHRONOS_validation",
+    };
+
+    vector<const char*> extensions{
+        vk::KHRGetPhysicalDeviceProperties2ExtensionName,
+        vk::KHRPortabilityEnumerationExtensionName,
+        vk::KHRSurfaceExtensionName,
+        vk::EXTMetalSurfaceExtensionName,
+    };
+
+    vk::InstanceCreateInfo instance_create{
+        .flags = vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR,
+        .enabledLayerCount = static_cast<uint32_t>(layers.size()),
+        .ppEnabledLayerNames = layers.data(),
+        .enabledExtensionCount = static_cast<uint32_t>(extensions.size()),
+        .ppEnabledExtensionNames = extensions.data(),
+    };
+
+    auto instance = std::make_unique<vk::raii::Instance>(ctx, instance_create);
+
+    testVulkanUtilsQueueFamilies(*instance);
+}
+
 int main( int /*argc*/, char ** /*argv*/ )
 {
     testVulkan();
+    testVulkanUtils();
 }
 
