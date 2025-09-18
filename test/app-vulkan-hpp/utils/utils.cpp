@@ -53,6 +53,17 @@ vector<uint32_t> getGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev
 }
 
 // graphic and presentation CAN be different
+vector<uint32_t> getPresentationFamilyIndexes(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
+    auto queue_families = phy_dev.getQueueFamilyProperties();
+    auto indexes = views::iota(static_cast<size_t>(0), queue_families.size());
+
+    auto res_indexes = indexes
+        | views::filter([&](size_t index) {     // NOTE: why can't I borrow by ref here
+            return static_cast<bool>(phy_dev.getSurfaceSupportKHR(index, surface));
+        })
+        | ranges::to<std::vector<uint32_t>>();
+    return res_indexes;
+}
 
 // get transition bit for vertex buffers
 
