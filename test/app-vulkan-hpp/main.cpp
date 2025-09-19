@@ -233,9 +233,23 @@ void testVulkan() {
 
 void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
     auto device = instance.enumeratePhysicalDevices().front();
+
+    // get all graphics queues
     vector<uint32_t> graphics_queue_families = vu::getGraphicsQueueFamilyIndexes(device);
     ut::print_container(graphics_queue_families);
-    uint32_t graphics_queue_family = vu::getGraphicsQueueFamilyIndex(device);
+
+    // get a single grpahics queue
+    uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(device);
+    std::cout << std::format("Graphics index = {}\n", graphics_index);
+
+    // get all present queues
+    vk::raii::SurfaceKHR surface = vu::CreateWindowSurface(instance);
+    vector<uint32_t> present_queue_families = vu::getPresentationFamilyIndexes(device, surface);
+    ut::print_container(present_queue_families);
+
+    // get a single present queue
+    uint32_t present_index = vu::getPresentationFamilyIndex(device, surface);
+    std::cout << std::format("Presentation index = {}\n", present_index);
 }
 
 void testVulkanUtils() {
