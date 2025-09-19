@@ -2,7 +2,11 @@
 #include <algorithm>
 #include <vector>
 #include <ranges>
+
 #include <vulkan/vulkan_raii.hpp>
+
+#define GLFW_INCLUDE_VULKAN
+#include "GLFW/glfw3.h"
 
 #include "utils.hpp"
 
@@ -19,6 +23,60 @@ void prettyPrint(const std::string& prompt) {
 }
 
 namespace vu {
+
+uint32_t findGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
+    auto queue_families = phy_dev.getQueueFamilyProperties();
+
+    auto graphics_queue = ranges::find_if(queue_families, [](vk::QueueFamilyProperties& queue){
+        return static_cast<bool>(queue.queueFlags & vk::QueueFlagBits::eGraphics);
+    });
+
+    assert(graphics_queue != queue_families.end());
+
+    std::cout << "--Found graphics queue!! " << *graphics_queue << std::endl;
+
+    return static_cast<uint32_t>(std::distance(queue_families.begin(), graphics_queue));
+}
+
+// finds the best suitable physical device, and queue_family
+QueuePhyDeviceTup_t getSuitableDevice(vk::raii::Instance& instance, vk::raii::SurfaceKHR& surface) {
+    for (auto& phy_dev : instance.enumeratePhysicalDevices()) {
+        auto queues = phy_dev.getQueueFamilyProperties();
+        for (auto it = queues.begin(); it != queues.end(); ++it) {
+            uint32_t index = static_cast<uint32_t>(std::distance(queues.begin(), it));
+            if (phy_dev.getSurfaceSupportKHR(index, surface))
+                assert(it != queues.end());
+                return std::make_tuple(phy_dev, index);
+        }
+    }
+}
+
+vk::raii::SurfaceKHR createWindowSurface(vk::raii::Instance& instance) {
+    uint32_t width = 500;
+    uint32_t height = 500;
+    
+    glfwInit();
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+    VkSurfaceKHR _surface;
+    GLFWwindow* window = glfwCreateWindow(width, height, "vulkan hpp", nullptr, nullptr);
+
+    assert(window != nullptr);
+
+    if (VK_SUCCESS != glfwCreateWindowSurface(*instance, window, nullptr, &_surface)) {
+        throw std::runtime_error("Failed to create window surface ❌");
+    }
+
+    return vk::raii::SurfaceKHR(instance, _surface);
+}
+
+// create swapchain
+void CreateSwapchain(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
+}
+
+// get present and graphics queue families
+//
+
 
 // from a phy_dev and a surface find the 'presentation' queue family
 // prioritize being the graphic bit first

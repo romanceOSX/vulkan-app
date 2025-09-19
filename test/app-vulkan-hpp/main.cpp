@@ -47,66 +47,6 @@ constexpr string EngineName = "Vulkan.hpp";
 /*
  * utilities
  */
-namespace vu {
-
-uint32_t findGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
-    auto queue_families = phy_dev.getQueueFamilyProperties();
-
-    auto graphics_queue = ranges::find_if(queue_families, [](vk::QueueFamilyProperties& queue){
-        return static_cast<bool>(queue.queueFlags & vk::QueueFlagBits::eGraphics);
-    });
-
-    assert(graphics_queue != queue_families.end());
-
-    std::cout << "--Found graphics queue!! " << *graphics_queue << std::endl;
-
-    return static_cast<uint32_t>(std::distance(queue_families.begin(), graphics_queue));
-}
-
-// tuple that represents a physical device and a queue index
-using QueuePhyDeviceTup_t = std::tuple<vk::raii::PhysicalDevice, uint32_t>;
-
-// finds the best suitable physical device, and queue_family
-QueuePhyDeviceTup_t GetSuitableDevice(vk::raii::Instance& instance, vk::raii::SurfaceKHR& surface) {
-    for (auto& phy_dev : instance.enumeratePhysicalDevices()) {
-        auto queues = phy_dev.getQueueFamilyProperties();
-        for (auto it = queues.begin(); it != queues.end(); ++it) {
-            uint32_t index = static_cast<uint32_t>(std::distance(queues.begin(), it));
-            if (phy_dev.getSurfaceSupportKHR(index, surface))
-                assert(it != queues.end());
-                return std::make_tuple(phy_dev, index);
-        }
-    }
-}
-
-vk::raii::SurfaceKHR CreateWindowSurface(vk::raii::Instance& instance) {
-    uint32_t width = 500;
-    uint32_t height = 500;
-    
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-    VkSurfaceKHR _surface;
-    GLFWwindow* window = glfwCreateWindow(width, height, "vulkan hpp", nullptr, nullptr);
-
-    assert(window != nullptr);
-
-    if (VK_SUCCESS != glfwCreateWindowSurface(*instance, window, nullptr, &_surface)) {
-        throw std::runtime_error("Failed to create window surface ❌");
-    }
-
-    return vk::raii::SurfaceKHR(instance, _surface);
-}
-
-// create swapchain
-void CreateSwapchain(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
-}
-
-// get present and graphics queue families
-//
-
-}
-
 void printVulkanPlatformInfo(vk::raii::Context &ctx) {
     std::cout << std::format("Vulkan v{}", ctx.enumerateInstanceVersion()) << std::endl;
     std::cout << "Available instance layers:" << std::endl;
@@ -164,7 +104,7 @@ void testVulkan() {
     printInstanceInfo(instance);
 
     // Window Creation
-    vk::raii::SurfaceKHR surface = vu::CreateWindowSurface(*instance);
+    vk::raii::SurfaceKHR surface = vu::createWindowSurface(*instance);
 
     // Device Creation
     // NOTE: what is the point of raii'ing a physical device if its creation depends on instance?
@@ -174,7 +114,7 @@ void testVulkan() {
     //auto queue_index = vu::findGraphicsQueueFamilyIndex(phy_dev);
     
     // find device by window-compatibility
-    auto[phy_dev, queue_index] = vu::GetSuitableDevice(*instance, surface);
+    auto[phy_dev, queue_index] = vu::getSuitableDevice(*instance, surface);
 
     std::cout << std::format("--Queue index: {}", queue_index) << std::endl;
 
@@ -243,7 +183,7 @@ void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
     std::cout << std::format("Graphics index = {}\n", graphics_index);
 
     // get all present queues
-    vk::raii::SurfaceKHR surface = vu::CreateWindowSurface(instance);
+    vk::raii::SurfaceKHR surface = vu::createWindowSurface(instance);
     vector<uint32_t> present_queue_families = vu::getPresentationFamilyIndexes(device, surface);
     ut::print_container(present_queue_families);
 

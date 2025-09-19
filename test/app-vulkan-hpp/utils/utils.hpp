@@ -29,9 +29,13 @@ void print_container(T& cont) {
 
 }
 
+// tuple that represents a physical device and a queue index
+using QueuePhyDeviceTup_t = std::tuple<vk::raii::PhysicalDevice, uint32_t>;
 
 namespace vu {
 
+vk::raii::SurfaceKHR createWindowSurface(vk::raii::Instance& instance);
+QueuePhyDeviceTup_t getSuitableDevice(vk::raii::Instance& instance, vk::raii::SurfaceKHR& surface);
 uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev);
 vector<uint32_t> getGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev);
 vector<uint32_t> getPresentationFamilyIndexes(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface);
