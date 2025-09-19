@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <ranges>
+#include <vulkan/vulkan_raii.hpp>
 
 #include "utils.hpp"
 
@@ -30,6 +31,7 @@ uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
     for (auto it = properties.begin(); it != properties.end(); ++it) {
         if (it->queueFlags & vk::QueueFlagBits::eGraphics) {
             res = static_cast<uint32_t>(std::distance(properties.begin(), it));
+            break;
         }
     }
 
@@ -63,6 +65,18 @@ vector<uint32_t> getPresentationFamilyIndexes(vk::raii::PhysicalDevice& phy_dev,
         })
         | ranges::to<std::vector<uint32_t>>();
     return res_indexes;
+}
+
+// gets a single present queue
+uint32_t getPresentationFamilyIndex(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
+    auto queues = phy_dev.getQueueFamilyProperties();
+    auto indexes = views::iota(static_cast<uint32_t>(0), queues.size());
+
+    auto index = ranges::find_if(indexes, [&](auto index) {
+        return static_cast<bool>(phy_dev.getSurfaceSupportKHR(index, surface));
+    });
+
+    return *index;
 }
 
 // get transition bit for vertex buffers

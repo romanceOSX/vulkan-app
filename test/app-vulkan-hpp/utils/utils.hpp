@@ -34,5 +34,7 @@ namespace vu {
 
 uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev);
 vector<uint32_t> getGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev);
+vector<uint32_t> getPresentationFamilyIndexes(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface);
+uint32_t getPresentationFamilyIndex(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface);
 
 }
