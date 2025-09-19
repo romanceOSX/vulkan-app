@@ -16,7 +16,7 @@ namespace ut {
 void prettyPrint(const std::string& prompt);
 
 template <ranges::range T>
-void print_container(T& cont) {
+void printContainer(T& cont) {
     std::cout
         << std::format("Printing container with {} elments: ", ranges::size(cont))
         << std::endl

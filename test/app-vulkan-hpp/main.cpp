@@ -1,6 +1,6 @@
-/*
- * Vulkan-hpp sample test
- */
+//
+// Vulkan-hpp sample test
+//
 
 #include <algorithm>
 #include <cassert>
@@ -32,9 +32,9 @@
 #include "utils/utils.hpp"
 #include "utils/ostream_formatters.hpp"
 
-/* 
- * namespace imports
- */
+// 
+// namespace imports
+// 
 namespace views = std::views;
 namespace ranges = std::ranges;
 
@@ -44,9 +44,9 @@ using std::string;
 constexpr string AppName    = "01_InitInstanceRAII";
 constexpr string EngineName = "Vulkan.hpp";
 
-/*
- * utilities
- */
+//
+// utilities
+//
 void printVulkanPlatformInfo(vk::raii::Context &ctx) {
     std::cout << std::format("Vulkan v{}", ctx.enumerateInstanceVersion()) << std::endl;
     std::cout << "Available instance layers:" << std::endl;
@@ -58,7 +58,7 @@ void printVulkanPlatformInfo(vk::raii::Context &ctx) {
 void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance) {
     auto vec = instance->enumeratePhysicalDevices();
 
-    /* print devices */
+    // print devices
     ranges::for_each(vec, [](vk::raii::PhysicalDevice& dev) {
         std::cout << "- Device " << std::endl
             << std::format("Queue Families ({}):", dev.getQueueFamilyProperties().size()) << std::endl;
@@ -72,6 +72,7 @@ void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance) {
     //utils_print_container(vec);
 }
 
+// main vulkan test entrypoint
 void testVulkan() {
     std::cout << "---Vulkan sample App :3---" << std::endl;
 
@@ -176,7 +177,7 @@ void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
 
     // get all graphics queues
     vector<uint32_t> graphics_queue_families = vu::getGraphicsQueueFamilyIndexes(device);
-    ut::print_container(graphics_queue_families);
+    ut::printContainer(graphics_queue_families);
 
     // get a single grpahics queue
     uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(device);
@@ -185,7 +186,7 @@ void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
     // get all present queues
     vk::raii::SurfaceKHR surface = vu::createWindowSurface(instance);
     vector<uint32_t> present_queue_families = vu::getPresentationFamilyIndexes(device, surface);
-    ut::print_container(present_queue_families);
+    ut::printContainer(present_queue_families);
 
     // get a single present queue
     uint32_t present_index = vu::getPresentationFamilyIndex(device, surface);

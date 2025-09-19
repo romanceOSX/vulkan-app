@@ -24,6 +24,7 @@ void prettyPrint(const std::string& prompt) {
 
 namespace vu {
 
+// finds the graphics queue family
 uint32_t findGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
     auto queue_families = phy_dev.getQueueFamilyProperties();
 
@@ -51,6 +52,7 @@ QueuePhyDeviceTup_t getSuitableDevice(vk::raii::Instance& instance, vk::raii::Su
     }
 }
 
+// TODO: make this clearer
 vk::raii::SurfaceKHR createWindowSurface(vk::raii::Instance& instance) {
     uint32_t width = 500;
     uint32_t height = 500;
@@ -73,13 +75,6 @@ vk::raii::SurfaceKHR createWindowSurface(vk::raii::Instance& instance) {
 // create swapchain
 void CreateSwapchain(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface) {
 }
-
-// get present and graphics queue families
-//
-
-
-// from a phy_dev and a surface find the 'presentation' queue family
-// prioritize being the graphic bit first
 
 // get graphic bit from a device
 uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
