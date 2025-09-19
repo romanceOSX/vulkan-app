@@ -132,7 +132,17 @@ uint32_t getPresentationFamilyIndex(vk::raii::PhysicalDevice& phy_dev, vk::raii:
     return *index;
 }
 
-// get transition bit for vertex buffers
+// gets the first queue with the requested family index flags
+uint32_t getQueueFamilyIndex(vk::raii::PhysicalDevice& dev, vk::QueueFlagBits flags) {
+    auto queues = dev.getQueueFamilyProperties();
+    auto indexes = views::iota(static_cast<uint32_t>(0), queues.size());
+
+    auto index_it = ranges::find_if(indexes, [&](auto index) {
+        return static_cast<bool>(queues.at(index).queueFlags & flags);
+    });
+
+    return *index_it;
+}
 
 }
 

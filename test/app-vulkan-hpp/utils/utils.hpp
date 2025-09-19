@@ -8,9 +8,9 @@
 
 namespace ranges = std::ranges;
 
-/*
- * program utils
- */
+//
+// program utils
+// 
 namespace ut {
 
 void prettyPrint(const std::string& prompt);
@@ -32,6 +32,9 @@ void printContainer(T& cont) {
 // tuple that represents a physical device and a queue index
 using QueuePhyDeviceTup_t = std::tuple<vk::raii::PhysicalDevice, uint32_t>;
 
+//
+// vulkan utitites
+//
 namespace vu {
 
 vk::raii::SurfaceKHR createWindowSurface(vk::raii::Instance& instance);
@@ -40,5 +43,6 @@ uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev);
 vector<uint32_t> getGraphicsQueueFamilyIndexes(vk::raii::PhysicalDevice& phy_dev);
 vector<uint32_t> getPresentationFamilyIndexes(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface);
 uint32_t getPresentationFamilyIndex(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface);
+uint32_t getQueueFamilyIndex(vk::raii::PhysicalDevice& dev, vk::QueueFlagBits flags);
 
 }
