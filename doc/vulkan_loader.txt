@@ -26,3 +26,7 @@ Call Chain
         dispatch table with function pointers pointing to the first
                         element of the call chain
                             
+
+MoltenVK adaptor and the loader
+    In MacOS MoltenVK acts as  an ICD, it sits between the loader and metal
+
