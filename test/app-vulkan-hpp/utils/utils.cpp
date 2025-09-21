@@ -144,5 +144,14 @@ uint32_t getQueueFamilyIndex(vk::raii::PhysicalDevice& dev, vk::QueueFlagBits fl
     return *index_it;
 }
 
+// gets the provided surface's properties
+SurfaceProperties getSurfaceProperties(vk::raii::PhysicalDevice& dev, vk::raii::SurfaceKHR& surface) {
+    return SurfaceProperties {
+        .capabilities = dev.getSurfaceCapabilitiesKHR(surface),
+        .formats = dev.getSurfaceFormatsKHR(surface),
+        .present_modes = dev.getSurfacePresentModesKHR(surface),
+    };
+}
+
 }
 
