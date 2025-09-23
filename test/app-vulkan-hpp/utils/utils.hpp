@@ -30,7 +30,7 @@ void printContainer(T& cont) {
 
 }
 
-// Tuple that represents a physical device and a queue index
+// Tuple that represents a physical device and a queue indexchooseSwapSurfaceFormat
 using QueuePhyDeviceTup_t = std::tuple<vk::raii::PhysicalDevice, uint32_t>;
 
 // Surface query properties class wrapper that contains:
@@ -61,3 +61,4 @@ SurfaceProperties getSurfaceProperties(vk::raii::PhysicalDevice& dev, vk::raii::
 vk::Format chooseSurfaceFormat(vector<vk::SurfaceFormatKHR>& formats);      // TODO: implement this function
 
 }
+
