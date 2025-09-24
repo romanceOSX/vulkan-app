@@ -45,8 +45,9 @@ constexpr string AppName    = "01_InitInstanceRAII";
 constexpr string EngineName = "Vulkan.hpp";
 
 //
-// utilities
+// utils?
 //
+// TODO: move this to the utils namespace or ostream formatters?
 void printVulkanPlatformInfo(vk::raii::Context &ctx) {
     std::cout << std::format("Vulkan v{}", ctx.enumerateInstanceVersion()) << std::endl;
     std::cout << "Available instance layers:" << std::endl;
@@ -72,7 +73,10 @@ void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance) {
     //utils_print_container(vec);
 }
 
-// main vulkan test entrypoint
+// 
+// Test Vulkan app
+// 
+// TODO: either delete this or make it useful
 void testVulkan() {
     std::cout << "---Vulkan sample App :3---" << std::endl;
 
@@ -181,7 +185,6 @@ void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
 
     // get a single grpahics queue
     uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(device);
-    std::cout << std::format("Graphics index = {}\n", graphics_index);
 
     // get all present queues
     vk::raii::SurfaceKHR surface = vu::createWindowSurface(instance);
@@ -190,14 +193,25 @@ void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
 
     // get a single present queue
     uint32_t present_index = vu::getPresentationFamilyIndex(device, surface);
+
+    // get transfer queue
+    uint32_t transfer_queue = vu::getQueueFamilyIndex(device, vk::QueueFlagBits::eTransfer);
+
+    std::cout << std::format("Graphics index = {}\n", graphics_index);
     std::cout << std::format("Presentation index = {}\n", present_index);
+    std::cout << std::format("Transfer index = {}\n", present_index);
 }
 
+//
+// Testing Vulkan Utils library
+//
 void testVulkanUtils() {
     ut::prettyPrint("Testing Vulkan Utils 👀");
     vk::raii::Context ctx{};
     
+    //
     // Instance creation
+    //
     vector<const char*> layers{
         "VK_LAYER_KHRONOS_validation",
     };
@@ -218,10 +232,113 @@ void testVulkanUtils() {
     };
 
     auto instance = std::make_unique<vk::raii::Instance>(ctx, instance_create);
+    auto phy_dev = instance->enumeratePhysicalDevices().front();
 
+    //
+    // test
+    //
     testVulkanUtilsQueueFamilies(*instance);
+
+    //
+    // Surface creation
+    //
+    vk::raii::SurfaceKHR surface = vu::createWindowSurface(*instance);
+
+    vk::SurfaceCapabilitiesKHR surface_capabilities = phy_dev.getSurfaceCapabilitiesKHR(surface);
+
+    // 
+    // Device creation
+    // 
+    vector<const char*> dev_extensions {
+        vk::KHRSwapchainExtensionName,
+        vk::KHRPortabilitySubsetExtensionName,
+    };
+
+    uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(phy_dev);
+
+    //
+    // Queue Creation
+    //
+    float queue_priority = 1.0f;
+
+    vk::DeviceQueueCreateInfo queue_create {
+        .queueFamilyIndex = graphics_index,
+        .queueCount = 1,
+        .pQueuePriorities = &queue_priority,
+    };
+
+    vk::DeviceCreateInfo dev_create {
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &queue_create,
+        .enabledExtensionCount = static_cast<uint32_t>(dev_extensions.size()),
+        .ppEnabledExtensionNames = dev_extensions.data(),
+    };
+
+    auto device = phy_dev.createDevice(dev_create);
+
+    //
+    // Swapchain Creation 
+    //
+    SurfaceProperties surface_properties = vu::getSurfaceProperties(phy_dev, surface);
+
+    // NOTE: learn what each of these components represent
+    vk::SwapchainCreateInfoKHR swapchain_create {
+        .flags = vk::SwapchainCreateFlagsKHR(),
+        .surface = surface,
+        .minImageCount = surface_properties.capabilities.minImageCount,
+        .imageFormat = surface_properties.formats.front().format,
+        .imageColorSpace = vk::ColorSpaceKHR::eSrgbNonlinear,
+        .imageExtent = surface_properties.capabilities.currentExtent,
+        .imageArrayLayers = 1, 
+        .imageUsage = vk::ImageUsageFlagBits::eColorAttachment,
+        .imageSharingMode = vk::SharingMode::eExclusive,
+        .preTransform = surface_properties.capabilities.currentTransform,
+        .presentMode = vk::PresentModeKHR::eFifo,
+        .oldSwapchain = nullptr,
+    };
+
+    vk::raii::SwapchainKHR swapchain = device.createSwapchainKHR(swapchain_create);
+    std::cout << "Swapchain created succesfully!" << std::endl;
+
+    //
+    // Command Pool
+    //
+    vk::CommandPoolCreateInfo command_pool_create {
+        //.flags = vk::CommandPoolCreateFlagBits::eTransient,        TODO: what usage should I set here?
+        .queueFamilyIndex = graphics_index,
+    };
+
+    vk::raii::CommandPool command_pool = device.createCommandPool(command_pool_create);
+
+    //
+    // Command Buffer
+    //
+    vk::CommandBufferAllocateInfo command_buffer_alloc {
+        .commandPool = command_pool,
+        .level = vk::CommandBufferLevel::ePrimary,
+        .commandBufferCount = 1,
+    };
+
+    vector<vk::raii::CommandBuffer> command_buffers = device.allocateCommandBuffers(command_buffer_alloc);
+    std::cout << "Created command buffers!" << std::endl;
+
+    //
+    // Image Views
+    //
+    // Create one image view per each of the Swapchain's VkImage's
+    vector<vk::raii::ImageView> image_views;
+    
+    vk::ImageViewCreateInfo image_view_create {
+        .viewType = vk::ImageViewType::e2D,
+        .format = vu::chooseSurfaceFormat(surface_properties.formats),
+    };
+
+    vk::raii::ImageView image_view = device.createImageView(image_view_create);
 }
 
+//
+// plain main
+//
 int main( int /*argc*/, char ** /*argv*/ )
 {
     testVulkanUtils();
