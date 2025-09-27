@@ -334,6 +334,7 @@ void testVulkanUtils() {
     };
 
     vk::raii::ImageView image_view = device.createImageView(image_view_create);
+    image_views.push_back(std::move(image_view));
 }
 
 //
