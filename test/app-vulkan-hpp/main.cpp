@@ -326,6 +326,7 @@ void testVulkanUtils() {
     // Image Views
     //
     // Create one image view per each of the Swapchain's VkImage's
+    vector<vk::Image> images = swapchain.getImages();
     vector<vk::raii::ImageView> image_views;
     
     vk::ImageViewCreateInfo image_view_create {
