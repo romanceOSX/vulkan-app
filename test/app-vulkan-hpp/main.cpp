@@ -328,14 +328,20 @@ void testVulkanUtils() {
     // Create one image view per each of the Swapchain's VkImage's
     vector<vk::Image> images = swapchain.getImages();
     vector<vk::raii::ImageView> image_views;
-    
-    vk::ImageViewCreateInfo image_view_create {
-        .viewType = vk::ImageViewType::e2D,
-        .format = vu::chooseSurfaceFormat(surface_properties.formats),
-    };
 
-    vk::raii::ImageView image_view = device.createImageView(image_view_create);
-    image_views.push_back(std::move(image_view));
+    for (auto& image: images) {
+       // create image view
+        vk::ImageViewCreateInfo image_view_create {
+            .image = image,
+            .viewType = vk::ImageViewType::e2D,
+            .format = vu::chooseSurfaceFormat(surface_properties.formats),
+        };
+
+        vk::raii::ImageView image_view = device.createImageView(image_view_create);
+        image_views.push_back(std::move(image_view));
+    }
+
+    //ut::printContainer(image_views);
 }
 
 //
