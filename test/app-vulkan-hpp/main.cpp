@@ -341,6 +341,7 @@ void testVulkanUtils() {
         image_views.push_back(std::move(image_view));
     }
 
+    // TODO: make a stream printer for image views
     //ut::printContainer(image_views);
 }
 
