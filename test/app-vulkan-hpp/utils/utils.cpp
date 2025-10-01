@@ -19,6 +19,10 @@ namespace ut {
 void prettyPrint(const std::string& prompt) {
     std::cout << std::format("-- {}", prompt) << std::endl;
 }
+
+void printCheck(std::ostream &ostream) {
+    ostream << std::format("✅🆗 So far so good");
+}
     
 }
 

@@ -28,6 +28,9 @@ void printContainer(T& cont) {
         << "}" << std::endl;
 }
 
+// ptints OK check to stream
+void printCheck(std::ostream& ostream);
+
 }
 
 // Tuple that represents a physical device and a queue indexchooseSwapSurfaceFormat
