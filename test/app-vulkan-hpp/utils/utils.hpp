@@ -61,7 +61,7 @@ vector<uint32_t> getPresentationFamilyIndexes(vk::raii::PhysicalDevice& phy_dev,
 uint32_t getPresentationFamilyIndex(vk::raii::PhysicalDevice& phy_dev, vk::raii::SurfaceKHR& surface);
 uint32_t getQueueFamilyIndex(vk::raii::PhysicalDevice& dev, vk::QueueFlagBits flags);
 SurfaceProperties getSurfaceProperties(vk::raii::PhysicalDevice& dev, vk::raii::SurfaceKHR& surface);
-vk::Format chooseSurfaceFormat(vector<vk::SurfaceFormatKHR>& formats);      // TODO: implement this function
+vk::SurfaceFormatKHR chooseSurfaceFormat(const vector<vk::SurfaceFormatKHR>& formats);      // TODO: implement this function
 
 }
 

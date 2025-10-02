@@ -332,7 +332,7 @@ void testVulkanUtils() {
     // create image views
     vk::ImageViewCreateInfo image_view_create {
         .viewType = vk::ImageViewType::e2D,
-        .format = vu::chooseSurfaceFormat(surface_properties.formats),
+        .format = vu::chooseSurfaceFormat(surface_properties.formats).format,
     };
 
     for (auto& image: images) {

@@ -3,6 +3,7 @@
 #include <vector>
 #include <ranges>
 
+#include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_raii.hpp>
 
 #define GLFW_INCLUDE_VULKAN
@@ -21,7 +22,7 @@ void prettyPrint(const std::string& prompt) {
 }
 
 void printCheck(std::ostream &ostream) {
-    ostream << std::format("✅🆗 So far so good");
+    ostream << std::format("✅🆗 So far so good") << std::endl;
 }
     
 }
@@ -155,6 +156,21 @@ SurfaceProperties getSurfaceProperties(vk::raii::PhysicalDevice& dev, vk::raii::
         .formats = dev.getSurfaceFormatsKHR(surface),
         .present_modes = dev.getSurfacePresentModesKHR(surface),
     };
+}
+
+// Given a list of image formats, choose the most appropiate surface format
+// default implementation looks for the format eB8G8R8A8Srgb, and colorspace eSrgbNonlinear
+vk::SurfaceFormatKHR chooseSurfaceFormat(const vector<vk::SurfaceFormatKHR>& formats) {
+    // TODO: check for empty 'formats' list  
+    auto format_it = ranges::find_if(
+        formats,
+        [](const vk::SurfaceFormatKHR format) {
+            return format.format  == vk::Format::eB8G8R8A8Srgb && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear;
+        }
+    );
+
+    // return the first format if not found the appropiate one
+    return format_it != formats.end() ? *format_it : formats.at(0);
 }
 
 }
