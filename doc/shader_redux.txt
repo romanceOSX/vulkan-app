@@ -1,0 +1,19 @@
+https://docs.vulkan.org/spec/latest/chapters/shaders.html
+
+2025-10-01
+    Graphics pipelines include vertex shader execution as part of the 'primitive assembly'
+
+    Shaders can read from input variables
+    They can also output variables
+
+    These variables can be used for communicating between shader stages
+    Or to interact with variables that exists within the execution environment
+
+    Shaders interact with an 'execution environment' (our application)
+
+    We use built-in decorators to associate the execution environment provided inputs
+    with the shader
+
+    Describing these 'decorators' is the workload of vulkan's shader api
+
+
