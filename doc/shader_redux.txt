@@ -16,4 +16,58 @@ https://docs.vulkan.org/spec/latest/chapters/shaders.html
 
     Describing these 'decorators' is the workload of vulkan's shader api
 
+shader modules
+    These modules contain the following
+        - shader code (in SPIR-V format)
+        - entry points
+
+    The entry points are used within pipelines
+
+The Pipeline
+    --> https://docs.vulkan.org/spec/latest/chapters/pipelines.html#pipelines
+    commands specify the following:
+        - objects to be drawn
+        - specify state
+        - data transfers
+    
+    These commands are sent through a pipeline, either a graphics or a compute one
+    
+
+Graphic Pipeline
+    Can be operated in two modes
+        - primitive shading
+        - mesh shading
+
+    The creation info contains the following:
+        - an array of the desired shader stages
+        - creation information for the fixed-function stages
+        - pipeline layout
+
+Vertex Fetching
+    --> https://docs.vulkan.org/spec/latest/chapters/fxvertex.html#VkPipelineVertexInputStateCreateInfo
+    Workflow (how shaders get their input data):
+        shader
+        input attributes (numbered)
+        vertex input bindings (per pipeline)
+        buffers (per draw)
+
+    Bindings:
+    - Vertex Input Binding
+        Describes the length and the byte stride of consecutive elements
+    - Vertex Attribute Binding
+        Describes which number of the attribute the it is associated with
+
+    This settings are set during pipeline creation at the pVertexInputState
+
+    How does this work?
+        An application defines the different types of bindings there is, these get
+        identified via a number
+        Then the attribute consumes this binding so it can get associated with
+        the shader's input parameter
+
+DOUBTS
+    - What is state?
+    - How does the state relates to shaders and fixed-function stages
+    - Is the state the same as the stage?
+
 
