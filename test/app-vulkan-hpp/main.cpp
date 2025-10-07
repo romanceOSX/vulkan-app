@@ -113,6 +113,7 @@ void testVulkan() {
 
     // Device Creation
     // NOTE: what is the point of raii'ing a physical device if its creation depends on instance?
+
     //vk::raii::PhysicalDevice phy_dev = instance->enumeratePhysicalDevices().front();
 
     // find device by graphics
@@ -216,6 +217,7 @@ void testVulkanUtils() {
         "VK_LAYER_KHRONOS_validation",
     };
 
+    // instance extensions
     vector<const char*> extensions{
         vk::KHRGetPhysicalDeviceProperties2ExtensionName,
         vk::KHRPortabilityEnumerationExtensionName,
@@ -249,6 +251,7 @@ void testVulkanUtils() {
     // 
     // Device creation
     // 
+    // device extensions
     vector<const char*> dev_extensions {
         vk::KHRSwapchainExtensionName,
         vk::KHRPortabilitySubsetExtensionName,
@@ -333,6 +336,7 @@ void testVulkanUtils() {
     vk::ImageViewCreateInfo image_view_create {
         .viewType = vk::ImageViewType::e2D,
         .format = vu::chooseSurfaceFormat(surface_properties.formats).format,
+        .subresourceRange = { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1},
     };
 
     for (auto& image: images) {
@@ -343,6 +347,18 @@ void testVulkanUtils() {
 
     // TODO: make a stream printer for image views
     //ut::printContainer(image_views);
+
+    //
+    // shaders
+    //
+    vector<unsigned int> shader_spirv_f;
+    string shader_vert_f = ut::readFile("shaders/glsl/triangle/triangle.vert");
+    std::cout << "Printing shader vert file..." << std::endl;
+    std::cout << shader_vert_f << std::endl;
+
+    // TODO: first test with an in-code defined shader, then use a separate file
+
+    vu::glslToSpirV(vk::ShaderStageFlagBits::eVertex, shader_vert_f, shader_spirv_f);
  
     ut::printCheck(std::cout);
 }

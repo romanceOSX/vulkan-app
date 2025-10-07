@@ -30,6 +30,7 @@ void printContainer(T& cont) {
 
 // ptints OK check to stream
 void printCheck(std::ostream& ostream);
+std::string readFile(const std::string& path);
 
 }
 
@@ -62,6 +63,7 @@ uint32_t getPresentationFamilyIndex(vk::raii::PhysicalDevice& phy_dev, vk::raii:
 uint32_t getQueueFamilyIndex(vk::raii::PhysicalDevice& dev, vk::QueueFlagBits flags);
 SurfaceProperties getSurfaceProperties(vk::raii::PhysicalDevice& dev, vk::raii::SurfaceKHR& surface);
 vk::SurfaceFormatKHR chooseSurfaceFormat(const vector<vk::SurfaceFormatKHR>& formats);      // TODO: implement this function
+void glslToSpirV(vk::ShaderStageFlagBits const & shader_type, std::string const & shader_glsl, vector<unsigned int>& shader_spirv);
 
 }
 
