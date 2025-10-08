@@ -349,25 +349,13 @@ void testVulkanUtils() {
     //ut::printContainer(image_views);
 
     //
-    // shaders
+    // Shaders
     //
-    vector<unsigned int> spirv_vert;
-    vector<unsigned int> spirv_frag;
     string shader_vert_f = ut::readFile("shaders/glsl/triangle/triangle.vert");
     string shader_frag_f = ut::readFile("shaders/glsl/triangle/triangle.frag");
 
-    vu::glslToSpirV(vk::ShaderStageFlagBits::eVertex, shader_vert_f, spirv_vert);
-    vu::glslToSpirV(vk::ShaderStageFlagBits::eFragment, shader_frag_f, spirv_frag);
-
-
-    // test print spir-v bytes
-    auto dbg_printer = [](auto& byte) { std::cout << std::hex << byte; };
-    ut::prettyPrint("Triangle vertex SPIR-V:");
-    ranges::for_each(spirv_vert, dbg_printer);
-    std::cout << std::endl;
-    ut::prettyPrint("Triangle fragment SPIR-V:");
-    ranges::for_each(spirv_frag, dbg_printer);
-    std::cout << std::endl;
+    vk::raii::ShaderModule vertex_shader_module = vu::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, shader_vert_f);
+    vk::raii::ShaderModule fragment_shader_module = vu::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, shader_frag_f);
 
     ut::printCheck(std::cout);
 }
