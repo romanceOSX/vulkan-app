@@ -351,15 +351,24 @@ void testVulkanUtils() {
     //
     // shaders
     //
-    vector<unsigned int> shader_spirv_f;
+    vector<unsigned int> spirv_vert;
+    vector<unsigned int> spirv_frag;
     string shader_vert_f = ut::readFile("shaders/glsl/triangle/triangle.vert");
-    std::cout << "Printing shader vert file..." << std::endl;
-    std::cout << shader_vert_f << std::endl;
+    string shader_frag_f = ut::readFile("shaders/glsl/triangle/triangle.frag");
 
-    // TODO: first test with an in-code defined shader, then use a separate file
+    vu::glslToSpirV(vk::ShaderStageFlagBits::eVertex, shader_vert_f, spirv_vert);
+    vu::glslToSpirV(vk::ShaderStageFlagBits::eFragment, shader_frag_f, spirv_frag);
 
-    vu::glslToSpirV(vk::ShaderStageFlagBits::eVertex, shader_vert_f, shader_spirv_f);
- 
+
+    // test print spir-v bytes
+    auto dbg_printer = [](auto& byte) { std::cout << std::hex << byte; };
+    ut::prettyPrint("Triangle vertex SPIR-V:");
+    ranges::for_each(spirv_vert, dbg_printer);
+    std::cout << std::endl;
+    ut::prettyPrint("Triangle fragment SPIR-V:");
+    ranges::for_each(spirv_frag, dbg_printer);
+    std::cout << std::endl;
+
     ut::printCheck(std::cout);
 }
 
