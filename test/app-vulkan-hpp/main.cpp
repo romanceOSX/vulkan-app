@@ -27,6 +27,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include "GLFW/glfw3.h"
 
+#include <glm/glm.hpp>
+
 #include "utils/utils.hpp"
 #include "utils/ostream_formatters.hpp"
 
@@ -41,6 +43,24 @@ using std::string;
 
 constexpr string AppName    = "01_InitInstanceRAII";
 constexpr string EngineName = "Vulkan.hpp";
+
+//
+// Vertex type definition
+//
+struct Vertex {
+    glm::vec2 position;
+    glm::vec3 color;
+};
+
+//
+// Vertex data
+//
+const vector<Vertex> vertex_data = {
+    {{-0.5f, -0.5f},    {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f},     {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f},      {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f},     {1.0f, 1.0f, 1.0f}}
+};
 
 //
 // utils?
@@ -354,6 +374,53 @@ void testVulkanUtils() {
 
     vk::raii::ShaderModule vertex_shader_module = vu::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, shader_vert_f);
     vk::raii::ShaderModule fragment_shader_module = vu::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, shader_frag_f);
+
+    //
+    // bindings
+    //
+
+    // NOTE: the binding describes what to expect from a single Element from the data
+    //       the attribute is more specific, it describes the components (attributes) of each of the elements
+    //       Note that the relationship between bindings and attributes is one to many
+    vk::VertexInputBindingDescription vertex_binding {
+        .binding = 0,
+        .stride = sizeof(Vertex),  // TODO: create an actual type for this
+        .inputRate = vk::VertexInputRate::eVertex,
+    };
+
+    // NOTE: there are two attribute descriptions, one for the vertex position (2D vector) and the
+    // other one for the color (3D vector)
+
+    vector<vk::VertexInputAttributeDescription> vertex_attributes; 
+
+    // space attribute
+    vertex_attributes.push_back(
+        vk::VertexInputAttributeDescription {
+            .location = 0,
+            .binding = 0,
+            .format = vk::Format::eR32G32Sfloat,
+            .offset = offsetof(Vertex, position),
+    });
+    // color attribute
+    vertex_attributes.push_back(
+        vk::VertexInputAttributeDescription {
+            .location = 0,
+            .binding = 0,
+            .format = vk::Format::eR32G32B32Sfloat,
+            .offset = offsetof(Vertex, color),
+    });
+
+    //
+    // Pipeline states
+    //
+
+    // Vertex Input state
+    vk::PipelineVertexInputStateCreateInfo pipeline_vertex_input_sate_create {
+        .vertexBindingDescriptionCount = 1,
+        .pVertexBindingDescriptions = &vertex_binding,
+        .vertexAttributeDescriptionCount = static_cast<uint32_t>(vertex_attributes.size()),
+        .pVertexAttributeDescriptions = vertex_attributes.data(),
+    };
 
     ut::printCheck(std::cout);
 }
