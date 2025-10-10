@@ -414,6 +414,40 @@ void testVulkanUtils() {
     // Pipeline states
     //
 
+    // Dynamic states
+    vector<vk::DynamicState> dynamic_states = {
+        vk::DynamicState::eViewport,
+        vk::DynamicState::eScissor,
+    };
+
+    vk::PipelineDynamicStateCreateInfo state_dynamic = {
+        .dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()),
+        .pDynamicStates = dynamic_states.data(),
+    };
+
+    // Input Assembly state
+    vk::PipelineInputAssemblyStateCreateInfo state_input_assembly {
+        .topology = vk::PrimitiveTopology::eTriangleList,
+    };
+
+    // Viewport and Scissor
+    vk::Viewport viewport {
+        .x = 0.0f,
+        .y = 0.0f,
+        .width = static_cast<float>(surface_properties.capabilities.currentExtent.width),
+        .height = static_cast<float>(surface_properties.capabilities.currentExtent.height),
+        .minDepth = 0.0f,
+        .maxDepth = 1.0f,
+    };
+    vk::Rect2D rect2d {
+        .offset = {0, 0},
+        .extent = surface_properties.capabilities.currentExtent,
+    };
+
+    vk::PipelineViewportStateCreateInfo state_viewport_scissor {
+        // dynamically set later
+    };
+
     // Vertex Input state
     vk::PipelineVertexInputStateCreateInfo pipeline_vertex_input_sate_create {
         .vertexBindingDescriptionCount = 1,
@@ -421,6 +455,57 @@ void testVulkanUtils() {
         .vertexAttributeDescriptionCount = static_cast<uint32_t>(vertex_attributes.size()),
         .pVertexAttributeDescriptions = vertex_attributes.data(),
     };
+
+
+    // Rasterizer state
+    vk::PipelineRasterizationStateCreateInfo state_rasterizer {
+        .depthClampEnable = vk::False,
+        .rasterizerDiscardEnable = vk::False,
+        .polygonMode = vk::PolygonMode::eFill,
+        .cullMode = vk::CullModeFlagBits::eBack,
+        .frontFace = vk::FrontFace::eClockwise,
+        .depthBiasEnable = vk::False,
+        .depthBiasSlopeFactor = 1.0f,
+        .lineWidth = 1.0f,
+    };
+
+    // Multisampling
+    vk::PipelineMultisampleStateCreateInfo state_multisampling {
+        .rasterizationSamples = vk::SampleCountFlagBits::e1,
+        .sampleShadingEnable = vk::False,
+    };
+
+    // Depth and Stencil testing state
+
+    // Color Blending
+    // NOTE: This tells vulkan how to combine the color that is already in the framebuffer
+    //       We can either blend it or perform some bitwise operation
+    vk::PipelineColorBlendAttachmentState color_blend_attachment {
+        .blendEnable = vk::False,
+        .colorWriteMask = 
+              vk::ColorComponentFlagBits::eR 
+            | vk::ColorComponentFlagBits::eG
+            | vk::ColorComponentFlagBits::eB
+            | vk::ColorComponentFlagBits::eA,
+        // blend the new color based on its opacity
+        // TODO: check the spec and find other ways to blend
+    };
+
+    vk::PipelineColorBlendStateCreateInfo state_color_blend {
+        .logicOpEnable = vk::False,
+        .logicOp = vk::LogicOp::eCopy,
+        .attachmentCount = 1,
+        .pAttachments = &color_blend_attachment,
+    };
+
+    // Pipeline Layout
+    // WARN: is this a state?
+    vk::PipelineLayoutCreateInfo pipeline_layout_create {
+        .setLayoutCount = 0,
+        .pushConstantRangeCount = 0,
+    };
+
+    vk::raii::PipelineLayout pipeline_layout = device.createPipelineLayout(pipeline_layout_create);
 
     ut::printCheck(std::cout);
 }
