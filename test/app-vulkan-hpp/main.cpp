@@ -510,6 +510,13 @@ void testVulkanUtils() {
 
     vk::raii::PipelineLayout pipeline_layout = device.createPipelineLayout(pipeline_layout_create);
 
+    // Pipeline
+    vk::GraphicsPipelineCreateInfo pipeline_create {
+        .stageCount = 2,
+    };
+
+    vk::raii::Pipeline pipeline = device.createGraphicsPipeline(nullptr, pipeline_create);
+
     ut::printCheck(std::cout);
 }
 
