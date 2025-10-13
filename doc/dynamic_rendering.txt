@@ -1,0 +1,6 @@
+--> https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/00_Setup/04_Logical_device_and_queues.html#_enabling_additional_device_features
+--> https://docs.vulkan.org/samples/latest/samples/extensions/dynamic_rendering/README.html
+
+Dynamic rendering is enabled through the logical device creation by filling in the
+pNext member with the appropiate info
+
