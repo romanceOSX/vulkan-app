@@ -146,6 +146,7 @@ void testVulkan() {
 
     vector<const char*> dev_extensions{
         vk::KHRPortabilitySubsetExtensionName,
+        vk::KHRDynamicRenderingExtensionName,
     };
 
     vk::DeviceQueueCreateInfo queue_create {
@@ -276,6 +277,7 @@ void testVulkanUtils() {
     vector<const char*> dev_extensions {
         vk::KHRSwapchainExtensionName,
         vk::KHRPortabilitySubsetExtensionName,
+        vk::EXTExtendedDynamicState3ExtensionName,
     };
 
     uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(phy_dev);
@@ -291,7 +293,19 @@ void testVulkanUtils() {
         .pQueuePriorities = &queue_priority,
     };
 
+    // Device Feature Chain
+    vk::StructureChain<
+        vk::PhysicalDeviceFeatures2,
+        vk::PhysicalDeviceVulkan13Features,
+        vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT
+    > device_features {
+        {},                             // empty for now
+        {.dynamicRendering = true},     // dynamic rendering (Vulkan +v1.3)
+        {.extendedDynamicState = true}  // Enable exteded dynamic state
+    };
+
     vk::DeviceCreateInfo dev_create {
+        .pNext = &device_features.get<vk::PhysicalDeviceFeatures2>(),
         .queueCreateInfoCount = 1,
         .pQueueCreateInfos = &queue_create,
         .enabledExtensionCount = static_cast<uint32_t>(dev_extensions.size()),
