@@ -389,11 +389,11 @@ void testVulkanUtils() {
     string shader_vert_f = ut::readFile("shaders/glsl/triangle/triangle.vert");
     string shader_frag_f = ut::readFile("shaders/glsl/triangle/triangle.frag");
 
-    vk::raii::ShaderModule vertex_shader_module = vu::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, shader_vert_f);
-    vk::raii::ShaderModule fragment_shader_module = vu::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, shader_frag_f);
+    vk::raii::ShaderModule shader_module_vertex = vu::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, shader_vert_f);
+    vk::raii::ShaderModule shader_module_fragment = vu::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, shader_frag_f);
 
     //
-    // bindings
+    // Bindings
     //
 
     // NOTE: the binding describes what to expect from a single Element from the data
@@ -421,7 +421,7 @@ void testVulkanUtils() {
     // color attribute
     vertex_attributes.push_back(
         vk::VertexInputAttributeDescription {
-            .location = 0,
+            .location = 1,
             .binding = 0,
             .format = vk::Format::eR32G32B32Sfloat,
             .offset = offsetof(Vertex, color),
@@ -430,6 +430,19 @@ void testVulkanUtils() {
     //
     // Pipeline states
     //
+
+    // Shader stages
+    vector<vk::PipelineShaderStageCreateInfo> shader_stages;
+    shader_stages.emplace_back(vk::PipelineShaderStageCreateInfo {
+        .stage = vk::ShaderStageFlagBits::eVertex,
+        .module = shader_module_vertex,
+        .pName = "main",
+    });
+    shader_stages.emplace_back(vk::PipelineShaderStageCreateInfo {
+        .stage = vk::ShaderStageFlagBits::eFragment,
+        .module = shader_module_fragment,
+        .pName = "main",
+    });
 
     // Dynamic states
     vector<vk::DynamicState> dynamic_states = {
@@ -440,6 +453,14 @@ void testVulkanUtils() {
     vk::PipelineDynamicStateCreateInfo state_dynamic = {
         .dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()),
         .pDynamicStates = dynamic_states.data(),
+    };
+
+    // Vertex Input state
+    vk::PipelineVertexInputStateCreateInfo state_vertex_input {
+        .vertexBindingDescriptionCount = 1,
+        .pVertexBindingDescriptions = &vertex_binding,
+        .vertexAttributeDescriptionCount = static_cast<uint32_t>(vertex_attributes.size()),
+        .pVertexAttributeDescriptions = vertex_attributes.data(),
     };
 
     // Input Assembly state
@@ -463,16 +484,10 @@ void testVulkanUtils() {
 
     vk::PipelineViewportStateCreateInfo state_viewport_scissor {
         // dynamically set later
+        // TODO: what exactly is set dynamically?
+        .viewportCount = 1,
+        .scissorCount = 1,
     };
-
-    // Vertex Input state
-    vk::PipelineVertexInputStateCreateInfo pipeline_vertex_input_sate_create {
-        .vertexBindingDescriptionCount = 1,
-        .pVertexBindingDescriptions = &vertex_binding,
-        .vertexAttributeDescriptionCount = static_cast<uint32_t>(vertex_attributes.size()),
-        .pVertexAttributeDescriptions = vertex_attributes.data(),
-    };
-
 
     // Rasterizer state
     vk::PipelineRasterizationStateCreateInfo state_rasterizer {
@@ -521,12 +536,31 @@ void testVulkanUtils() {
         .setLayoutCount = 0,
         .pushConstantRangeCount = 0,
     };
+    vk::raii::PipelineLayout pipeline_layout = 
+        device.createPipelineLayout(pipeline_layout_create);
 
-    vk::raii::PipelineLayout pipeline_layout = device.createPipelineLayout(pipeline_layout_create);
+    // Rendering info
+    vk::PipelineRenderingCreateInfo rendering_create {
+        .colorAttachmentCount = 1,
+        .pColorAttachmentFormats = &surface_properties.formats.front().format,
+    };
 
-    // Pipeline
+    // Pipeline Creation
     vk::GraphicsPipelineCreateInfo pipeline_create {
+        .pNext = &rendering_create,
         .stageCount = 2,
+        .pStages = shader_stages.data(),
+        .pVertexInputState = &state_vertex_input,
+        .pInputAssemblyState = &state_input_assembly,
+        .pTessellationState = nullptr,
+        .pViewportState = &state_viewport_scissor,
+        .pRasterizationState = &state_rasterizer,
+        .pMultisampleState = &state_multisampling,
+        .pDepthStencilState = nullptr,
+        .pColorBlendState = &state_color_blend,
+        .pDynamicState= &state_dynamic,
+        .layout = pipeline_layout,
+        .renderPass = nullptr,
     };
 
     vk::raii::Pipeline pipeline = device.createGraphicsPipeline(nullptr, pipeline_create);
