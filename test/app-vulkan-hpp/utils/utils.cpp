@@ -32,7 +32,7 @@ namespace views = std::ranges::views;
 namespace ut {
 
 void prettyPrint(const std::string& prompt) {
-    std::cout << std::format("-- {}", prompt) << std::endl;
+    std::cout << std::format("-- {}!", prompt) << std::endl;
 }
 
 void printCheck(std::ostream &ostream) {
@@ -499,13 +499,6 @@ vk::raii::ShaderModule createShaderModule(
 ) {
     vector<unsigned int> spirv_shader;
     vu::glslToSpirV(shader_type, shader_text, spirv_shader);
-
-    // NOTE: debug
-    ut::prettyPrint("Start of shader...");
-    ranges::for_each(spirv_shader, [](auto& byte){
-        std::cout << std::hex << byte;});
-    std::cout << std::endl;
-    ut::prettyPrint("End of shader...");
 
     // TODO: add error handling for GLSL to SPIR-V conversion
 
