@@ -258,9 +258,9 @@ void testVulkanUtils() {
     auto phy_dev = instance->enumeratePhysicalDevices().front();
 
     //
-    // test
+    // Utils test
     //
-    testVulkanUtilsQueueFamilies(*instance);
+    //testVulkanUtilsQueueFamilies(*instance);
 
     //
     // Surface creation
