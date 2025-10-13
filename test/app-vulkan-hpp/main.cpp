@@ -336,7 +336,7 @@ void testVulkanUtils() {
     };
 
     vk::raii::SwapchainKHR swapchain = device.createSwapchainKHR(swapchain_create);
-    std::cout << "Swapchain created succesfully!" << std::endl;
+    ut::prettyPrint("Swapchain Created successfully");
 
     //
     // Command Pool
@@ -358,7 +358,7 @@ void testVulkanUtils() {
     };
 
     vector<vk::raii::CommandBuffer> command_buffers = device.allocateCommandBuffers(command_buffer_alloc);
-    std::cout << "Created command buffers!" << std::endl;
+    ut::prettyPrint("Command Buffers created");
 
     //
     // Image Views
@@ -530,6 +530,8 @@ void testVulkanUtils() {
     };
 
     vk::raii::Pipeline pipeline = device.createGraphicsPipeline(nullptr, pipeline_create);
+
+    ut::prettyPrint("Pipeline created successfully");
 
     ut::printCheck(std::cout);
 }
