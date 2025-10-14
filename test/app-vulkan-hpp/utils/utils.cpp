@@ -1,3 +1,11 @@
+//
+// General purpose utilities
+//
+// TODO: Separate program utilities ('ut' namespace) and vulkan utilities ('vu' namespace)
+//       in separate translation units
+// TODO: Whenever we are printing something it would be valuable to provide the stream
+//       to sink the data to
+//
 
 #include <algorithm>
 #include <vector>
@@ -511,6 +519,64 @@ vk::raii::ShaderModule createShaderModule(
     vk::ShaderModuleCreateFlags();
 
     return dev.createShaderModule(shader_module_create);
+}
+
+void printVulkanPlatformInfo(vk::raii::Context &ctx) {
+    std::cout << std::format("Vulkan v{}", ctx.enumerateInstanceVersion()) << std::endl;
+    std::cout << "Available instance layers:" << std::endl;
+    std::cout << ctx.enumerateInstanceLayerProperties();
+    std::cout << "Available instance extensions:" << std::endl;
+    std::cout << ctx.enumerateInstanceExtensionProperties();
+}
+
+void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance) {
+    auto vec = instance->enumeratePhysicalDevices();
+
+    // print devices
+    ranges::for_each(vec, [](vk::raii::PhysicalDevice& dev) {
+        std::cout << "- Device " << std::endl
+            << std::format("Queue Families ({}):", dev.getQueueFamilyProperties().size()) << std::endl;
+        ranges::for_each(dev.getQueueFamilyProperties(), [](auto& queue) {
+            std::cout << "\t- " << queue << std::endl;
+        });
+    });
+
+    /* find suitable index? */
+
+    //utils_print_container(vec);
+}
+
+//
+// Testing zone (temporal?)
+//
+namespace test {
+
+void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
+    auto device = instance.enumeratePhysicalDevices().front();
+
+    // get all graphics queues
+    vector<uint32_t> graphics_queue_families = vu::getGraphicsQueueFamilyIndexes(device);
+    ut::printContainer(graphics_queue_families);
+
+    // get a single grpahics queue
+    uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(device);
+
+    // get all present queues
+    vk::raii::SurfaceKHR surface = vu::createWindowSurface(instance);
+    vector<uint32_t> present_queue_families = vu::getPresentationFamilyIndexes(device, surface);
+    ut::printContainer(present_queue_families);
+
+    // get a single present queue
+    uint32_t present_index = vu::getPresentationFamilyIndex(device, surface);
+
+    // get transfer queue
+    uint32_t transfer_queue = vu::getQueueFamilyIndex(device, vk::QueueFlagBits::eTransfer);
+
+    std::cout << std::format("Graphics index = {}\n", graphics_index);
+    std::cout << std::format("Presentation index = {}\n", present_index);
+    std::cout << std::format("Transfer index = {}\n", present_index);
+}
+
 }
 
 }

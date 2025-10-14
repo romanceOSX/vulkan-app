@@ -54,6 +54,12 @@ struct SurfaceProperties {
 //
 namespace vu {
 
+namespace test {
+
+void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance);
+
+}
+
 vk::raii::SurfaceKHR createWindowSurface(vk::raii::Instance& instance);
 QueuePhyDeviceTup_t getSuitableDevice(vk::raii::Instance& instance, vk::raii::SurfaceKHR& surface);
 uint32_t getGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev);
@@ -65,6 +71,8 @@ SurfaceProperties getSurfaceProperties(vk::raii::PhysicalDevice& dev, vk::raii::
 vk::SurfaceFormatKHR chooseSurfaceFormat(const vector<vk::SurfaceFormatKHR>& formats);      // TODO: implement this function
 void glslToSpirV(vk::ShaderStageFlagBits const & shader_type, std::string const & shader_glsl, vector<unsigned int>& shader_spirv);
 vk::raii::ShaderModule createShaderModule(vk::raii::Device& dev, vk::ShaderStageFlagBits const & shader_type, std::string& shader_text);
+void printVulkanPlatformInfo(vk::raii::Context &ctx);
+void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance);
 
 }
 
