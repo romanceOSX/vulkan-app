@@ -10,7 +10,6 @@
 #include <utility>
 #include <vector>
 #include <ranges>
-#include <utility>
 
 #define VK_ENABLE_BETA_EXTENSIONS
 #define VULKAN_HPP_NO_CONSTRUCTORS

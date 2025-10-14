@@ -77,19 +77,6 @@ uint32_t findGraphicsQueueFamilyIndex(vk::raii::PhysicalDevice& phy_dev) {
     return static_cast<uint32_t>(std::distance(queue_families.begin(), graphics_queue));
 }
 
-// finds the best suitable physical device, and queue_family
-QueuePhyDeviceTup_t getSuitableDevice(vk::raii::Instance& instance, vk::raii::SurfaceKHR& surface) {
-    for (auto& phy_dev : instance.enumeratePhysicalDevices()) {
-        auto queues = phy_dev.getQueueFamilyProperties();
-        for (auto it = queues.begin(); it != queues.end(); ++it) {
-            uint32_t index = static_cast<uint32_t>(std::distance(queues.begin(), it));
-            if (phy_dev.getSurfaceSupportKHR(index, surface))
-                assert(it != queues.end());
-                return std::make_tuple(phy_dev, index);
-        }
-    }
-}
-
 // TODO: make this clearer
 vk::raii::SurfaceKHR createWindowSurface(vk::raii::Instance& instance) {
     uint32_t width = 500;
