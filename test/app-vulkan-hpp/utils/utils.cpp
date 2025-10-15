@@ -534,6 +534,32 @@ void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance) {
 }
 
 //
+// Finds the suitable memory heap index with the requested flags
+// memory_mask tells the function to look only on the requested mask bits
+// each bit position represents the device's heap index to search the flags for
+//
+std::optional<uint32_t> findMemoryHeap(
+    vk::PhysicalDeviceMemoryProperties memory_properties,
+    vk::MemoryRequirements memory_requirements,
+    vk::MemoryPropertyFlags flags
+) {
+    for (uint32_t i = 0; i < memory_properties.memoryTypeCount; ++i) {
+        ut::printCheck(std::cout);
+        // is the current memory type even in our memory requirements? 
+        bool is_index_in_requirements = static_cast<bool>((1 << i) & (memory_requirements.memoryTypeBits));
+
+        // is the requested flag within the current memory type?
+        bool is_flags_in_memory = static_cast<bool>(memory_properties.memoryTypes[i].propertyFlags & flags);
+        
+        if (is_index_in_requirements && is_flags_in_memory)
+            return i;
+    } 
+
+    // not found
+    return {};
+}
+
+//
 // Testing zone (temporal?)
 //
 namespace test {
@@ -567,4 +593,5 @@ void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
 }
 
 }
+
 

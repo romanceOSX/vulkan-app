@@ -73,6 +73,7 @@ void glslToSpirV(vk::ShaderStageFlagBits const & shader_type, std::string const 
 vk::raii::ShaderModule createShaderModule(vk::raii::Device& dev, vk::ShaderStageFlagBits const & shader_type, std::string& shader_text);
 void printVulkanPlatformInfo(vk::raii::Context &ctx);
 void printInstanceInfo(std::unique_ptr<vk::raii::Instance>& instance);
+std::optional<uint32_t> findMemoryHeap(vk::PhysicalDeviceMemoryProperties memory_properties, vk::MemoryRequirements memory_requirements, vk::MemoryPropertyFlags flags);
 
 }
 
