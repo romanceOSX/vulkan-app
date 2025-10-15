@@ -20,3 +20,19 @@ Buffers
         - Find the appropiate index that satisfy the resource's memory requirements
         - Allocate the device memory from the appropiate queue family? device type?
 
+Vulkan Memory
+    When we query the memory requirements, it will tell us which memory types it supports
+    This is done in the form of bits, the bit number 'i' will tell us that the heap 
+    type number 'i' is supported
+
+    So the rule is that whatever memory type we plan to use to allocate memory from
+    must follow the following:
+        memory_requirements.memoryTypeBits & (1 << i) != 0;
+        memory_properties.memoryTypes[i].propertyFlags has the features we asked for
+
+        The memory flags indicate the following
+            - Device local
+            - Host visible
+            
+        
+
