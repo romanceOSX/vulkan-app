@@ -6,3 +6,17 @@ Image Views
     Something Something else...
     Some
 
+2025-10-13
+
+Resources are views of memory with associated formatting and dimensionality
+
+Buffers
+    Usually binded to pipelines by the use of 'descriptors sets'
+
+    Workflow:
+        - We first declare the buffer view and what are we going to use it for,
+          this does not allocate anything but it will give us more insight on the
+          characteristics we need to allocate the actual device memory
+        - Find the appropiate index that satisfy the resource's memory requirements
+        - Allocate the device memory from the appropiate queue family? device type?
+
