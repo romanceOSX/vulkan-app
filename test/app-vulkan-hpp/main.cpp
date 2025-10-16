@@ -65,6 +65,7 @@ const vector<Vertex> vertex_data = {
 //
 // NOTE: what is the point of raii'ing a physical device if its creation depends on instance?
 // NOTE: vk::raii::CommandBuffer inherits from the vector class
+// TODO: review how the memory requirements vs properties lookup works
 //
 
 //
@@ -98,16 +99,11 @@ void testVulkan() {
     };
 
     auto instance = std::make_unique<vk::raii::Instance>(ctx, instance_create);
-    auto phy_dev = instance->enumeratePhysicalDevices().front();
+    auto physical_device = instance->enumeratePhysicalDevices().front();
 
     // Print instance info
-    ut::prettyPrint("Before");
-    vu::printInstanceInfo(instance);
-    ut::prettyPrint("After");
-
-    ut::prettyPrint("Before");
-    vu::printVulkanPlatformInfo(ctx);
-    ut::prettyPrint("After");
+    //vu::printInstanceInfo(instance);
+    //vu::printVulkanPlatformInfo(ctx);
 
     //
     // Utils test
@@ -119,7 +115,7 @@ void testVulkan() {
     //
     vk::raii::SurfaceKHR surface = vu::createWindowSurface(*instance);
 
-    vk::SurfaceCapabilitiesKHR surface_capabilities = phy_dev.getSurfaceCapabilitiesKHR(surface);
+    vk::SurfaceCapabilitiesKHR surface_capabilities = physical_device.getSurfaceCapabilitiesKHR(surface);
 
     // 
     // Device creation
@@ -131,7 +127,7 @@ void testVulkan() {
         vk::EXTExtendedDynamicState3ExtensionName,
     };
 
-    uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(phy_dev);
+    uint32_t graphics_index = vu::getGraphicsQueueFamilyIndex(physical_device);
 
     //
     // Queue Creation
@@ -163,12 +159,12 @@ void testVulkan() {
         .ppEnabledExtensionNames = dev_extensions.data(),
     };
 
-    auto device = phy_dev.createDevice(dev_create);
+    auto device = physical_device.createDevice(dev_create);
 
     //
     // Swapchain Creation 
     //
-    SurfaceProperties surface_properties = vu::getSurfaceProperties(phy_dev, surface);
+    SurfaceProperties surface_properties = vu::getSurfaceProperties(physical_device, surface);
 
     // NOTE: learn what each of these components represent
     vk::SwapchainCreateInfoKHR swapchain_create {
@@ -415,8 +411,32 @@ void testVulkan() {
     };
 
     vk::raii::Pipeline pipeline = device.createGraphicsPipeline(nullptr, pipeline_create);
-
     ut::prettyPrint("Pipeline created successfully");
+
+    //
+    // Buffers
+    //
+    vk::BufferCreateInfo buffer_create {
+        .size = sizeof(Vertex) + vertex_data.size(),
+        .usage = vk::BufferUsageFlagBits::eVertexBuffer,
+    };
+    vk::raii::Buffer buffer = device.createBuffer(buffer_create);
+
+    // test index
+    uint32_t memory_index = vu::findMemoryHeap(
+        physical_device.getMemoryProperties(),
+        buffer.getMemoryRequirements(),
+        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent
+    ).value();
+
+    vk::MemoryAllocateInfo memory_alloc_info = {
+        .allocationSize = buffer.getMemoryRequirements().size,
+        .memoryTypeIndex = memory_index,
+    };
+
+    // TODO: make an stream formatter for the physical_device's memory properties
+
+    vk::raii::DeviceMemory memory = device.allocateMemory(memory_alloc_info);
 
     ut::printCheck(std::cout);
 }
@@ -427,6 +447,5 @@ void testVulkan() {
 int main( int /*argc*/, char ** /*argv*/ )
 {
     testVulkan();
-    //testVulkan();
 }
 

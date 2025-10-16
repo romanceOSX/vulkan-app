@@ -544,7 +544,6 @@ std::optional<uint32_t> findMemoryHeap(
     vk::MemoryPropertyFlags flags
 ) {
     for (uint32_t i = 0; i < memory_properties.memoryTypeCount; ++i) {
-        ut::printCheck(std::cout);
         // is the current memory type even in our memory requirements? 
         bool is_index_in_requirements = static_cast<bool>((1 << i) & (memory_requirements.memoryTypeBits));
 
@@ -593,5 +592,4 @@ void testVulkanUtilsQueueFamilies(vk::raii::Instance& instance) {
 }
 
 }
-
 
